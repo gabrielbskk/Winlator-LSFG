@@ -4,11 +4,15 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, experimental/rpc-android-v4, feat/aurora-consolidation]
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: aurora-sdkfree-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-debug:
@@ -16,6 +20,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - name: Aurora resource regressions
+        run: python3 scripts/test_aurora_resources.py
       - name: Audit packaged GPU drivers (read-only)
         run: |
           python3 scripts/test_driver_inventory.py
@@ -50,7 +56,7 @@ jobs:
         working-directory: app
         run: |
           chmod +x ./gradlew
-          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest --no-daemon --stacktrace
       - name: Upload debug APK for CI inspection
         if: success()
         uses: actions/upload-artifact@v4

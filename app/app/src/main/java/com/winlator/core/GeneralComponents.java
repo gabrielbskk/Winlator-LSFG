@@ -166,9 +166,13 @@ public abstract class GeneralComponents {
         File componentDir = getComponentDir(type, context);
         ArrayList<String> result = new ArrayList<>();
 
-        String[] names;
-        if (componentDir.isDirectory() && (names = componentDir.list()) != null) {
-            for (String name : names) result.add(parseDisplayText(type, name));
+        File[] entries;
+        if (componentDir.isDirectory() && (entries = componentDir.listFiles()) != null) {
+            for (File entry : entries) {
+                if (InstalledComponentFiles.isSelectable(type.lowerName(), entry)) {
+                    result.add(parseDisplayText(type, entry.getName()));
+                }
+            }
         }
         return result;
     }
@@ -195,17 +199,18 @@ public abstract class GeneralComponents {
             if (isBuiltinComponent(type, identifier)) return null;
             File source = type.getSource(context, identifier);
             File[] manifestFiles = source.listFiles((file, name) -> name.endsWith(".json"));
-            if (manifestFiles != null) {
+            if (manifestFiles != null && manifestFiles.length > 0) {
                 try {
                     JSONObject manifestJSONObject = new JSONObject(FileUtils.readString(manifestFiles[0]));
                     String libraryName = manifestJSONObject.optString("libraryName", "");
-                    File libraryFile = new File(source, libraryName);
-                    return libraryFile.isFile() ? libraryFile.getPath() : null;
+                    File libraryFile = ArchivePathGuard.resolveInside(source, libraryName);
+                    return ArchivePathGuard.isArm64SharedLibrary(libraryFile) ? libraryFile.getPath() : null;
                 }
-                catch (JSONException e) {
+                catch (JSONException | java.io.IOException e) {
                     return null;
                 }
             }
+            return null;
         }
 
         return type.getSource(context, identifier).getPath();
@@ -239,8 +244,11 @@ public abstract class GeneralComponents {
 
     private static void downloadComponentFile(final Type type, final String filename, final Spinner spinner, final String defaultItem) {
         final Activity activity = (Activity)spinner.getContext();
+        if (!ComponentCatalog.isSafeFileName(type.lowerName(), filename)) {
+            AppUtils.showToast(activity, R.string.a_network_error_occurred);
+            return;
+        }
         File destination = new File(getComponentDir(type, activity), filename);
-        if (destination.isFile()) destination.delete();
         HttpUtils.download(activity, String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/"+filename), destination, (success) -> {
             if (success) {
                 loadSpinner(type, spinner, parseDisplayText(type, filename), defaultItem);
@@ -260,10 +268,11 @@ public abstract class GeneralComponents {
             if (list == null) { callback.call(false); return; }
             String filename = type.lowerName()+"-"+identifier+".tzst";
             boolean advertised = false;
-            for (String line : list.split("\\n")) if (line.trim().equals(filename)) { advertised = true; break; }
+            for (String safeName : ComponentCatalog.validFileNames(type.lowerName(), list)) {
+                if (safeName.equals(filename)) { advertised = true; break; }
+            }
             if (!advertised) { callback.call(false); return; }
             File destination = new File(getComponentDir(type, activity), filename);
-            if (destination.isFile()) destination.delete();
             HttpUtils.download(activity, String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/"+filename), destination, callback);
         }));
     }
@@ -319,11 +328,50 @@ public abstract class GeneralComponents {
                         byte[] manifestData = ZipUtils.read(source, "*.json");
                         if (manifestData != null) {
                             JSONObject manifestJSONObject = new JSONObject(new String(manifestData));
+                            int minApi = manifestJSONObject.optInt("minApi", 0);
+                            if (android.os.Build.VERSION.SDK_INT < minApi) {
+                                AppUtils.showToast(activity, activity.getString(R.string.custom_driver_android_required, minApi));
+                                return;
+                            }
                             String filename = manifestJSONObject.optString("name", manifestJSONObject.optString("libraryName", ""));
-                            File destination = new File(getComponentDir(type, activity), filename);
-                            if (destination.isDirectory()) FileUtils.delete(destination);
-                            destination.mkdirs();
-                            if (ZipUtils.extract(source, destination)) loadSpinner(type, spinner, filename, defaultItem);
+                            String libraryName = manifestJSONObject.optString("libraryName", "");
+                            if (!ArchivePathGuard.safeDriverLabel(filename)) {
+                                AppUtils.showToast(activity, R.string.invalid_configuration);
+                                return;
+                            }
+                            File componentDir = getComponentDir(type, activity);
+                            File staged = File.createTempFile(".aurora-driver-", ".staging", componentDir);
+                            if (!staged.delete() || !staged.mkdirs()) {
+                                AppUtils.showToast(activity, R.string.invalid_configuration);
+                                return;
+                            }
+                            try {
+                                if (!ZipUtils.extract(source, staged)
+                                        || !ArchivePathGuard.isArm64SharedLibrary(ArchivePathGuard.resolveInside(staged, libraryName))) {
+                                    AppUtils.showToast(activity, R.string.invalid_configuration);
+                                    return;
+                                }
+                                File destination = new File(componentDir, filename);
+                                File backup = null;
+                                if (destination.exists()) {
+                                    backup = new File(componentDir, ".aurora-backup-" + java.util.UUID.randomUUID());
+                                    if (!destination.renameTo(backup)) {
+                                        AppUtils.showToast(activity, R.string.invalid_configuration);
+                                        return;
+                                    }
+                                }
+                                if (!staged.renameTo(destination)) {
+                                    if (backup != null && !backup.renameTo(destination))
+                                        android.util.Log.e("AuroraDriver", "Driver rollback failed; backup retained: " + backup);
+                                    AppUtils.showToast(activity, R.string.invalid_configuration);
+                                    return;
+                                }
+                                if (backup != null) FileUtils.delete(backup);
+                                loadSpinner(type, spinner, filename, defaultItem);
+                            }
+                            finally {
+                                if (staged.exists()) FileUtils.delete(staged);
+                            }
                         }
                         break;
                     }
@@ -337,7 +385,9 @@ public abstract class GeneralComponents {
                             String identifier = StringUtils.parseIdentifier(manifestJSONObject.optString("versionName", ""));
                             JSONArray filesJSONArray = manifestJSONObject.optJSONArray("files");
 
-                            if (contentType.equals(type.name()) && !identifier.isEmpty() && filesJSONArray != null) {
+                            if (contentType.equals(type.name()) && filesJSONArray != null
+                                    && ComponentCatalog.isSafeFileName(type.lowerName(),
+                                            type.lowerName()+"-"+identifier+".tzst")) {
                                 installFromPackagedFile(activity, compressedType, type, source, identifier, filesJSONArray);
                                 loadSpinner(type, spinner, identifier, defaultItem);
                             }
@@ -346,7 +396,10 @@ public abstract class GeneralComponents {
                     }
                 }
             }
-            catch (JSONException e) {}
+            catch (JSONException | java.io.IOException e) {
+                android.util.Log.w("AuroraDriver", "Invalid custom driver package", e);
+                AppUtils.showToast(activity, R.string.invalid_configuration);
+            }
         });
 
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -362,18 +415,19 @@ public abstract class GeneralComponents {
         HttpUtils.download(String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/index.txt"), (content) -> activity.runOnUiThread(() -> {
             preloaderDialog.close();
             if (content != null) {
-                if (content.isEmpty()) {
+                final String[] filenames = ComponentCatalog.validFileNames(type.lowerName(), content);
+                if (filenames.length == 0) {
                     AppUtils.showToast(activity, R.string.there_are_no_items_to_download);
                     return;
                 }
-                final String[] filenames = content.split("\n");
                 final String[] items = filenames.clone();
                 for (int i = 0; i < items.length; i++) {
                     items[i] = type.title()+" "+parseDisplayText(type, items[i]);
                 }
 
                 ContentDialog.showSelectionList(activity, R.string.install_component, items, false, (positions) -> {
-                    if (!positions.isEmpty()) downloadComponentFile(type, filenames[positions.get(0)], spinner, defaultItem);
+                    if (!positions.isEmpty() && positions.get(0) >= 0 && positions.get(0) < filenames.length)
+                        downloadComponentFile(type, filenames[positions.get(0)], spinner, defaultItem);
                 });
             }
             else AppUtils.showToast(activity, R.string.a_network_error_occurred);

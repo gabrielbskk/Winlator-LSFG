@@ -4,6 +4,8 @@ import android.opengl.GLES20;
 
 public class RenderTarget extends Texture {
     private int framebuffer;
+    private int width;
+    private int height;
 
     public RenderTarget() {
         super(null);
@@ -16,7 +18,11 @@ public class RenderTarget extends Texture {
     }
 
     public void allocateFramebuffer(int width, int height) {
-        if (framebuffer != 0) return;
+        if (width <= 0 || height <= 0) return;
+        if (framebuffer != 0 && this.width == width && this.height == height) return;
+        destroy();
+        this.width = width;
+        this.height = height;
         generateFramebuffer();
         generateTextureId();
 
@@ -33,5 +39,15 @@ public class RenderTarget extends Texture {
 
     public int getFramebuffer() {
         return framebuffer;
+    }
+
+    /** Must run on the GL thread while the owning context is current. */
+    @Override public void destroy() {
+        if (framebuffer != 0) {
+            GLES20.glDeleteFramebuffers(1, new int[]{framebuffer}, 0);
+            framebuffer = 0;
+        }
+        super.destroy();
+        width = height = 0;
     }
 }

@@ -12,17 +12,28 @@ O visual continua alternável entre claro e escuro em Configurações. As cores 
 
 ## Compatibilidade, sem prometer ganhos de FPS
 
-| GPU | Identificação testada | Driver automático | Validação pendente |
+| GPU | Identificação por software | Padrão para contêineres novos | Seleção manual |
 | --- | --- | --- | --- |
-| Adreno 619 | `Adreno (TM) 619` | Turnip (candidato) + Gladio | Aparelho, edição Turnip instalada e jogos |
-| Adreno 642 / 642L | `Adreno 642L` | Turnip (candidato) + Gladio | Aparelho, edição Turnip instalada e jogos |
-| Mali G52 | `Mali-G52 MP2` | Vulkan do sistema via Vortek + Gladio | Aparelho, Vulkan disponível e fallback OpenGL |
+| Adreno 619 | `Adreno (TM) 619` | Vortek + Gladio | Turnip com versão escolhida pelo usuário; validar no aparelho |
+| Adreno 642/642L | `Adreno 642L` | Vortek + Gladio | Turnip com versão escolhida pelo usuário; validar no aparelho |
+| Mali G52 | `Mali-G52 MP2` | Vortek + Gladio | Driver Vulkan do sistema / VirGL; PANVK dedicado ainda não validado |
+
+**Seleção manual (pós Experimental 6):** Aurora não escolhe Turnip automaticamente
+nem calcula versões pela GPU. Quem precisa de Turnip seleciona-o explicitamente
+nas opções Vulkan, abre Configurações e escolhe a versão. Contêineres antigos
+com `version=auto` ou sem versão usam apenas um fallback fixo `DefaultVersion.TURNIP`
+(26.1.0 atualmente) para continuar abrindo; não há classificação dinâmica.
+Contêineres existentes com seleção manual continuam com seu driver salvo.
+O app impede Turnip em uma sessão identificada como Mali e avisa sobre fallback,
+sem apagar a configuração persistida. O Vortek pode não oferecer todos os recursos
+necessários ao LSFG; teste a combinação selecionada antes de considerá-la estável.
+
 
 Alterações concretas:
 
 1. A consulta de GPU EGL agora cria uma superfície PBuffer GLES2 para compatibilidade com implementações que recusam contexto *surfaceless*, libera contexto e superfície, evita espera infinita e não armazena informações vazias em preferências.
 2. Reconhece modelos Adreno com sufixo, por exemplo `642L`, e variantes de `Mali-G52` com testes JVM específicos.
-3. Mantém a escolha de Vulkan Turnip **apenas** para GPUs que se identificam como Adreno; G52 e hardware desconhecido continuam no Vulkan do sistema por Vortek. Não ativa Turnip automaticamente em Mali.
+3. Os contêineres novos usam o Vortek/Gladio conservador. O usuário escolhe Turnip e versão manualmente; Mali mantém o fallback de segurança se Turnip for selecionado.
 4. Corrige Vortek: as extensões Vulkan gravadas com `:` eram lidas como se usassem outro separador. Também restaura corretamente a seleção de uma única extensão e trata listas de extensões indisponíveis.
 
 **Importante:** drivers e recursos dependem de kernel, firmware, Vulkan do Android e versão do Wine/Turnip do dispositivo. Essas correções são de **robustez de seleção/compatibilidade**, não comprovam mais FPS, menos RAM ou execução de um jogo específico. Não foram alterados algoritmos de LSFG, nem DLLs proprietárias.

@@ -42,6 +42,16 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(b"example-driver", driver.read_bytes())
             self.assertEqual(b"example-alternative", downloaded.read_bytes())
 
+    def test_real_driver_catalog_index_matches_available_downloads(self):
+        # Name-only test avoids hashing multi-megabyte archives a second time.
+        indexed = (audit.INSTALLABLE / "index.txt").read_text(encoding="utf-8").splitlines()
+        downloadable = {p.name for p in audit.INSTALLABLE.glob("*.tzst")}
+        self.assertTrue(indexed, "Turnip catalog should not be empty")
+        self.assertEqual(len(indexed), len(set(indexed)), "Duplicate catalog entries")
+        self.assertEqual(set(indexed), downloadable, "Missing or unlisted Turnip package")
+        self.assertTrue(all(name.startswith("turnip-") and name.endswith(".tzst") for name in indexed))
+        self.assertTrue((audit.ASSETS / "turnip-26.1.0.tzst").is_file())
+
     def test_missing_sources_fail_explicitly(self):
         with tempfile.TemporaryDirectory() as tmp:
             with patch.object(audit, "ASSETS", Path(tmp) / "missing"):

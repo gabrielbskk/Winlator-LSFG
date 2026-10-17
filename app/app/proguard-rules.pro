@@ -17,3 +17,6 @@
 #}
 
 -dontobfuscate
+
+# Initialized reflectively so builds without the optional SDK remain supported.
+-keep class com.discord.socialsdk.DiscordSocialSdkInit { *; }

@@ -81,6 +81,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        effectComposer.onContextCreated();
         GPUHelper.setGlobalEGLContext();
 
         GLES20.glFrontFace(GLES20.GL_CCW);
@@ -110,10 +111,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
             viewportNeedsUpdate = true;
         }
 
-        if (effectComposer.hasEffects()) {
-            effectComposer.render();
-        }
-        else drawFrame();
+        effectComposer.render();
     }
 
     protected void drawFrame() {

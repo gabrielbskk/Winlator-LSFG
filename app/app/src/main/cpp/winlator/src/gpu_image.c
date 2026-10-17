@@ -27,10 +27,10 @@ int AHardwareBuffer_getFd(AHardwareBuffer* hardwareBuffer) {
 }
 
 EGLImageKHR createImageKHR(AHardwareBuffer* hardwareBuffer, int textureId) {
+    if (!hardwareBuffer || textureId == 0) return EGL_NO_IMAGE_KHR;
     const EGLint attribList[] = {EGL_IMAGE_PRESERVED_KHR, EGL_TRUE, EGL_NONE};
 
-    AHardwareBuffer_acquire(hardwareBuffer);
-
+    // GPUImage owns the allocation; EGL retains its own reference for the image.
     EGLClientBuffer clientBuffer = eglGetNativeClientBufferANDROID(hardwareBuffer);
     if (!clientBuffer) return NULL;
 
@@ -46,15 +46,17 @@ EGLImageKHR createImageKHR(AHardwareBuffer* hardwareBuffer, int textureId) {
 }
 
 AHardwareBuffer* createHardwareBuffer(int width, int height, bool cpuAccess, bool useHALPixelFormatBGRA8888) {
+    if (width <= 0 || height <= 0) return NULL;
     AHardwareBuffer_Desc buffDesc = {0};
     buffDesc.width = width;
     buffDesc.height = height;
     buffDesc.layers = 1;
-    buffDesc.usage = cpuAccess ? AHARDWAREBUFFER_USAGE_CPU_WRITE_OFTEN : AHARDWAREBUFFER_USAGE_GPU_COLOR_OUTPUT;
+    buffDesc.usage = AHARDWAREBUFFER_USAGE_GPU_SAMPLED_IMAGE |
+        (cpuAccess ? AHARDWAREBUFFER_USAGE_CPU_WRITE_OFTEN : AHARDWAREBUFFER_USAGE_GPU_COLOR_OUTPUT);
     buffDesc.format = useHALPixelFormatBGRA8888 ? HAL_PIXEL_FORMAT_BGRA_8888 : AHARDWAREBUFFER_FORMAT_R8G8B8A8_UNORM;
 
     AHardwareBuffer* hardwareBuffer = NULL;
-    AHardwareBuffer_allocate(&buffDesc, &hardwareBuffer);
+    if (AHardwareBuffer_allocate(&buffDesc, &hardwareBuffer) != 0) return NULL;
 
     return hardwareBuffer;
 }
@@ -104,14 +106,18 @@ JNIEXPORT jobject JNICALL
 Java_com_winlator_renderer_GPUImage_lockHardwareBuffer(JNIEnv *env, jclass obj,
                                                        jlong hardwareBufferPtr) {
     AHardwareBuffer* hardwareBuffer = (AHardwareBuffer*)hardwareBufferPtr;
-    void *virtualAddr;
-    AHardwareBuffer_lock(hardwareBuffer, AHARDWAREBUFFER_USAGE_CPU_WRITE_OFTEN, -1, NULL, &virtualAddr);
+    if (!hardwareBuffer) return NULL;
+    void *virtualAddr = NULL;
+    if (AHardwareBuffer_lock(hardwareBuffer, AHARDWAREBUFFER_USAGE_CPU_WRITE_OFTEN, -1, NULL, &virtualAddr) != 0)
+        return NULL;
 
     AHardwareBuffer_Desc buffDesc = {0};
     AHardwareBuffer_describe(hardwareBuffer, &buffDesc);
 
-    jlong size = buffDesc.stride * buffDesc.height * 4;
-    return (*env)->NewDirectByteBuffer(env, virtualAddr, size);
+    jlong size = (jlong)buffDesc.stride * buffDesc.height * 4;
+    jobject buffer = (*env)->NewDirectByteBuffer(env, virtualAddr, size);
+    if (!buffer) AHardwareBuffer_unlock(hardwareBuffer, NULL);
+    return buffer;
 }
 
 JNIEXPORT void JNICALL

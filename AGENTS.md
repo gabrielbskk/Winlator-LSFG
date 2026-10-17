@@ -5,15 +5,19 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 
 ## Branch de integração em andamento
 
-- **PR #19** (`feat/aurora-consolidation` → `experimental/rpc-android-v4`) já contém tema, detecção Adreno/Mali, seleção manual de Turnip (driver e versão), correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
-- **PR #20** (`docs/codex-aurora-driver-plan` → `main`) mantém orientações e inventário de pacotes; merge ou cherry-pick somente depois de checar a base adequada.
-- **PR #7** permanece a referência RPC original e não deve ser mesclado automaticamente.
+- **PR #19** (`feat/aurora-consolidation` → `main`) já contém tema, detecção Adreno/Mali, seleção manual de Turnip (driver e versão), correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
+- **PRs #20 e #21** já foram mesclados à `main` e incorporados ao PR #19 pelo commit `fffef037` (merge de histórico, sem force-push): script de auditoria, testes e política de Turnip inteiramente manual. Não repetir nem reverter.
+- **PR #7** permanece como referência histórica RPC; não mesclá-lo independentemente, pois o PR #19 já reúne RPC e Aurora para revisão na `main`.
+- **RC1:** código-fonte 11.3-aurora-rc.1 (versionCode 39), sem Stable publicada. Ver `docs/RELEASE_CANDIDATE_11_3.md` e gates antes de distribuição.
+- **Correção de estabilidade** `8e43032f`: `KeyValueSet` ignora campos importados malformados; testes JVM verificam leitura, persistência e pares de drivers. Revisar antes de qualquer edição nesse parser.
 
 ## Antes de qualquer mudança
 1. Leia `README.md`, `ROADMAP.md`, `docs/DEVELOPMENT_WORKFLOW.md`, `docs/GPU_COMPATIBILITY_AURORA.md` e `docs/DRIVER_PLAN.md`.
 2. Consulte PRs abertos e a árvore da branch atual; **não duplique trabalho em andamento**.
 3. Registre hipótese, dispositivos afetados, arquivos alterados, plano de teste e critério de reversão.
 4. Crie branch própria e PR pequeno em draft quando depender de hardware ou bibliotecas externas.
+5. Para integração, execute `python3 scripts/test_aurora_resources.py`, `python3 scripts/test_driver_inventory.py`, `python3 scripts/audit_graphics_drivers.py` e `cd app && ./gradlew :app:testDebugUnitTest :app:assembleDebug` no ambiente Android configurado; quando aplicável, validar também o build nativo autorizado do RPC.
+6. Use `docs/STABLE_RELEASE_GATE.md` e `docs/AURORA_STABLE_TRACKER.md` para registrar o que passou **no mesmo commit**; não converter build verde em afirmação de estabilidade física.
 
 ## Ordem de implementação
 1. **Inventário e testes de regressão**: mapear driver embutido vs instalável, versão, arquitetura, origem/licença e caminhos de seleção; documentar resultados sem alterar binários.

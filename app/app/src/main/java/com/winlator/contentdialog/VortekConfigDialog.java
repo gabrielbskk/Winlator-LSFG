@@ -1,6 +1,8 @@
 package com.winlator.contentdialog;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.Spinner;
 
@@ -51,10 +53,24 @@ public class VortekConfigDialog extends ContentDialog {
         String adrenotoolsDriver = config.get("adrenotoolsDriver");
         GeneralComponents.initViews(GeneralComponents.Type.ADRENOTOOLS_DRIVER, findViewById(R.id.AdrenotoolsDriverToolbox), sAdrenotoolsDriver, adrenotoolsDriver, "System");
 
+        View panvkInfo = findViewById(R.id.LLPanvkG52);
+        boolean maliG52 = com.winlator.core.GpuCompatibility.isMali(GPUHelper.getRenderer(context));
+        panvkInfo.setVisibility(maliG52 ? View.VISIBLE : View.GONE);
+        if (maliG52) {
+            android.widget.TextView diagnostics = findViewById(R.id.TVMaliDiagnostics);
+            diagnostics.setText(context.getString(R.string.mali_driver_diagnostics,
+                    GPUHelper.getRenderer(context), deviceExtensions.length));
+        }
+        findViewById(R.id.BTPanvkReleases).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/LukeValen/panvk-mali-g52/releases"));
+            if (intent.resolveActivity(context.getPackageManager()) != null) context.startActivity(intent);
+        });
+
         AppUtils.setSpinnerSelectionFromValue(sVkMaxVersion, config.get("vkMaxVersion", DEFAULT_VK_MAX_VERSION));
         AppUtils.setSpinnerSelectionFromMemorySize(sMaxDeviceMemory, config.get("maxDeviceMemory", "0"));
         AppUtils.setSpinnerSelectionFromNumber(sImageCacheSize, config.get("imageCacheSize", String.valueOf(VortekRendererComponent.IMAGE_CACHE_SIZE)));
-        sResourceMemoryType.setSelection(config.getInt("resourceMemoryType"));
+        sResourceMemoryType.setSelection(
+                com.winlator.core.VortekConfigLimits.resourceMemoryType(config.getInt("resourceMemoryType")));
 
         setOnConfirmCallback(() -> {
             KeyValueSet newConfig = new KeyValueSet();
@@ -71,6 +87,7 @@ public class VortekConfigDialog extends ContentDialog {
                 }
                 else newConfig.put("exposedDeviceExtensions", String.join(":", selectedItems));
             }
+            else newConfig.put("exposedDeviceExtensions", "");
             anchor.setTag(newConfig.toString());
         });
     }

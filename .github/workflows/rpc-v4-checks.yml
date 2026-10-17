@@ -1,0 +1,80 @@
+name: RPC experimental 5 — Steam artwork checks
+
+on:
+  push:
+    branches: [feat/rpc-steam-artwork-preview, experimental/rpc-android-v4]
+  pull_request:
+    branches:
+      - main
+      - experimental/rpc-android-v4
+    paths:
+      - 'app/**'
+      - 'docs/ANDROID_IMPROVEMENTS.md'
+      - '.github/workflows/rpc-v4-checks.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rpc-artwork-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  java-tests:
+    name: JVM regression tests (SDK-free)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aurora resource regressions
+        run: python3 scripts/test_aurora_resources.py
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+          cache-dependency-path: |
+            app/gradle/wrapper/gradle-wrapper.properties
+            app/**/*.gradle
+      - name: Locate preinstalled Android SDK and install build components
+        shell: bash
+        run: |
+          SDK_ROOT="/usr/local/lib/android/sdk"
+          if [ ! -d "$SDK_ROOT" ]; then
+            echo "Android SDK is not installed on this runner" >&2
+            exit 1
+          fi
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -maxdepth 4 -type f -name sdkmanager | sort -V | tail -n 1)"
+          if [ -z "$SDKMANAGER" ]; then
+            echo "sdkmanager not found" >&2
+            exit 1
+          fi
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;24.0.8215888' 'cmake;3.22.1'
+      - name: Validate packaging configuration
+        run: |
+          grep -Eq 'versionName "[^"]+"' app/app/build.gradle
+          grep -Eq 'versionCode [1-9][0-9]*' app/app/build.gradle
+          if grep -q 'arm64OnlyGameAssets' app/app/build.gradle; then
+            echo "32-bit runtime stripping must not be present in the ARM64 Android build" >&2
+            exit 1
+          fi
+          if test -f app/app/libs/discord_partner_sdk.aar; then
+            echo "Do not commit the proprietary SDK" >&2
+            exit 1
+          fi
+      - name: JVM regression tests and Android debug build without proprietary Discord SDK
+        working-directory: app
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+      - name: Upload JVM test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpc-v4-jvm-test-results
+          path: |
+            app/app/build/test-results/testDebugUnitTest/
+            app/app/build/reports/tests/testDebugUnitTest/
+          if-no-files-found: ignore

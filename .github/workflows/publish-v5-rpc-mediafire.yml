@@ -1,0 +1,121 @@
+name: Build authorized Aurora experimental milestone (Full RPC)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_publication:
+        description: Explicitly authorize publication or modification of releases
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rpc-v5-mediafire-native
+  cancel-in-progress: false
+
+jobs:
+  build-native:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aurora resource regressions
+        run: python3 scripts/test_aurora_resources.py
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android 35, native ARM64 toolchain, and Zstd
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -maxdepth 4 -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -n "$SDKMANAGER"
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
+          if ! command -v zstd >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq zstd
+          fi
+
+      - name: Download and pin AAR from maintainer-provided MediaFire file
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The public MediaFire file KEY was supplied by the maintainer.
+          # Do not check the proprietary AAR or any download tokens into git.
+          python3 scripts/fetch_discord_sdk_mediafire.py \
+            --quickkey 'ryfql41ytwr2rrs' \
+            --sha256 'b1b2491f1e1848c79fd6f1986d5aa1e0c8019e88a6e62c7be06b89e8e4870933' \
+            --out "$RUNNER_TEMP/discord_partner_sdk.aar"
+          python3 scripts/check_discord_aar.py "$RUNNER_TEMP/discord_partner_sdk.aar"
+          test -s "$RUNNER_TEMP/discord_partner_sdk.aar"
+
+      - name: Build SDK-backed Android ARM64 APK and run unit tests
+        working-directory: app
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew :app:clean :app:testDebugUnitTest :app:assembleDebug \
+            -PdiscordSdkAar="$RUNNER_TEMP/discord_partner_sdk.aar" \
+            -PandroidNdkVersion=27.2.12479018 \
+            --no-daemon --stacktrace
+
+      - name: Verify RPC native SDK, version, guest Windows 32-bit and APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="app/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          python3 scripts/verify_rpc_v4_apk.py "$APK"
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libdiscord_partner_sdk.so'
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libwinlator_discord.so'
+          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")"
+          echo "$BADGING" | sed -n '1,3p'
+          echo "$BADGING" | grep -q "versionCode='38'"
+          echo "$BADGING" | grep -q "versionName='11.2-aurora-experimental.6'"
+          mkdir -p dist/aurora-experimental-6
+          NAME="Winlator-LSFG-Aurora-11.2-Experimental.6-ARM64.apk"
+          cp "$APK" "dist/aurora-experimental-6/$NAME"
+          (cd dist/aurora-experimental-6 && sha256sum "$NAME" > SHA256SUMS.txt)
+
+      - name: Upload build artifacts for testing and recovery
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-experimental-6-full-rpc
+          path: dist/aurora-experimental-6/
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Publish explicitly experimental prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: aurora-experimental-6
+        run: |
+          set -euo pipefail
+          APK=dist/aurora-experimental-6/Winlator-LSFG-Aurora-11.2-Experimental.6-ARM64.apk
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "This tagged prerelease already exists. No replacement was made."
+            exit 0
+          fi
+          for attempt in 1 2 3; do
+            if gh release create "$TAG" "$APK" dist/aurora-experimental-6/SHA256SUMS.txt \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --prerelease --latest=false \
+              --title "Winlator LSFG Aurora 11.2 — Experimental 6" \
+              --notes-file docs/EXPERIMENTAL_6.md; then
+              exit 0
+            fi
+            echo "Release attempt $attempt failed. Will retry if possible." >&2
+            sleep 5
+          done
+          exit 1

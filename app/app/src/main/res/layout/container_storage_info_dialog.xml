@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12dp"
                 android:layout_marginTop="8dp"
-                android:textColor="#bdbdbd"
+                android:textColor="?attr/colorSecondaryText"
                 android:text="@string/estimated_used_space" />
         </LinearLayout>
     </LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discord_presence">Discord Rich Presence</string>
+    <string name="discord_enable">Show my game and session time on Discord</string>
+    <string name="discord_application_id">Discord Application ID</string>
+    <string name="discord_help">Optional. Requires the Android Discord app signed in and an Application ID from the Discord Developer Portal. No user token is needed. Enable activity sharing in Discord. Suspended time is excluded. Takes effect the next time you open a container.</string>
+    <string name="discord_disabled">Rich Presence disabled.</string>
+    <string name="discord_id_required">Enter a valid public Discord Application ID (17–19 digits).</string>
+    <string name="discord_sdk_missing">This build does not include Discord Social SDK 1.10+. Rich Presence is unavailable.</string>
+    <string name="discord_sdk_error">Discord SDK could not start. Check the SDK version and application logs.</string>
+    <string name="discord_app_missing">Install the Android Discord app and sign in to use Rich Presence.</string>
+    <string name="discord_waiting_game">Waiting for a game window and its running process.</string>
+    <string name="discord_connecting">Sending Rich Presence to Discord…</string>
+    <string name="discord_published">Rich Presence accepted by Discord.</string>
+    <string name="discord_retrying">Discord has not accepted the update. Check that it is signed in; retrying automatically.</string>
+    <string name="discord_paused">Session suspended; Rich Presence cleared.</string>
+    <string name="discord_processes_unavailable">Game processes could not be verified. Presence cleared until the Windows helper responds.</string>
+    <string name="lsfg_vortek_unsupported">LSFG is unavailable with the current Vortek swapchain. The game will run without frame generation.</string>
+    <string name="panvk_g52_help">Mali: system Vulkan is the baseline. PANVK loading is not validated in this build; ZIP import alone does not prove compatibility. Kernel, firmware and driver ABI must match. VirGL/WineD3D remain alternatives. LSFG is unavailable through Vortek.</string>
+    <string name="panvk_g52_releases">PanVK G52 releases</string>
+    <string name="custom_driver_android_required">This driver requires Android API %1$d or newer.</string>
+    <string name="discord_game_artwork_title">Discord game artwork</string>
+    <string name="discord_exe_icon_preview">Icon extracted from the Windows executable</string>
+    <string name="discord_game_artwork_hint">Discord asset key or public HTTPS image URL</string>
+    <string name="discord_game_artwork_help">The icon above is extracted locally from the game EXE or its shortcut. Discord cannot display a local file directly: upload the image to the Discord Rich Presence assets and enter its key, or use a public HTTPS image URL. Empty = default Discord application icon. No automatic upload.</string>
+    <string name="discord_game_artwork_invalid">Enter a valid Discord asset key or a public HTTPS image URL.</string>
+    <string name="discord_share_exe_icon">Share game EXE icon as PNG</string>
+    <string name="discord_icon_unavailable">Could not extract or share this game icon.</string>
+    <string name="discord_steam_id_title">Steam App ID / SteamDB (optional)</string>
+    <string name="discord_steam_id_hint">620 or https://steamdb.info/app/620/</string>
+    <string name="discord_steam_detect_local">Detect game steam_appid.txt</string>
+    <string name="discord_steam_search_name">Search game by name on Steam</string>
+    <string name="discord_steam_help">Name search only happens when tapped; confirm the right game. Public Steam CDN artwork is used, without uploading the EXE.</string>
+    <string name="discord_steam_local_found">App ID found in steam_appid.txt: %1$s</string>
+    <string name="discord_steam_local_missing">No valid steam_appid.txt beside the EXE. Enter an ID or search by name.</string>
+    <string name="discord_steam_search_empty">No matching game found. Try another name or enter the ID.</string>
+    <string name="discord_steam_search_failed">Steam lookup unavailable. Enter the App ID manually.</string>
+    <string name="discord_steam_choose_game">Confirm Steam game</string>
+    <string name="discord_steam_bad_id">Enter a numeric App ID or a SteamDB/Steam /app/ URL.</string>
+    <string name="discord_rpc_example_title">Example Rich Presence preview</string>
+    <string name="discord_rpc_example_artwork">Rich Presence image preview</string>
+    <string name="discord_rpc_example_playing">Playing in Winlator LSFG Aurora</string>
+    <string name="discord_rpc_example_default">EXE icon (local preview)</string>
+    <string name="discord_rpc_example_steam">Steam ID %1$s image (if available)</string>
+    <string name="discord_rpc_example_manual">Custom Discord artwork (asset key or URL)</string>
+    <string name="discord_rpc_example_disclaimer">Local mockup, not a Discord screenshot. The actual image requires the SDK and a supported asset or URL.</string>
+    <string name="mali_driver_diagnostics">%1$s — system Vulkan exposes %2$d extensions. See the extension selector below; availability does not guarantee DXVK compatibility.</string>
+</resources>

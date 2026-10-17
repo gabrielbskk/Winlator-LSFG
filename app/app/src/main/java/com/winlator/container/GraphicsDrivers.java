@@ -2,7 +2,6 @@ package com.winlator.container;
 
 import android.content.Context;
 
-import com.winlator.core.GPUHelper;
 import com.winlator.core.KeyValueSet;
 
 public abstract class GraphicsDrivers {
@@ -46,7 +45,9 @@ public abstract class GraphicsDrivers {
     public static String[] parseIdentifiers(String graphicsDriver) {
         if (graphicsDriver == null || graphicsDriver.isEmpty()) return new String[]{DEFAULT_VULKAN_DRIVER, DEFAULT_OPENGL_DRIVER};
         if (graphicsDriver.contains(",")) {
-            return graphicsDriver.split(",");
+            String[] parts = graphicsDriver.split(",", -1);
+            return new String[]{isVulkanDriver(parts[0]) ? parts[0] : DEFAULT_VULKAN_DRIVER,
+                    parts.length > 1 && isOpenGLDriver(parts[1]) ? parts[1] : DEFAULT_OPENGL_DRIVER};
         }
         else {
             if (isVulkanDriver(graphicsDriver)) {
@@ -68,7 +69,7 @@ public abstract class GraphicsDrivers {
             return new KeyValueSet[]{new KeyValueSet(first), new KeyValueSet(second)};
         }
         else {
-            if (isVulkanDriver(graphicsDriver)) {
+            if (isVulkanDriver(graphicsDriver) || (graphicsDriver != null && graphicsDriver.contains(","))) {
                 return new KeyValueSet[]{new KeyValueSet(graphicsDriverConfig), new KeyValueSet()};
             }
             else if (isOpenGLDriver(graphicsDriver)) {
@@ -78,11 +79,12 @@ public abstract class GraphicsDrivers {
         }
     }
 
+    /**
+     * New containers start with the existing Vortek/Gladio fallback.
+     * Turnip is an explicit per-container choice, never selected from GPU probes.
+     * Keeping the Context parameter avoids changing existing call sites.
+     */
     public static String getDefaultDriver(Context context) {
-        // Turnip uses Qualcomm/Adreno-specific interfaces. Mali-G52 and unknown
-        // renderers keep the system Vulkan path (Vortek); no driver is forced
-        // onto an unsupported GPU.
-        boolean adreno = com.winlator.core.GpuCompatibility.isTurnipCandidate(GPUHelper.glGetRenderer(context));
-        return (adreno ? TURNIP : VORTEK) + "," + DEFAULT_OPENGL_DRIVER;
+        return DEFAULT_VULKAN_DRIVER + "," + DEFAULT_OPENGL_DRIVER;
     }
 }

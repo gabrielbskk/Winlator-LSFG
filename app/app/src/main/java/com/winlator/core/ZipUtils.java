@@ -69,36 +69,60 @@ public abstract class ZipUtils {
         catch (IOException e) {}
     }
 
+    private static final long MAX_DRIVER_ARCHIVE_BYTES = 1024L * 1024 * 1024;
+    private static final long MAX_DRIVER_ENTRY_BYTES = 512L * 1024 * 1024;
+    private static final int MAX_DRIVER_ENTRIES = 4096;
+    private static final int MAX_DRIVER_MANIFEST_BYTES = 2 * 1024 * 1024;
+
     public static boolean extract(File source, File destination) {
-        try {
-            ZipFile zipFile = new ZipFile(source);
+        // Custom driver ZIP files come from user storage. Reject path traversal,
+        // unsafe symlinks and nested paths through symlinks before writing.
+        if (source == null || !source.isFile() || destination == null) return false;
+        try (ZipFile zipFile = new ZipFile(source)) {
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
+            long extractedBytes = 0;
+            int count = 0;
             while (entries.hasMoreElements()) {
+                if (++count > MAX_DRIVER_ENTRIES) return false;
                 ZipArchiveEntry entry = entries.nextElement();
-                File file = new File(destination, entry.getName());
+                if (entry.getSize() > MAX_DRIVER_ENTRY_BYTES) return false;
+                File file = ArchivePathGuard.resolveInside(destination, entry.getName());
 
                 if (entry.isDirectory()) {
-                    if (!file.isDirectory()) file.mkdirs();
+                    if (!file.isDirectory() && !file.mkdirs()) return false;
                 }
                 else {
+                    File parent = file.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) return false;
                     if (entry.isUnixSymlink()) {
-                        FileUtils.symlink(zipFile.getUnixSymlink(entry), file.getAbsolutePath());
+                        String linkTarget = zipFile.getUnixSymlink(entry);
+                        if (!ArchivePathGuard.symlinkTargetInside(destination, file, linkTarget))
+                            return false;
+                        FileUtils.symlink(linkTarget, file.getAbsolutePath());
                     }
                     else {
                         try (InputStream inStream = zipFile.getInputStream(entry);
-                            BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(file), StreamUtils.BUFFER_SIZE)) {
-                            if (!StreamUtils.copy(inStream, outStream)) return false;
+                             BufferedOutputStream outStream = new BufferedOutputStream(
+                                     new FileOutputStream(file), StreamUtils.BUFFER_SIZE)) {
+                            byte[] buffer = new byte[StreamUtils.BUFFER_SIZE];
+                            long entryBytes = 0;
+                            int length;
+                            while ((length = inStream.read(buffer)) != -1) {
+                                entryBytes += length;
+                                extractedBytes += length;
+                                if (entryBytes > MAX_DRIVER_ENTRY_BYTES || extractedBytes > MAX_DRIVER_ARCHIVE_BYTES)
+                                    return false;
+                                outStream.write(buffer, 0, length);
+                            }
                         }
                     }
                 }
-
                 FileUtils.chmod(file, 0771);
             }
-
-            zipFile.close();
             return true;
         }
-        catch (Exception e) {
+        catch (Exception error) {
+            android.util.Log.w("ZipUtils", "Unsafe or invalid component ZIP", error);
             return false;
         }
     }
@@ -127,43 +151,41 @@ public abstract class ZipUtils {
         }
     }
 
+    /** Read a small manifest without leaking a ZipFile descriptor on early return. */
     public static byte[] read(File source, String localPath) {
-        try {
-            boolean pathIsPrefix = false;
-            boolean pathIsSuffix = false;
+        if (source == null || !source.isFile() || localPath == null || localPath.isEmpty())
+            return null;
+        boolean suffix = localPath.startsWith("*");
+        boolean prefix = !suffix && localPath.endsWith("*");
+        String match = localPath.replace("*", "");
 
-            if (localPath.startsWith("*")) {
-                pathIsSuffix = true;
-            }
-            else if (localPath.endsWith("*")) {
-                pathIsPrefix = true;
-            }
-
-            localPath = localPath.replace("*", "");
-            ByteArrayOutputStream dataOutputStream = new ByteArrayOutputStream();
-
-            ZipFile zipFile = new ZipFile(source);
+        try (ZipFile zipFile = new ZipFile(source)) {
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
+            int examined = 0;
             while (entries.hasMoreElements()) {
+                if (++examined > MAX_DRIVER_ENTRIES) return null;
                 ZipArchiveEntry entry = entries.nextElement();
-                String entryName = entry.getName();
-                boolean match = pathIsSuffix ? entryName.endsWith(localPath) : (pathIsPrefix ? entryName.startsWith(localPath) : entryName.equals(localPath));
+                String name = entry.getName();
+                boolean matches = suffix ? name.endsWith(match)
+                        : prefix ? name.startsWith(match) : name.equals(match);
+                if (!matches || entry.isDirectory() || entry.isUnixSymlink()) continue;
+                if (entry.getSize() > MAX_DRIVER_MANIFEST_BYTES) return null;
 
-                if (match && !entry.isDirectory() && !entry.isUnixSymlink()) {
-                    try (InputStream inStream = zipFile.getInputStream(entry);
-                        BufferedOutputStream outStream = new BufferedOutputStream(dataOutputStream, StreamUtils.BUFFER_SIZE)) {
-                        if (!StreamUtils.copy(inStream, outStream)) return null;
+                try (InputStream stream = zipFile.getInputStream(entry);
+                     ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int length;
+                    while ((length = stream.read(buffer)) != -1) {
+                        if (output.size() + (long)length > MAX_DRIVER_MANIFEST_BYTES) return null;
+                        output.write(buffer, 0, length);
                     }
-
-                    return dataOutputStream.toByteArray();
+                    return output.toByteArray();
                 }
             }
-
-            zipFile.close();
-            return null;
         }
-        catch (Exception e) {
-            return null;
+        catch (Exception error) {
+            android.util.Log.w("ZipUtils", "Unable to read custom driver manifest", error);
         }
+        return null;
     }
 }

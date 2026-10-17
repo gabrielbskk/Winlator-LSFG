@@ -27,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class RootFSInstaller {
@@ -170,7 +169,7 @@ public abstract class RootFSInstaller {
 
         final DownloadProgressDialog dialog = new DownloadProgressDialog(activity);
         dialog.show(R.string.installing_system_files);
-        Executors.newSingleThreadExecutor().execute(() -> {
+        com.winlator.core.OneShotTask.execute(() -> {
             clearRootDir(rootDir);
             final long contentLength = TarCompressorUtils.getContentLength(TarCompressorUtils.Type.ZSTD, activity, FILENAME, rootDir);
             AtomicLong totalSizeRef = new AtomicLong();
@@ -198,7 +197,7 @@ public abstract class RootFSInstaller {
     public static void installIfNeeded(final MainActivity activity) {
         RootFS rootFS = RootFS.find(activity);
         if (!rootFS.isValid() || rootFS.getVersion() < LATEST_VERSION) install(activity);
-        else Executors.newSingleThreadExecutor().execute(() -> installLSFGVKLayer(activity, rootFS));
+        else com.winlator.core.OneShotTask.execute(() -> installLSFGVKLayer(activity, rootFS));
     }
 
     private static void clearOptDir(File optDir) {
@@ -234,7 +233,7 @@ public abstract class RootFSInstaller {
         AppUtils.keepScreenOn(activity);
         PreloaderDialog preloaderDialog = new PreloaderDialog(activity);
         preloaderDialog.show(R.string.loading);
-        Executors.newSingleThreadExecutor().execute(() -> {
+        com.winlator.core.OneShotTask.execute(() -> {
             File[] srcFiles, dstFiles;
             File rootDir = RootFS.find(activity).getRootDir();
             File wineSystem32Dir = new File(rootDir, "/opt/wine/lib/wine/x86_64-windows");

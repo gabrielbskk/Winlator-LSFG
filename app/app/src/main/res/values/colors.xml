@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="aurora_light_color_action_surface">#3B59C8</color>
+    <color name="aurora_light_color_accent">#496BEB</color>
+    <color name="aurora_light_color_primary">#324BC0</color>
+    <color name="aurora_light_color_primary_dark">#253791</color>
+    <color name="aurora_light_color_control_normal">#D1D9EA</color>
+    <color name="aurora_light_color_primary_text">#14203B</color>
+    <color name="aurora_light_color_secondary_text">#4E5B79</color>
+    <color name="aurora_light_color_primary_surface">#EDF2FF</color>
+    <color name="aurora_light_color_secondary_surface">#FFFFFF</color>
+    <color name="aurora_light_color_primary_variant">#496BEB</color>
+    <color name="aurora_light_color_secondary_variant">#E0E7FA</color>
+    <color name="aurora_light_color_error">#ef5350</color>
+    <color name="aurora_dark_color_action_surface">#3D5FC8</color>
+    <color name="aurora_dark_color_accent">#82A1FF</color>
+    <color name="aurora_dark_color_primary">#111930</color>
+    <color name="aurora_dark_color_primary_dark">#0D1427</color>
+    <color name="aurora_dark_color_control_normal">#2A3753</color>
+    <color name="aurora_dark_color_primary_text">#F5F7FF</color>
+    <color name="aurora_dark_color_secondary_text">#B3BFDD</color>
+    <color name="aurora_dark_color_primary_surface">#0A1021</color>
+    <color name="aurora_dark_color_secondary_surface">#18223A</color>
+    <color name="aurora_dark_color_primary_variant">#82A1FF</color>
+    <color name="aurora_dark_color_secondary_variant">#253450</color>
+    <color name="aurora_dark_color_error">#ef5350</color>
+    <color name="aurora_light_border">#C9D6F0</color>
+    <color name="aurora_dark_border">#344A72</color>
+</resources>

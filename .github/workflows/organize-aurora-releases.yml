@@ -1,11 +1,13 @@
 name: Organize Aurora releases
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/organize-aurora-releases.yml'
   workflow_dispatch:
+    inputs:
+      confirm_publication:
+        description: Explicitly authorize publication or modification of releases
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: write
@@ -16,6 +18,7 @@ concurrency:
 
 jobs:
   organize:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

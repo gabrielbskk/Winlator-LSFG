@@ -50,19 +50,24 @@ public class VortekRendererComponent extends EnvironmentComponent implements Con
 
             Options options = new Options();
             String exposedDeviceExtensions = config.get("exposedDeviceExtensions", "all");
-            if (!exposedDeviceExtensions.isEmpty() && !exposedDeviceExtensions.equals("all")) {
-                options.exposedDeviceExtensions = exposedDeviceExtensions.split(":");
+            if (!exposedDeviceExtensions.equals("all")) {
+                options.exposedDeviceExtensions = exposedDeviceExtensions.isEmpty() ? new String[0] : exposedDeviceExtensions.split(":");
             }
 
             String vkMaxVersion = config.get("vkMaxVersion", VortekConfigDialog.DEFAULT_VK_MAX_VERSION);
             if (!vkMaxVersion.equals(VortekConfigDialog.DEFAULT_VK_MAX_VERSION)) {
-                String[] parts = vkMaxVersion.split("\\.");
-                options.vkMaxVersion = GPUHelper.vkMakeVersion(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), 128);
+                int parsed = GPUHelper.vkMakeVersion(vkMaxVersion);
+                if (parsed >= GPUHelper.vkMakeVersion(1, 0, 0) && parsed <= VK_MAX_VERSION)
+                    options.vkMaxVersion = GPUHelper.vkMakeVersion(GPUHelper.vkVersionMajor(parsed), GPUHelper.vkVersionMinor(parsed), 128);
             }
 
-            options.maxDeviceMemory = (short)config.getInt("maxDeviceMemory");
-            options.imageCacheSize = (short)config.getInt("imageCacheSize", VortekRendererComponent.IMAGE_CACHE_SIZE);
-            options.resourceMemoryType = (byte)config.getInt("resourceMemoryType");
+            // Invalid imported values must not wrap short/byte fields and reach JNI.
+            options.maxDeviceMemory = com.winlator.core.VortekConfigLimits.memoryLimitMB(
+                    config.getInt("maxDeviceMemory"));
+            options.imageCacheSize = com.winlator.core.VortekConfigLimits.imageCacheMB(
+                    config.getInt("imageCacheSize", VortekRendererComponent.IMAGE_CACHE_SIZE));
+            options.resourceMemoryType = com.winlator.core.VortekConfigLimits.resourceMemoryType(
+                    config.getInt("resourceMemoryType"));
 
             String adrenotoolsDriver = config.get("adrenotoolsDriver");
             options.libvulkanPath = GeneralComponents.getDefinitivePath(GeneralComponents.Type.ADRENOTOOLS_DRIVER, context, adrenotoolsDriver);

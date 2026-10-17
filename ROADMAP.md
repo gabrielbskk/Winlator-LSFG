@@ -17,7 +17,8 @@ This document tracks proposed work, not completed features. The project's main t
 - Do not claim that the LSFG algorithm or Lossless.dll has been modified without verifiable code changes.
 
 ### 3. GPU support and memory efficiency
-- Investigate compatibility and driver selection for Adreno A6xx, A7xx and Mali G52.
+- Driver selection is **manual**: new containers use the existing Vortek/Gladio fallback, and users explicitly select Turnip and its version. Never reintroduce GPU-based automatic Turnip selection.
+- Investigate compatibility and driver options for Adreno A6xx, A7xx and Mali G52.
 - Benchmark each hardware family independently; do not assume Turnip applies to Mali.
 - Profile CPU overhead, memory allocations, texture/cache use, and initialization time.
 - Avoid regressions in existing devices and games.
@@ -31,6 +32,11 @@ This document tracks proposed work, not completed features. The project's main t
 - Prefer Android ARM64 packages containing both Windows 32-bit and 64-bit game assets; verify `i386-windows` and `syswow64` before release. Historical stripped-down APKs remain archived.
 - Verify bundle/archive integrity, licensing, and reproducible release steps.
 - Keep broader compatibility builds available where practical.
+
+## Gate for an Aurora Stable release
+- Follow [Stable readiness and hardware checklist](docs/STABLE_RELEASE_GATE.md). Automated CI alone is insufficient.
+- Before release, validate production signing, hardware behavior, Windows 32/64-bit games, Discord RPC, LSFG and upgrade/rollback procedures.
+- Do not publish a "Stable" release or promote an existing debug APK until acceptance tests are documented.
 
 ## Proposed workflow
 1. Describe the symptom or goal and a reproducible baseline in an issue (if Issues is enabled) or a draft PR.

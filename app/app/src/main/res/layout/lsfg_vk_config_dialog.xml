@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="360dp"
+    android:id="@+id/LSFGScroll"
+    android:layout_width="@dimen/aurora_dialog_content_width"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,3 +46,5 @@
         app:step="0.01" />
 
 </LinearLayout>
+
+</ScrollView>

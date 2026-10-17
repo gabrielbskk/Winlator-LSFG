@@ -13,11 +13,11 @@ Aurora is a visual identity for [@gabrielbskk](https://github.com/gabrielbskk)'s
 ## Palette
 | Role | Color |
 | --- | --- |
-| Deep navy | `#061725` |
+| Deep navy | `#0A1021` |
 | Aurora cyan | `#20CFFA` |
-| Mint highlight | `#57FFDD` |
-| Blue accent | `#286FAE` |
-| Light detail | `#C7FFF8` |
+| Indigo highlight | `#82A1FF` |
+| Blue accent | `#496BEB` |
+| Light detail | `#F5F7FF` |
 
 ## Naming and compatibility
 The displayed Android app label becomes `Winlator LSFG Aurora` while the Gradle `applicationId` and Java namespace remain `com.winlator`. Those technical identifiers must **not** be renamed without a separate migration plan addressing side-by-side installation, existing user data, backup/restore and file provider authorities.
@@ -28,3 +28,6 @@ The repository slug is unchanged by this PR; GitHub repository renaming is an ad
 Do not present mock UI, promotional concept images, generated sample FPS figures or hypothetical GPU performance as validated measurements. Discord RPC remains experimental, and full Windows 32-bit compatibility needs real-game tests after a new build. Display Rafaela's original fork credit prominently and retain all upstream copyright/license notices.
 
 The new abstract Aurora symbol is independently created project artwork with AI assistance; it intentionally avoids official Winlator, Discord and Lossless Scaling trademarks.
+
+UI palette: `res/values/colors.xml`; shared dimensions: `res/values/dimens.xml`.
+The launcher retains its original cyan artwork. Light/dark mode follows the existing app preference.

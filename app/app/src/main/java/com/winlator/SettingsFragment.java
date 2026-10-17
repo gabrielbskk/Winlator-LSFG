@@ -37,6 +37,8 @@ import com.winlator.box64.Box64EditPresetDialog;
 import com.winlator.box64.Box64Preset;
 import com.winlator.box64.Box64PresetManager;
 import com.winlator.container.Container;
+import com.winlator.discord.DiscordPresenceManager;
+import com.winlator.discord.GameSession;
 import com.winlator.container.ContainerManager;
 import com.winlator.contentdialog.ContentDialog;
 import com.winlator.contentdialog.GamepadPlayerConfigDialog;
@@ -67,7 +69,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class SettingsFragment extends Fragment {
@@ -111,6 +112,15 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
         final Context context = getContext();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        final CheckBox cbDiscord = view.findViewById(R.id.CBDiscordPresence);
+        final EditText etDiscordId = view.findViewById(R.id.ETDiscordApplicationId);
+        final TextView tvDiscordStatus = view.findViewById(R.id.TVDiscordStatus);
+        cbDiscord.setChecked(preferences.getBoolean(DiscordPresenceManager.ENABLED, false));
+        etDiscordId.setText(preferences.getString(DiscordPresenceManager.APPLICATION_ID, ""));
+        tvDiscordStatus.setText(DiscordPresenceManager.configurationStatus(context, cbDiscord.isChecked(), etDiscordId.getText().toString().trim()));
+        cbDiscord.setOnCheckedChangeListener((button, checked) -> tvDiscordStatus.setText(
+            DiscordPresenceManager.configurationStatus(context, checked, etDiscordId.getText().toString().trim())));
 
         final Spinner sSoundFont = view.findViewById(R.id.SSoundFont);
         String soundfont = preferences.getString("soundfont", null);
@@ -197,7 +207,15 @@ public class SettingsFragment extends Fragment {
         }
 
         view.findViewById(R.id.BTConfirm).setOnClickListener((v) -> {
+            String discordId = etDiscordId.getText().toString().trim();
+            if ((!discordId.isEmpty() || cbDiscord.isChecked()) && GameSession.applicationId(discordId) == 0) {
+                etDiscordId.setError(getString(R.string.discord_id_required));
+                etDiscordId.requestFocus();
+                return;
+            }
             SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(DiscordPresenceManager.ENABLED, cbDiscord.isChecked());
+            editor.putString(DiscordPresenceManager.APPLICATION_ID, discordId);
             editor.putString("soundfont", sSoundFont.getSelectedItem().toString());
             editor.putString("box64_version", StringUtils.parseIdentifier(sBox64Version.getSelectedItem()));
             editor.putString("box64_preset", Box64PresetManager.getSpinnerSelectedId(sBox64Preset));
@@ -333,7 +351,7 @@ public class SettingsFragment extends Fragment {
         }
 
         preloaderDialog.show(R.string.removing_wine);
-        Executors.newSingleThreadExecutor().execute(() -> {
+        com.winlator.core.OneShotTask.execute(() -> {
             FileUtils.delete(wineDir);
             FileUtils.delete(containerPatternFile);
             preloaderDialog.closeOnUiThread();
@@ -403,7 +421,7 @@ public class SettingsFragment extends Fragment {
             return;
         }
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        com.winlator.core.OneShotTask.execute(() -> {
             File dllDir = new File(context.getFilesDir(), "lsfg-vk");
             File dllFile = new File(dllDir, "Lossless.dll");
             File stagingFile = new File(dllDir, "Lossless.dll.staging");

@@ -17,6 +17,37 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <LinearLayout style="@style/FieldSet">
+                    <CheckBox
+                        android:id="@+id/CBDiscordPresence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_enable" />
+                    <EditText
+                        android:id="@+id/ETDiscordApplicationId"
+                        style="@style/EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="19"
+                        android:singleLine="true"
+                        android:hint="@string/discord_application_id" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_help" />
+                    <TextView
+                        android:id="@+id/TVDiscordStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+                <TextView style="@style/FieldSetLabel" android:text="@string/discord_presence" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <LinearLayout style="@style/FieldSet">
                     <TextView

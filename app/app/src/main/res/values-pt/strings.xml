@@ -375,4 +375,5 @@
     <string name="unknown_compatibility">Desconhecida</string>
     <string name="required_components">Componentes necessários</string>
     <string name="device">Dispositivo</string><string name="soc">SoC</string><string name="gpu">GPU</string><string name="ram">RAM</string><string name="graphics">Gráficos</string><string name="cpu_box64">CPU / Box64</string><string name="compatibility">Compatibilidade</string><string name="preview_changes">Pré-visualizar alterações</string><string name="online_config_count">%1$d configurações</string><string name="not_specified">Não especificado</string><string name="no_compatible_shortcut">Nenhum atalho compatível encontrado</string><string name="using_cached_data">Usando dados em cache</string>
+    <string name="turnip_manual_note">Escolha o driver e a versão do Turnip manualmente. Configurações antigas dos contêineres são preservadas.</string>
 </resources>

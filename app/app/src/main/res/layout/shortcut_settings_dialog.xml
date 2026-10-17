@@ -392,6 +392,135 @@
                             android:src="@drawable/icon_menu" />
                     </LinearLayout>
 
+                    <!-- The icon preview is extracted locally. Only a user-approved
+                         Discord asset key / public HTTPS URL reaches Discord. -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/discord_game_artwork_title" />
+
+                    <ImageView
+                        android:id="@+id/IVDiscordExeIconPreview"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@string/discord_exe_icon_preview" />
+
+                    <Button
+                        style="@style/ButtonNeutral"
+                        android:id="@+id/BTShareDiscordExeIcon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_share_exe_icon" />
+
+                    <EditText
+                        style="@style/EditText"
+                        android:id="@+id/ETDiscordArtwork"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textUri"
+                        android:maxLength="300"
+                        android:singleLine="true"
+                        android:hint="@string/discord_game_artwork_hint" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_game_artwork_help" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/discord_steam_id_title" />
+
+                    <EditText
+                        style="@style/EditText"
+                        android:id="@+id/ETDiscordSteamId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:inputType="textUri"
+                        android:maxLength="140"
+                        android:hint="@string/discord_steam_id_hint" />
+
+                    <Button
+                        style="@style/ButtonNeutral"
+                        android:id="@+id/BTDetectSteamId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_steam_detect_local" />
+
+                    <Button
+                        style="@style/ButtonNeutral"
+                        android:id="@+id/BTSearchSteamName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_steam_search_name" />
+
+                    <TextView
+                        android:id="@+id/TVSteamIdSource"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_steam_help" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/discord_rpc_example_title" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp"
+                        android:background="?attr/colorSecondarySurface">
+
+                        <ImageView
+                            android:id="@+id/IVDiscordRpcPreviewArtwork"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="@string/discord_rpc_example_artwork" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:paddingLeft="12dp">
+
+                            <TextView
+                                android:id="@+id/TVDiscordRpcPreviewGame"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:maxLines="2" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/discord_rpc_example_playing" />
+
+                            <TextView
+                                android:id="@+id/TVDiscordRpcPreviewMeta"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="3"
+                                android:text="@string/discord_rpc_example_default" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_rpc_example_disclaimer" />
+
                     <CheckBox
                         android:id="@+id/CBForceFullscreen"
                         android:layout_width="wrap_content"

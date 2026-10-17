@@ -24,8 +24,8 @@ static void* openVulkanLibrary(JNIEnv* env, jstring nativeLibraryDir, jstring li
         strcpy(libvulkanDir, dirname(libvulkanPathC));
         strcat(libvulkanDir, "/");
 
-        char* tmpDir;
-        asprintf(&tmpDir, "%s%s", libvulkanDir, "tmp");
+        char tmpDir[PATH_MAX];
+        snprintf(tmpDir, sizeof(tmpDir), "%stmp", libvulkanDir);
         mkdir(tmpDir, S_IRWXU | S_IRWXG);
 
         libvulkan = adrenotools_open_libvulkan(RTLD_NOW | RTLD_LOCAL, ADRENOTOOLS_DRIVER_CUSTOM, tmpDir, nativeLibraryDirC, libvulkanDir, libvulkanName, NULL, NULL);

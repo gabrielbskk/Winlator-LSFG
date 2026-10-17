@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discord_presence">Discord Rich Presence</string>
+    <string name="discord_enable">Mostrar jogo e tempo de sessão no Discord</string>
+    <string name="discord_application_id">Application ID do Discord</string>
+    <string name="discord_help">Opcional. Requer o aplicativo Discord no Android conectado à sua conta e um Application ID do Portal de Desenvolvedores do Discord. Não precisa de token de usuário. Ative o compartilhamento de atividade no Discord. O tempo suspenso não é contado. Tem efeito na próxima abertura de um contêiner.</string>
+    <string name="discord_disabled">Rich Presence desativado.</string>
+    <string name="discord_id_required">Informe um Application ID público válido do Discord (17–19 dígitos).</string>
+    <string name="discord_sdk_missing">Este build não inclui o Discord Social SDK 1.10+. Rich Presence indisponível.</string>
+    <string name="discord_sdk_error">Não foi possível iniciar o SDK do Discord. Verifique a versão do SDK e os logs do aplicativo.</string>
+    <string name="discord_app_missing">Instale o Discord para Android e conecte sua conta para usar Rich Presence.</string>
+    <string name="discord_waiting_game">Aguardando uma janela de jogo e seu processo em execução.</string>
+    <string name="discord_connecting">Enviando Rich Presence ao Discord…</string>
+    <string name="discord_published">Rich Presence aceito pelo Discord.</string>
+    <string name="discord_retrying">O Discord ainda não aceitou a atualização. Verifique se a conta está conectada; novas tentativas serão feitas automaticamente.</string>
+    <string name="discord_paused">Sessão suspensa; Rich Presence limpo.</string>
+    <string name="discord_processes_unavailable">Não foi possível verificar os processos do jogo. A presença foi limpa até o helper Windows responder.</string>
+    <string name="lsfg_vortek_unsupported">LSFG indisponível com a swapchain atual do Vortek. O jogo será executado sem geração de frames.</string>
+    <string name="panvk_g52_help">Mali: Vulkan do sistema é a opção inicial. O carregamento PANVK não foi validado nesta versão; importar ZIP não comprova compatibilidade. Kernel, firmware e ABI do driver precisam ser compatíveis. VirGL/WineD3D continuam como alternativas. LSFG não está disponível pelo Vortek.</string>
+    <string name="panvk_g52_releases">Versões do PanVK G52</string>
+    <string name="custom_driver_android_required">Este driver requer Android API %1$d ou superior.</string>
+    <string name="discord_game_artwork_title">Imagem do jogo no Discord</string>
+    <string name="discord_exe_icon_preview">Ícone extraído do executável Windows</string>
+    <string name="discord_game_artwork_hint">Chave do asset no Discord ou URL HTTPS pública</string>
+    <string name="discord_game_artwork_help">O ícone acima é extraído localmente do EXE ou atalho. O Discord não exibe arquivos locais diretamente: envie a imagem aos assets de Rich Presence do aplicativo e informe a chave, ou use uma URL HTTPS pública. Vazio = ícone padrão do aplicativo. Nenhum upload automático.</string>
+    <string name="discord_game_artwork_invalid">Informe uma chave de imagem do Discord ou URL HTTPS pública válida.</string>
+    <string name="discord_share_exe_icon">Compartilhar PNG do ícone do jogo</string>
+    <string name="discord_icon_unavailable">Não foi possível extrair ou compartilhar o ícone deste jogo.</string>
+    <string name="discord_steam_id_title">Steam App ID / SteamDB (opcional)</string>
+    <string name="discord_steam_id_hint">620 ou https://steamdb.info/app/620/</string>
+    <string name="discord_steam_detect_local">Detectar pelo steam_appid.txt do jogo</string>
+    <string name="discord_steam_search_name">Procurar pelo nome na Steam</string>
+    <string name="discord_steam_help">Busca por nome somente ao tocar no botão; confirme o jogo correto. A imagem vem da CDN pública Steam, sem enviar o EXE.</string>
+    <string name="discord_steam_local_found">App ID encontrado no steam_appid.txt: %1$s</string>
+    <string name="discord_steam_local_missing">Nenhum steam_appid.txt válido ao lado do EXE. Informe o ID ou procure pelo nome.</string>
+    <string name="discord_steam_search_empty">Nenhum jogo encontrado. Tente outro nome ou informe o ID.</string>
+    <string name="discord_steam_search_failed">Não foi possível consultar a Steam. Use o App ID manualmente.</string>
+    <string name="discord_steam_choose_game">Confirme o jogo da Steam</string>
+    <string name="discord_steam_bad_id">Use um App ID numérico ou URL /app/ do SteamDB/Steam.</string>
+    <string name="discord_rpc_example_title">Exemplo de como o RPC pode aparecer</string>
+    <string name="discord_rpc_example_artwork">Prévia da imagem do Rich Presence</string>
+    <string name="discord_rpc_example_playing">Jogando no Winlator LSFG Aurora</string>
+    <string name="discord_rpc_example_default">Imagem do EXE (prévia local)</string>
+    <string name="discord_rpc_example_steam">Imagem Steam ID %1$s (sujeita à disponibilidade)</string>
+    <string name="discord_rpc_example_manual">Imagem personalizada do Discord (chave ou URL)</string>
+    <string name="discord_rpc_example_disclaimer">Simulação local, não é uma captura do Discord. A imagem real depende do SDK e de uma URL ou asset aceito.</string>
+    <string name="mali_driver_diagnostics">%1$s — Vulkan do sistema expõe %2$d extensões. Consulte a seleção abaixo; disponibilidade não garante compatibilidade DXVK.</string>
+</resources>

@@ -22,18 +22,18 @@
         <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
     <style name="AppThemeLight" parent="@style/AppThemeBase">
-        <item name="colorActionSurface">#3B59C8</item>
-        <item name="colorAccent">#496BEB</item>
-        <item name="colorPrimary">#324BC0</item>
-        <item name="colorPrimaryDark">#253791</item>
-        <item name="colorControlNormal">#D1D9EA</item>
-        <item name="colorPrimaryText">#14203B</item>
-        <item name="colorSecondaryText">#4E5B79</item>
-        <item name="colorPrimarySurface">#EDF2FF</item>
-        <item name="colorSecondarySurface">#FFFFFF</item>
-        <item name="colorPrimaryVariant">#496BEB</item>
-        <item name="colorSecondaryVariant">#E0E7FA</item>
-        <item name="colorError">#ef5350</item>
+        <item name="colorActionSurface">@color/aurora_light_color_action_surface</item>
+        <item name="colorAccent">@color/aurora_light_color_accent</item>
+        <item name="colorPrimary">@color/aurora_light_color_primary</item>
+        <item name="colorPrimaryDark">@color/aurora_light_color_primary_dark</item>
+        <item name="colorControlNormal">@color/aurora_light_color_control_normal</item>
+        <item name="colorPrimaryText">@color/aurora_light_color_primary_text</item>
+        <item name="colorSecondaryText">@color/aurora_light_color_secondary_text</item>
+        <item name="colorPrimarySurface">@color/aurora_light_color_primary_surface</item>
+        <item name="colorSecondarySurface">@color/aurora_light_color_secondary_surface</item>
+        <item name="colorPrimaryVariant">@color/aurora_light_color_primary_variant</item>
+        <item name="colorSecondaryVariant">@color/aurora_light_color_secondary_variant</item>
+        <item name="colorError">@color/aurora_light_color_error</item>
         <item name="popupMenuBackground">@drawable/aurora_surface_light</item>
         <item name="toolboxBackground">@drawable/toolbox_light</item>
         <item name="panelBackground">@drawable/panel_background_light</item>
@@ -41,18 +41,18 @@
         <item name="progressBarIndeterminateImage">@drawable/progress_bar_indeterminate_light</item>
     </style>
     <style name="AppThemeDark" parent="@style/AppThemeBase">
-        <item name="colorActionSurface">#3D5FC8</item>
-        <item name="colorAccent">#82A1FF</item>
-        <item name="colorPrimary">#111930</item>
-        <item name="colorPrimaryDark">#0D1427</item>
-        <item name="colorControlNormal">#2A3753</item>
-        <item name="colorPrimaryText">#F5F7FF</item>
-        <item name="colorSecondaryText">#B3BFDD</item>
-        <item name="colorPrimarySurface">#0A1021</item>
-        <item name="colorSecondarySurface">#18223A</item>
-        <item name="colorPrimaryVariant">#82A1FF</item>
-        <item name="colorSecondaryVariant">#253450</item>
-        <item name="colorError">#ef5350</item>
+        <item name="colorActionSurface">@color/aurora_dark_color_action_surface</item>
+        <item name="colorAccent">@color/aurora_dark_color_accent</item>
+        <item name="colorPrimary">@color/aurora_dark_color_primary</item>
+        <item name="colorPrimaryDark">@color/aurora_dark_color_primary_dark</item>
+        <item name="colorControlNormal">@color/aurora_dark_color_control_normal</item>
+        <item name="colorPrimaryText">@color/aurora_dark_color_primary_text</item>
+        <item name="colorSecondaryText">@color/aurora_dark_color_secondary_text</item>
+        <item name="colorPrimarySurface">@color/aurora_dark_color_primary_surface</item>
+        <item name="colorSecondarySurface">@color/aurora_dark_color_secondary_surface</item>
+        <item name="colorPrimaryVariant">@color/aurora_dark_color_primary_variant</item>
+        <item name="colorSecondaryVariant">@color/aurora_dark_color_secondary_variant</item>
+        <item name="colorError">@color/aurora_dark_color_error</item>
         <item name="popupMenuBackground">@drawable/aurora_surface_dark</item>
         <item name="toolboxBackground">@drawable/toolbox_dark</item>
         <item name="panelBackground">@drawable/panel_background_dark</item>
@@ -273,7 +273,7 @@
         <item name="android:layout_height">22dp</item>
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:src">@drawable/icon_help</item>
-        <item name="tint">#e0e0e0</item>
+        <item name="tint">?attr/colorSecondaryText</item>
     </style>
     <style name="Toolbox">
         <item name="android:layout_width">wrap_content</item>
