@@ -1,0 +1,123 @@
+name: Publish experimental 5 SDK-free review APK
+
+on:
+  push:
+    branches: [experimental/rpc-android-v4]
+    paths: ['.github/workflows/publish-v5-sdkfree-preview.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rpc-v5-sdkfree-review
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Configure Android SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          test -d "$SDK_ROOT"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -maxdepth 4 -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -n "$SDKMANAGER"
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;24.0.8215888' 'cmake;3.22.1'
+      - name: Verify explicitly SDK-free source
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'versionName "11.2-rpc-experimental.5"' app/app/build.gradle
+          grep -q 'versionCode 37' app/app/build.gradle
+          test ! -e app/app/libs/discord_partner_sdk.aar
+          ! grep -q arm64OnlyGameAssets app/app/build.gradle
+      - name: Run tests and compile Android ARM64 debug APK
+        shell: bash
+        working-directory: app
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
+      - name: Inspect APK version and payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="app/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$SRC"
+          unzip -tq "$SRC" >/dev/null
+          if unzip -Z1 "$SRC" | grep -Eq '^lib/arm64-v8a/(libwinlator_discord|libdiscord_partner_sdk)\.so$'; then
+            echo "Unexpected Discord SDK bridge in SDK-free preview" >&2
+            exit 1
+          fi
+          unzip -Z1 "$SRC" | grep -Fx 'assets/rootfs.tzst'
+          unzip -Z1 "$SRC" | grep -Fx 'assets/wincomponents/direct3d.tzst'
+          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$SRC" | head -5)"
+          echo "$BADGING"
+          echo "$BADGING" | grep -q "versionCode='37'"
+          echo "$BADGING" | grep -q "versionName='11.2-rpc-experimental.5'"
+          mkdir -p dist/rpc-5-review
+          NAME="Winlator-LSFG-Aurora-11.2-experimental.5-SDK-FREE-arm64.apk"
+          cp "$SRC" "dist/rpc-5-review/$NAME"
+          (cd dist/rpc-5-review && sha256sum "$NAME" > SHA256SUMS.txt)
+      - name: Publish SDK-free experimental 5 prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: rpc-android-experimental-5-sdkfree-preview
+        run: |
+          set -euo pipefail
+          cat > /tmp/notes.md <<'NOTES'
+          # Winlator LSFG Aurora 11.2 — Experimental 5 (SDK-free review APK)
+
+          **IMPORTANTE: ESTE APK NÃO POSSUI DISCORD RPC FUNCIONAL.**
+          O Discord Social SDK proprietário NÃO está incluído nesta build. Esta é
+          uma prévia para revisar a interface, atalhos, identificação de jogos
+          por Steam App ID/SteamDB, leitura de steam_appid.txt, ícones EXE e
+          exemplo visual do Rich Presence, além da compatibilidade geral.
+
+          - Android ARM64; fonte mantém componentes Windows 32 e 64 bits.
+          - Atualização para versionCode 37 / versionName 11.2-rpc-experimental.5.
+          - Melhorias de validação de campos e limites ao decodificar artes da Steam.
+          - Inclui README, documentação e créditos da Rafaela e do Winlator original.
+          - Testes JVM, compilação de debug e verificações de APK passaram no CI.
+          - Não houve teste em hardware real, nem validação de Rich Presence real.
+          - APK assinado para debug. Pode não atualizar instalações assinadas
+            com outra chave; faça backup dos contêineres antes de testar.
+          - Lossless.dll NÃO está incluído; é fornecido separadamente pelo usuário.
+
+          As funções RPC nativas dependem de um build posterior com SDK oficial
+          licenciado e testes em aparelhos reais. A prévia não substitui
+          a versão RPC completa e não comprova ganho de FPS/RAM.
+
+          Código: branch experimental/rpc-android-v4 e PR #7.
+          NOTES
+          APK=dist/rpc-5-review/Winlator-LSFG-Aurora-11.2-experimental.5-SDK-FREE-arm64.apk
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Existing preview tag found: not overwriting release"
+            exit 1
+          fi
+          gh release create "$TAG" "$APK" dist/rpc-5-review/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --prerelease \
+            --title "Winlator LSFG Aurora 11.2 Experimental 5 — SDK-free preview (RPC unavailable)" \
+            --notes-file /tmp/notes.md
+      - name: Upload temporary test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: experimental-5-sdk-free
+          path: |
+            dist/rpc-5-review/
+            app/app/build/test-results/testDebugUnitTest/
+          if-no-files-found: ignore
+          retention-days: 7
