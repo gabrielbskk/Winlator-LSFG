@@ -43,8 +43,9 @@ jobs:
           APK_NAME: ${{ inputs.apk_name }}
         run: |
           set -euo pipefail
-          python3 -m pip install --user 'zstandard>=0.23,<1'
-          python3 - <<'PY'
+          python3 -m venv .venv
+          .venv/bin/pip install 'zstandard>=0.23,<1'
+          .venv/bin/python - <<'PY'
           import os
           import sys
           import tarfile
@@ -66,7 +67,7 @@ jobs:
                               with tarfile.open(fileobj=decoded, mode="r|") as archive:
                                   present = any(
                                       required.strip("/") in ("/" + item.name.strip("/") + "/")
-                                      for item in archive
+                                      for item in archive if item.isfile()
                                   )
                       if not present:
                           raise RuntimeError("Windows 32-bit assets missing from " + asset)
