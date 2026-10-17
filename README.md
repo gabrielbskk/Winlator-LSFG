@@ -10,6 +10,17 @@
 
 An experimental derivative of Winlator LSFG with a separate visual identity and a focus on compatibility, frame generation, and clear reporting of changes.
 
+## Quick start
+
+**Requirements:** Android **8.0+**, **ARM64** device, supported graphics driver, and free storage for game containers. Support varies across Adreno/Mali GPUs and Windows applications; these are minimum app requirements, **not** a guarantee of performance or compatibility.
+
+1. Read the [available releases](https://github.com/gabrielbskk/Winlator-LSFG/releases), choose an appropriate build, and back up existing containers before installation.
+2. Create a container using suitable Wine/Box64, GPU driver and renderer settings.
+3. For LSFG-VK, import your own legally obtained compatible `Lossless.dll` and configure a per-container 2x/3x/4x preset. The DLL is **not distributed** with this fork.
+4. Start with LSFG disabled to check basic game compatibility, then compare presets using reproducible settings.
+
+More details: [Getting started](docs/GETTING_STARTED.md) · [Discord Rich Presence setup](docs/DISCORD_RPC.md) · [Testing checklist](docs/TESTING.md).
+
 ## Features
 
 - **LSFG-VK integration**
@@ -61,12 +72,13 @@ The integration is experimental. Features listed above are described by this for
 
 - [Development roadmap](ROADMAP.md): proposed LSFG-VK, GPU, RAM, ARM64 and Discord RPC improvements
 - [Contributor guide](CONTRIBUTING.md): how to report, test and submit changes
+- [License (LGPL-2.1)](LICENSE) and component-specific licenses
 - [Testing matrix](docs/TESTING.md): how to reproduce performance and compatibility reports
 - [Architecture orientation](docs/ARCHITECTURE.md)
 - [Changelog](CHANGELOG.md)
-- [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled)
+- [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Android Discord Rich Presence** remains experimental in [PR #1](../../pull/1), with lifecycle and compatibility improvements proposed in stacked PRs. A full Windows 32-bit / 64-bit asset build is preferred; a reduced 64-bit-only distribution is not recommended. No untested features are announced as production-ready.
+**Android Discord Rich Presence** remains experimental. The consolidated [experimental 4 PR #7](../../pull/7) passed SDK-free JVM tests, but no verified RPC v4 APK is published. It requires a compatible, separately supplied official Discord SDK AAR and real-device tests before release; see the [RPC guide](docs/DISCORD_RPC.md). Do not confuse SDK-free CI APKs with functional Discord builds.
 
 ## Maintainer and contributors
 
