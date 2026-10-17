@@ -5,7 +5,7 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 
 ## Branch de integração em andamento
 
-- **PR #19** (`feat/aurora-consolidation` → `experimental/rpc-android-v4`) já contém tema, detecção Adreno/Mali, política automática Turnip, correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
+- **PR #19** (`feat/aurora-consolidation` → `experimental/rpc-android-v4`) já contém tema, detecção Adreno/Mali, seleção manual de Turnip (driver e versão), correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
 - **PR #20** (`docs/codex-aurora-driver-plan` → `main`) mantém orientações e inventário de pacotes; merge ou cherry-pick somente depois de checar a base adequada.
 - **PR #7** permanece a referência RPC original e não deve ser mesclado automaticamente.
 
@@ -17,15 +17,15 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 
 ## Ordem de implementação
 1. **Inventário e testes de regressão**: mapear driver embutido vs instalável, versão, arquitetura, origem/licença e caminhos de seleção; documentar resultados sem alterar binários.
-2. **Adreno A6xx/A7xx**: corrigir identificação/seleção e fallback de Turnip, preservar versões antigas enquanto a matriz de compatibilidade não justificar a remoção. AdrenoTools já está presente no código nativo; não remover nem ampliar seu uso sem demonstrar dependências e impacto.
+2. **Adreno A6xx/A7xx**: melhorar detecção para diagnóstico e seleção **manual** de Turnip/versão, preservando versões antigas. Nunca escolher driver ou versão via modelo da GPU. AdrenoTools já está presente no código nativo; não remover nem ampliar seu uso sem demonstrar dependências e impacto.
 3. **Mali G52 e PANVK**: analisar viabilidade real do driver PANVK no Android/Winlator (kernel, DRM, Vulkan ICD, distribuição e licenças). Não oferecer PANVK na UI se não houver pacote funcional e validação. Manter Vortek/Vulkan do sistema e fallback OpenGL.
-4. **UI de drivers**: separar claramente seleção Vulkan/OpenGL, versões instaladas, GPU detectada, aviso de incompatibilidade e fallback seguro. Não aplicar Turnip automaticamente em Mali.
+4. **UI de drivers**: manter Vulkan/OpenGL, versões instaladas, GPU detectada para diagnóstico, avisos e fallback. **Novo contêiner inicia em Vortek/Gladio, sem seleção automática por GPU. Turnip é opção explicitamente selecionada com versão manual.** Configurações legadas devem permanecer legíveis.
 5. **LSFG-VK/frame generation**: instrumentar frame time, latência, RAM e stutter antes de alterar presets 2x/3x/4x; manter `Lossless.dll` fora do repositório.
 6. **Memória/performance ARM64**: medir uso de heap, caches e inicialização por GPU e jogo; otimizar somente com comparações reproduzíveis.
 7. **Discord RPC**: trabalhar a partir do PR #7 sem confundir código experimental com `main` ou APK publicado; SDK proprietário somente em CI autorizado, com hash conferido.
 
 ## Regras de segurança e compatibilidade
-- Não apagar/consolidar Turnip nem mudar padrão de driver sem benchmarks e regressão por GPU.
+- Não apagar/consolidar Turnip. Não reintroduzir seleção automática: driver e versão Turnip são manuais por decisão do mantenedor. Preservar o fallback fixo para contêineres antigos com versão vazia/`auto`.
 - Não distribuir `Lossless.dll`, Discord Social SDK/AAR ou binários sem origem/licença verificada.
 - Não fazer force-push/rebase destrutivo, alterar créditos upstream, excluir releases/tags ou mesclar PR #7 automaticamente.
 - Não afirmar ganhos de FPS, RAM, suporte PANVK, estabilidade ou compatibilidade de aparelho sem testes físicos.
