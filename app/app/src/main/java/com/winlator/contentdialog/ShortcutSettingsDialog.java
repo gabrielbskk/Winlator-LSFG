@@ -1,6 +1,9 @@
 package com.winlator.contentdialog;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import com.winlator.discord.DiscordArtwork;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -60,6 +63,30 @@ public class ShortcutSettingsDialog extends ContentDialog {
 
         final EditText etExecArgs = findViewById(R.id.ETExecArgs);
         etExecArgs.setText(shortcut.getExtra("execArgs"));
+
+        final EditText etDiscordArtwork = findViewById(R.id.ETDiscordArtwork);
+        etDiscordArtwork.setText(shortcut.getExtra("discord_rpc_image"));
+        final ImageView ivDiscordExeIcon = findViewById(R.id.IVDiscordExeIconPreview);
+        if (shortcut.icon != null) {
+            // The shortcut's cached PNG is generated from its EXE icon.
+            ivDiscordExeIcon.setImageBitmap(shortcut.icon);
+        } else {
+            // Never read executable resources on the Android UI thread.
+            new Thread(() -> {
+                try {
+                    MSLink.LinkInfo link = MSLink.extractLinkInfo(shortcut.getLinkFile());
+                    if (link == null || link.targetPath == null) return;
+                    String path = WineUtils.dosToUnixPath(link.targetPath, shortcut.container);
+                    if (path == null || !path.toLowerCase(java.util.Locale.ROOT).endsWith(".exe")) return;
+                    Bitmap icon = PEParser.extractIcon(new File(path));
+                    if (icon != null) ivDiscordExeIcon.post(() -> {
+                        if (ivDiscordExeIcon.isAttachedToWindow()) ivDiscordExeIcon.setImageBitmap(icon);
+                    });
+                } catch (RuntimeException ignored) {
+                    // A game without an icon must still launch normally.
+                }
+            }, "DiscordExeIconPreview").start();
+        }
 
         ContainerDetailFragment.loadScreenSizeSpinner(getContentView(), shortcut.getExtra("screenSize", shortcut.container.getScreenSize()));
 
@@ -155,6 +182,13 @@ public class ShortcutSettingsDialog extends ContentDialog {
             popupMenu.setOnMenuItemClickListener((menuItem) -> {
                 String value = String.valueOf(menuItem.getTitle());
                 String execArgs = etExecArgs.getText().toString();
+            String rawArtwork = etDiscordArtwork.getText().toString().trim();
+            String selectedArtwork = DiscordArtwork.normalize(rawArtwork);
+            if (!rawArtwork.isEmpty() && selectedArtwork.isEmpty()) {
+                etDiscordArtwork.setError(context.getString(R.string.discord_game_artwork_invalid));
+                return;
+            }
+            shortcut.putExtra("discord_rpc_image", selectedArtwork.isEmpty() ? null : selectedArtwork);
                 if (!execArgs.contains(value)) etExecArgs.setText(!execArgs.isEmpty() ? execArgs+" "+value : value);
                 return true;
             });
