@@ -24,4 +24,6 @@
     <string name="discord_game_artwork_hint">Chave do asset no Discord ou URL HTTPS pública</string>
     <string name="discord_game_artwork_help">O ícone acima é extraído localmente do EXE ou atalho. O Discord não exibe arquivos locais diretamente: envie a imagem aos assets de Rich Presence do aplicativo e informe a chave, ou use uma URL HTTPS pública. Vazio = ícone padrão do aplicativo. Nenhum upload automático.</string>
     <string name="discord_game_artwork_invalid">Informe uma chave de imagem do Discord ou URL HTTPS pública válida.</string>
+    <string name="discord_share_exe_icon">Compartilhar PNG do ícone do jogo</string>
+    <string name="discord_icon_unavailable">Não foi possível extrair ou compartilhar o ícone deste jogo.</string>
 </resources>
