@@ -35,3 +35,7 @@ A Stable só pode ser declarada depois do gate de qualidade em [STABLE_RELEASE_G
 - O workflow nativo deve gerar artifact `aurora-11.3-rc2-arm64-native-review` com APK debug e `SHA256SUMS.txt`, **somente se testes e validação do APK passarem no mesmo commit**.
 
 **Ainda não é Stable:** dependências de assinatura release apropriada, instalação e atualização com backup real, jogos Windows 32/64, RPC em dispositivo, LSFG/frametime e GPUs Adreno 619/642 e Mali G52. PANVK permanece não integrado; Turnip sempre manual.
+
+### CI/SDK externo
+
+Em 17/10/2026 o MediaFire redirecionou o SDK para um host fora da regra antiga, bloqueando o build **antes da compilação**. O script atualizado permite apenas subdomínios HTTPS MediaFire, com rejeição de HTML, novas resoluções após falha e validação obrigatória do SHA-256 original. Nenhuma correção no código Android foi comprovada por essa falha externa. Sem SDK autorizado e verificável, **não declarar build nativo aprovado** e não publicar Stable.
