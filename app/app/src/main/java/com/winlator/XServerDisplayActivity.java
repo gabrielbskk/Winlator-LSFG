@@ -582,7 +582,9 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         runOnUiThread(() -> {
             if (isFinishing() || isDestroyed() || isGenerateWineprefix()) return;
             String executable = shortcut != null ? shortcut.path : getIntent().getStringExtra("exec_path");
-            discordPresence = new DiscordPresenceManager(this, executable, shortcut != null ? shortcut.name : null);
+            discordPresence = new DiscordPresenceManager(this, executable,
+                shortcut != null ? shortcut.name : null,
+                shortcut != null ? shortcut.getExtra("discord_rpc_image") : null);
             if (displayPaused) discordPresence.pause();
             discordPresence.start();
         });

@@ -1,14 +1,21 @@
-name: RPC experimental 4 checks
+name: RPC experimental 5 checks
 
 on:
+  push:
+    branches: [feat/rpc-game-artwork]
   pull_request:
     branches:
       - main
+      - experimental/rpc-android-v4
     paths:
       - 'app/**'
       - 'docs/ANDROID_IMPROVEMENTS.md'
       - '.github/workflows/rpc-v4-checks.yml'
   workflow_dispatch:
+
+concurrency:
+  group: rpc-artwork-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -45,8 +52,8 @@ jobs:
           "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;24.0.8215888' 'cmake;3.22.1'
       - name: Validate v4 packaging configuration
         run: |
-          grep -q 'versionName "11.2-rpc-experimental.4"' app/app/build.gradle
-          grep -q 'versionCode 36' app/app/build.gradle
+          grep -q 'versionName "11.2-rpc-experimental.5"' app/app/build.gradle
+          grep -q 'versionCode 37' app/app/build.gradle
           if grep -q 'arm64OnlyGameAssets' app/app/build.gradle; then
             echo "32-bit runtime stripping must not be present in the v4 build" >&2
             exit 1

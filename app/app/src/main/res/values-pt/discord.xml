@@ -19,4 +19,11 @@
     <string name="panvk_g52_help">PanVK experimental opcional para Mali-G52 MC2. Baixe o ZIP e importe pelo botão de instalar driver acima; depois selecione-o explicitamente. A compatibilidade depende do Android e do kernel. Este alpha não é conforme ao Vulkan e não habilita LSFG no Vortek.</string>
     <string name="panvk_g52_releases">Versões do PanVK G52</string>
     <string name="custom_driver_android_required">Este driver requer Android API %1$d ou superior.</string>
+    <string name="discord_game_artwork_title">Imagem do jogo no Discord</string>
+    <string name="discord_exe_icon_preview">Ícone extraído do executável Windows</string>
+    <string name="discord_game_artwork_hint">Chave do asset no Discord ou URL HTTPS pública</string>
+    <string name="discord_game_artwork_help">O ícone acima é extraído localmente do EXE ou atalho. O Discord não exibe arquivos locais diretamente: envie a imagem aos assets de Rich Presence do aplicativo e informe a chave, ou use uma URL HTTPS pública. Vazio = ícone padrão do aplicativo. Nenhum upload automático.</string>
+    <string name="discord_game_artwork_invalid">Informe uma chave de imagem do Discord ou URL HTTPS pública válida.</string>
+    <string name="discord_share_exe_icon">Compartilhar PNG do ícone do jogo</string>
+    <string name="discord_icon_unavailable">Não foi possível extrair ou compartilhar o ícone deste jogo.</string>
 </resources>

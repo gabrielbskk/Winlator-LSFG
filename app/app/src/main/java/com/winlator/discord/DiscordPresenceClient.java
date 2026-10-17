@@ -14,6 +14,7 @@ final class DiscordPresenceClient {
     private final IntConsumer status;
     private long handle;
     private String title;
+    private String artwork = "";
     private long startSeconds;
     private long nextAttempt;
     private long attemptStarted;
@@ -34,10 +35,13 @@ final class DiscordPresenceClient {
         });
     }
 
-    void update(String name, long start) {
+    void update(String name, long start, String image) {
         handler.post(() -> {
-            if (closed || (name.equals(title) && start == startSeconds)) return;
+            String selectedArtwork = DiscordArtwork.normalize(image);
+            if (closed || (name.equals(title) && start == startSeconds &&
+                           selectedArtwork.equals(artwork))) return;
             title = name;
+            artwork = selectedArtwork;
             startSeconds = start;
             result = 0;
             nextAttempt = 0;
@@ -63,7 +67,7 @@ final class DiscordPresenceClient {
                 // Reassert infrequently so restarting Discord can recover the same session.
                 if (title != null && result == 2 && now >= nextAttempt) result = 0;
                 if (title != null && result != 1 && result != 2 && now >= nextAttempt) {
-                    DiscordSdkBridge.update(handle, title, startSeconds);
+                    DiscordSdkBridge.update(handle, title, startSeconds, artwork);
                     result = 1;
                     attemptStarted = now;
                     status.accept(R.string.discord_connecting);

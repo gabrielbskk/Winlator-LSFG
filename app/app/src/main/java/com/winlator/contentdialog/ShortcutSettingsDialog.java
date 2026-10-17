@@ -1,6 +1,14 @@
 package com.winlator.contentdialog;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.core.content.FileProvider;
+import com.winlator.discord.DiscordArtwork;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -32,6 +40,8 @@ import com.winlator.win32.PEParser;
 import com.winlator.winhandler.GamepadHandler;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ShortcutSettingsDialog extends ContentDialog {
@@ -60,6 +70,62 @@ public class ShortcutSettingsDialog extends ContentDialog {
 
         final EditText etExecArgs = findViewById(R.id.ETExecArgs);
         etExecArgs.setText(shortcut.getExtra("execArgs"));
+
+        final EditText etDiscordArtwork = findViewById(R.id.ETDiscordArtwork);
+        etDiscordArtwork.setText(shortcut.getExtra("discord_rpc_image"));
+        final ImageView ivDiscordExeIcon = findViewById(R.id.IVDiscordExeIconPreview);
+        if (shortcut.icon != null) {
+            ivDiscordExeIcon.setImageBitmap(shortcut.icon);
+        } else {
+            new Thread(() -> {
+                Bitmap icon = getExecutableIcon();
+                if (icon != null) ivDiscordExeIcon.post(() -> {
+                    if (ivDiscordExeIcon.isAttachedToWindow()) ivDiscordExeIcon.setImageBitmap(icon);
+                });
+            }, "DiscordExeIconPreview").start();
+        }
+
+        final Button shareIcon = findViewById(R.id.BTShareDiscordExeIcon);
+        shareIcon.setOnClickListener(view -> {
+            shareIcon.setEnabled(false);
+            // Export only after an explicit tap; never upload the EXE or icon.
+            new Thread(() -> {
+                try {
+                    Bitmap icon = getExecutableIcon();
+                    if (icon == null) throw new IOException("Executable icon unavailable");
+                    File directory = new File(context.getFilesDir(), "rpc_icons");
+                    if (!directory.isDirectory() && !directory.mkdirs())
+                        throw new IOException("Cannot create artwork directory");
+                    String filename = shortcut.name.replaceAll("[^A-Za-z0-9_-]", "_");
+                    if (filename.isEmpty()) filename = "game";
+                    if (filename.length() > 48) filename = filename.substring(0, 48);
+                    File output = new File(directory, filename + ".png");
+                    try (FileOutputStream stream = new FileOutputStream(output)) {
+                        if (!icon.compress(Bitmap.CompressFormat.PNG, 100, stream))
+                            throw new IOException("Cannot encode executable icon");
+                    }
+                    Uri uri = FileProvider.getUriForFile(
+                        context, "com.winlator.FileProvider", output);
+                    view.post(() -> {
+                        shareIcon.setEnabled(true);
+                        if (!view.isAttachedToWindow()) return;
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("image/png");
+                        share.putExtra(Intent.EXTRA_STREAM, uri);
+                        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        context.startActivity(Intent.createChooser(
+                            share, context.getString(R.string.discord_share_exe_icon)));
+                    });
+                } catch (IOException | RuntimeException error) {
+                    view.post(() -> {
+                        shareIcon.setEnabled(true);
+                        if (view.isAttachedToWindow())
+                            Toast.makeText(context, R.string.discord_icon_unavailable,
+                                Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }, "DiscordIconExport").start();
+        });
 
         ContainerDetailFragment.loadScreenSizeSpinner(getContentView(), shortcut.getExtra("screenSize", shortcut.container.getScreenSize()));
 
@@ -173,6 +239,13 @@ public class ShortcutSettingsDialog extends ContentDialog {
             String screenSize = ContainerDetailFragment.getScreenSize(getContentView());
 
             String execArgs = etExecArgs.getText().toString();
+            String rawArtwork = etDiscordArtwork.getText().toString().trim();
+            String selectedArtwork = DiscordArtwork.normalize(rawArtwork);
+            if (!rawArtwork.isEmpty() && selectedArtwork.isEmpty()) {
+                etDiscordArtwork.setError(context.getString(R.string.discord_game_artwork_invalid));
+                return;
+            }
+            shortcut.putExtra("discord_rpc_image", selectedArtwork.isEmpty() ? null : selectedArtwork);
             shortcut.putExtra("execArgs", !execArgs.isEmpty() ? execArgs : null);
             shortcut.putExtra("screenSize", !screenSize.equals(shortcut.container.getScreenSize()) ? screenSize : null);
             shortcut.putExtra("graphicsDriver", !graphicsDriver.equals(shortcut.container.getGraphicsDriver()) ? graphicsDriver : null);
@@ -209,6 +282,21 @@ public class ShortcutSettingsDialog extends ContentDialog {
             boolean requireRestart = graphicsDriver.equals(GraphicsDrivers.VORTEK) && VortekConfigDialog.isRequireRestart(oldGraphicsDriverConfig, graphicsDriverConfig);
             if (requireRestart) ContentDialog.confirm(context, R.string.the_settings_have_been_changed_do_you_want_to_restart_the_app, () -> AppUtils.restartApplication(context));
         });
+    }
+
+    private Bitmap getExecutableIcon() {
+        // Winlator already caches extracted EXE icons as shortcut PNGs.
+        if (shortcut.icon != null) return shortcut.icon;
+        try {
+            MSLink.LinkInfo link = MSLink.extractLinkInfo(shortcut.getLinkFile());
+            if (link == null || link.targetPath == null) return null;
+            String path = WineUtils.dosToUnixPath(link.targetPath, shortcut.container);
+            if (path == null || !path.toLowerCase(java.util.Locale.ROOT).endsWith(".exe"))
+                return null;
+            return PEParser.extractIcon(new File(path));
+        } catch (RuntimeException error) {
+            return null;
+        }
     }
 
     private void renameShortcut(String newName) {
