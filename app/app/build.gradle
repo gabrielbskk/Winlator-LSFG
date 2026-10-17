@@ -4,7 +4,6 @@ apply plugin: 'com.android.application'
 // Keep proprietary SDK distributions outside version control.
 def discordSdkAar = file(providers.gradleProperty('discordSdkAar').getOrElse('libs/discord_partner_sdk.aar'))
 def discordSdkEnabled = discordSdkAar.isFile()
-def arm64OnlyGameAssets = providers.gradleProperty('arm64OnlyGameAssets').map { it.toBoolean() }.getOrElse(false)
 if (providers.gradleProperty('discordSdkAar').isPresent() && !discordSdkEnabled) {
     throw new GradleException("Discord SDK AAR does not exist: ${discordSdkAar}")
 }
@@ -61,23 +60,6 @@ android {
         }
     }
 
-    if (arm64OnlyGameAssets) {
-        sourceSets.main.assets.srcDirs = [layout.buildDirectory.dir('generated/arm64GameAssets').get().asFile]
-    }
-}
-
-if (arm64OnlyGameAssets) {
-    def preparedAssets = layout.buildDirectory.dir('generated/arm64GameAssets')
-    def prepareArm64GameAssets = tasks.register('prepareArm64GameAssets', Exec) {
-        inputs.dir('src/main/assets')
-        inputs.file('../../scripts/prepare_arm64_assets.py')
-        outputs.dir(preparedAssets)
-        commandLine 'python3', '../../scripts/prepare_arm64_assets.py',
-            file('src/main/assets').absolutePath, preparedAssets.get().asFile.absolutePath
-    }
-    tasks.matching { it.name == 'mergeDebugAssets' }.configureEach {
-        dependsOn prepareArm64GameAssets
-    }
 }
 
 dependencies {
