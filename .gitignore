@@ -27,3 +27,18 @@ local.properties
 /.reference/
 /winlator-lsfg/
 CLOUDFLARE_LOGIN_URL.txt
+
+# Machine-specific editor and OS files (shared IDE settings are retained)
+*.iml
+.DS_Store
+Thumbs.db
+**/.idea/workspace.xml
+**/.idea/shelf/
+**/.idea/caches/
+**/.idea/deviceManager.xml
+**/.idea/deploymentTarget*.xml
+**/.idea/runConfigurations.xml
+
+# Additional Android Studio generated state
+**/.externalNativeBuild/
+**/captures/
