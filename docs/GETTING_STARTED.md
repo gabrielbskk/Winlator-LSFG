@@ -11,7 +11,7 @@ O Winlator LSFG Aurora é um fork experimental do [Winlator LSFG da Rafaela](htt
 
 ## Começando
 
-1. Consulte a página [Releases](../../releases) e leia as notas e limitações da versão escolhida. Releases `experimental` são voltadas a testes; podem conter regressões.
+1. Consulte a página [Releases](https://github.com/gabrielbskk/Winlator-LSFG/releases) e leia as notas e limitações da versão escolhida. Releases `experimental` são voltadas a testes; podem conter regressões.
 2. Faça backup dos contêineres/saves antes de atualizar. O APK experimental pode ter assinatura diferente e não atualizar diretamente uma instalação anterior.
 3. Instale uma versão apropriada em seu próprio dispositivo e crie um contêiner com as configurações compatíveis com o SoC/GPU.
 4. Para LSFG-VK, obtenha um `Lossless.dll` legítimo e compatível de forma independente; importe-o nas configurações do aplicativo e escolha o preset de LSFG por contêiner. **O fork não inclui `Lossless.dll`.**
