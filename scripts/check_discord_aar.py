@@ -6,6 +6,7 @@ For those, use the official Discord Developer Portal and SDK documentation.
 """
 import argparse
 import hashlib
+import io
 from pathlib import Path
 import struct
 import sys
@@ -37,7 +38,7 @@ def inspect(path: Path) -> None:
         if "discord_partner_sdk" not in prefab:
             raise ValueError("The Prefab package name does not match discord_partner_sdk")
 
-        with zipfile.ZipFile(package.open("libs/discord_partner_sdk.jar")) as sdk_java:
+        with zipfile.ZipFile(io.BytesIO(package.read("libs/discord_partner_sdk.jar"))) as sdk_java:
             if "com/discord/socialsdk/DiscordSocialSdkInit.class" not in sdk_java.namelist():
                 raise ValueError("DiscordSocialSdkInit Java class is not present")
 
