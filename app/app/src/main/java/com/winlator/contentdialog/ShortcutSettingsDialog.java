@@ -298,7 +298,7 @@ public class ShortcutSettingsDialog extends ContentDialog {
             shortcut.saveData();
             if (!shortcut.name.equals(name) && !name.isEmpty()) renameShortcut(name);
 
-            boolean requireRestart = graphicsDriver.equals(GraphicsDrivers.VORTEK) && VortekConfigDialog.isRequireRestart(oldGraphicsDriverConfig, graphicsDriverConfig);
+            boolean requireRestart = GraphicsDrivers.parseIdentifiers(graphicsDriver)[0].equals(GraphicsDrivers.VORTEK) && VortekConfigDialog.isRequireRestart(oldGraphicsDriverConfig, graphicsDriverConfig);
             if (requireRestart) ContentDialog.confirm(context, R.string.the_settings_have_been_changed_do_you_want_to_restart_the_app, () -> AppUtils.restartApplication(context));
         });
 

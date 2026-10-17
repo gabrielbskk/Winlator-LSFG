@@ -894,6 +894,13 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
     }
 
     private void extractGraphicsDriverFiles() {
+        if (GraphicsDrivers.TURNIP.equals(graphicsDriver[0])
+                && com.winlator.core.GpuCompatibility.isMali(GPUHelper.getRenderer(this))) {
+            android.util.Log.w("AuroraGPU", "Turnip configuration on Mali: using system Vulkan for this session");
+            graphicsDriver[0] = GraphicsDrivers.VORTEK;
+            graphicsDriverConfig[0] = new KeyValueSet();
+            runOnUiThread(() -> AppUtils.showToast(this, R.string.mali_system_fallback));
+        }
         envVars.put("vblank_mode", "0");
 
         String cacheId = "";

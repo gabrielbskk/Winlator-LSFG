@@ -54,7 +54,7 @@ public class VortekConfigDialog extends ContentDialog {
         GeneralComponents.initViews(GeneralComponents.Type.ADRENOTOOLS_DRIVER, findViewById(R.id.AdrenotoolsDriverToolbox), sAdrenotoolsDriver, adrenotoolsDriver, "System");
 
         View panvkInfo = findViewById(R.id.LLPanvkG52);
-        boolean maliG52 = com.winlator.core.GpuCompatibility.isMaliG52(GPUHelper.glGetRenderer(context));
+        boolean maliG52 = com.winlator.core.GpuCompatibility.isMali(GPUHelper.getRenderer(context));
         panvkInfo.setVisibility(maliG52 ? View.VISIBLE : View.GONE);
         findViewById(R.id.BTPanvkReleases).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/LukeValen/panvk-mali-g52/releases"));
@@ -81,6 +81,7 @@ public class VortekConfigDialog extends ContentDialog {
                 }
                 else newConfig.put("exposedDeviceExtensions", String.join(":", selectedItems));
             }
+            else newConfig.put("exposedDeviceExtensions", "");
             anchor.setTag(newConfig.toString());
         });
     }

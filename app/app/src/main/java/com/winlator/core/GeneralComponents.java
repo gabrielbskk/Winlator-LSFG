@@ -195,7 +195,7 @@ public abstract class GeneralComponents {
             if (isBuiltinComponent(type, identifier)) return null;
             File source = type.getSource(context, identifier);
             File[] manifestFiles = source.listFiles((file, name) -> name.endsWith(".json"));
-            if (manifestFiles != null) {
+            if (manifestFiles != null && manifestFiles.length > 0) {
                 try {
                     JSONObject manifestJSONObject = new JSONObject(FileUtils.readString(manifestFiles[0]));
                     String libraryName = manifestJSONObject.optString("libraryName", "");
@@ -206,6 +206,7 @@ public abstract class GeneralComponents {
                     return null;
                 }
             }
+            return null;
         }
 
         return type.getSource(context, identifier).getPath();
