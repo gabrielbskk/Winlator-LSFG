@@ -74,12 +74,11 @@ The integration is experimental. Features listed above are described by this for
 - [Contributor guide](CONTRIBUTING.md): how to report, test and submit changes
 - [License (LGPL-2.1)](LICENSE) and component-specific licenses
 - [Testing matrix](docs/TESTING.md): how to reproduce performance and compatibility reports
-- [RPC experimental 4 candidate](docs/RPC_EXPERIMENTAL_4.md): build, testing and device-validation checklist
 - [Architecture orientation](docs/ARCHITECTURE.md)
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Android Discord Rich Presence** remains experimental. The consolidated [experimental 4 PR #7](../../pull/7) passed SDK-free JVM tests, but no verified RPC v4 APK is published. It requires a compatible, separately supplied official Discord SDK AAR and real-device tests before release; see the [RPC guide](docs/DISCORD_RPC.md). Do not confuse SDK-free CI APKs with functional Discord builds.
+**Experimental 4 preview is available:** [download the SDK-free Android ARM64 APK](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-4-sdkfree-preview). **Discord Rich Presence does not work in this preview**, because the Discord SDK was deliberately not bundled. The [RPC experimental 5 source candidate, PR #7](../../pull/7) includes game EXE icon extraction and configurable artwork, but is not a released APK and still requires an SDK-backed build and real-device verification. See [Experimental 5 notes](docs/RPC_EXPERIMENTAL_5.md), [EXE image guide](docs/RPC_GAME_ARTWORK.md) and [RPC guide](docs/DISCORD_RPC.md).
 
 ## Maintainer and contributors
 
