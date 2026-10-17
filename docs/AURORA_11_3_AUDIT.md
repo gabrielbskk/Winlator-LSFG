@@ -124,3 +124,18 @@ modelo, Android/kernel e driver nos testes antes de alterar essa política.
 
 A Experimental 6 permite testar esse marco. A candidata 11.3 e as demais fases
 não estão concluídas enquanto esses gates permanecem pendentes.
+
+## Ajuste posterior ao marco Experimental 6 — seleção manual do Turnip
+
+Por solicitação do mantenedor, a política de seleção automática por GPU do primeiro
+marco foi desativada na branch em desenvolvimento. Isso **não altera retroativamente**
+a Experimental 6 já publicada. Novos contêineres começam com Vortek/Gladio e
+a escolha de Turnip e de sua versão é manual. O controle "Automatic baseline"
+foi retirado da interface. Os valores antigos `auto` ou ausentes têm um fallback
+fixo para `DefaultVersion.TURNIP`, sem análise automática de GPU. Configurações
+explícitas de contêineres antigos continuam intactas.
+
+A lista de drivers Turnip, os pacotes originais, os caminhos de carregamento,
+a detecção diagnóstica de GPU, o RPC, LSFG e Windows 32/64-bit são preservados.
+Ver [gate de Stable](STABLE_RELEASE_GATE.md). A validação de GPU e jogos em aparelhos
+permanece pendente e nenhuma versão Stable foi publicada por essa alteração.

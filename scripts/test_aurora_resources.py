@@ -46,5 +46,20 @@ class AuroraResourcesTest(unittest.TestCase):
         ids = {e.attrib.get(ANDROID + 'id') for e in root.iter()}
         self.assertTrue({'@+id/SLSFGMultiplier', '@+id/SLSFGPreset', '@+id/SBLSFGFlowScale'} <= ids)
 
+    def test_turnip_requires_explicit_driver_and_version(self):
+        layout = ET.parse(RES / 'layout/turnip_config_dialog.xml').getroot()
+        ids = {node.attrib.get(ANDROID + 'id') for node in layout.iter()}
+        self.assertIn('@+id/SVersion', ids)
+        self.assertNotIn('@+id/CBTurnipAutomatic', ids)
+        self.assertTrue(any(node.attrib.get(ANDROID + 'text') == '@string/turnip_manual_note'
+                            for node in layout.iter()))
+        base = ROOT / 'app/app/src/main/java/com/winlator'
+        drivers = (base / 'container/GraphicsDrivers.java').read_text(encoding='utf-8')
+        self.assertNotIn('TurnipPolicy', drivers)
+        self.assertNotIn('isTurnipCandidate', drivers)
+        dialog = (base / 'contentdialog/TurnipConfigDialog.java').read_text(encoding='utf-8')
+        self.assertNotIn('CBTurnipAutomatic', dialog)
+        self.assertIn('newConfig.put("version"', dialog)
+
 if __name__ == '__main__':
     unittest.main()
