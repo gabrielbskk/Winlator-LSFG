@@ -86,7 +86,7 @@ The integration is experimental. Features listed above are described by this for
 
 **Original Winlator LSFG fork credit:** Rafaela, [@amyroseee](https://github.com/amyroseee), [original source repository](https://github.com/amyroseee/Winlator-LSFG).
 
-See [CONTRIBUTORS.md](CONTRIBUTORS.md) for project participation and acknowledgments. Contributions are welcome through issues and pull requests.
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for project participation and acknowledgments. Contributions are welcome via pull requests; GitHub Issues is currently disabled on this fork. See [development workflow](docs/DEVELOPMENT_WORKFLOW.md).
 
 ## Credits
 
