@@ -43,11 +43,18 @@ Java_com_winlator_discord_DiscordSdkBridge_create(JNIEnv* env, jclass, jlong app
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_winlator_discord_DiscordSdkBridge_update(JNIEnv* env, jclass, jlong handle,
-                                                 jstring title, jlong startSeconds) {
+                                                 jstring title, jlong startSeconds, jstring artwork) {
     const char* chars = env->GetStringUTFChars(title, nullptr);
     if (!chars) return;
     std::string name(chars);
     env->ReleaseStringUTFChars(title, chars);
+    std::string image;
+    if (artwork) {
+        const char* iconChars = env->GetStringUTFChars(artwork, nullptr);
+        if (!iconChars) return;
+        image.assign(iconChars);
+        env->ReleaseStringUTFChars(artwork, iconChars);
+    }
     try {
         auto& presence = state(handle);
         const auto revision = ++presence->revision;
@@ -56,7 +63,13 @@ Java_com_winlator_discord_DiscordSdkBridge_update(JNIEnv* env, jclass, jlong han
         activity.SetType(discordpp::ActivityTypes::Playing);
         activity.SetName(name);
         activity.SetStatusDisplayType(discordpp::StatusDisplayTypes::Name);
-        activity.SetDetails("Winlator");
+        activity.SetDetails("Winlator LSFG Aurora");
+        if (!image.empty()) {
+            discordpp::ActivityAssets assets;
+            assets.SetLargeImage(image);
+            if (name.size() >= 2 && name.size() <= 128) assets.SetLargeText(name);
+            activity.SetAssets(assets);
+        }
         discordpp::ActivityTimestamps timestamps;
         timestamps.SetStart(static_cast<uint64_t>(startSeconds));
         activity.SetTimestamps(timestamps);
