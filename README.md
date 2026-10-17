@@ -78,7 +78,7 @@ The integration is experimental. Features listed above are described by this for
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Experimental 5 SDK-free preview is available:** [download the Android ARM64 APK](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-sdkfree-preview). This build includes the game shortcut/Steam artwork preview and field-validation updates, but **Discord Rich Presence does not work in this APK** because the SDK is not bundled. The [older Experimental 4 preview](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-4-sdkfree-preview) remains available. The [full RPC experimental 4 PR #7](../../pull/7) remains unmerged pending an SDK-backed build and real-device verification; see the [RPC guide](docs/DISCORD_RPC.md).
+**Experimental 5 Full RPC (SDK-backed native candidate) is available:** [download the Android ARM64 APK](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-native). Its Discord SDK was included and CI validated the APK, but Rich Presence and Steam artwork are **not yet confirmed on this exact build in a physical device**. The [SDK-free preview](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-sdkfree-preview) remains available for UI testing without Discord RPC. The [experimental code PR #7](../../pull/7) remains under review, with [configuration guide](docs/RPC_GAME_ARTWORK.md) and [RPC setup](docs/DISCORD_RPC.md).
 
 ## Maintainer and contributors
 
