@@ -1,0 +1,78 @@
+name: RPC Experimental 5 — SDK-backed MediaFire verification
+
+on:
+  push:
+    branches: [ci/rpc-v5-mediafire-native]
+    paths:
+      - 'scripts/download_mediafire_aar.py'
+      - '.github/workflows/rpc-v5-mediafire-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: experimental-rpc-v5-mediafire-build
+  cancel-in-progress: true
+
+jobs:
+  compile-native-rpc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download maintainer-provided AAR and verify exact SHA-256
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/download_mediafire_aar.py app/app/libs/discord_partner_sdk.aar
+          echo 'b1b2491f1e1848c79fd6f1986d5aa1e0c8019e88a6e62c7be06b89e8e4870933  app/app/libs/discord_partner_sdk.aar' | sha256sum -c -
+          python3 scripts/check_discord_aar.py app/app/libs/discord_partner_sdk.aar
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android SDK/NDK build dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -maxdepth 4 -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -n "$SDKMANAGER"
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
+          if ! command -v zstd >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq zstd
+          fi
+      - name: Compile native Discord RPC + Android ARM64 + JVM tests
+        shell: bash
+        working-directory: app
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew :app:clean :app:testDebugUnitTest :app:assembleDebug \
+            -PdiscordSdkAar="$GITHUB_WORKSPACE/app/app/libs/discord_partner_sdk.aar" \
+            -PandroidNdkVersion=27.2.12479018 --no-daemon --stacktrace
+      - name: Verify APK JNI and 32-bit Windows compatibility assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=app/app/build/outputs/apk/debug/app-debug.apk
+          python3 scripts/verify_rpc_v4_apk.py "$APK"
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libdiscord_partner_sdk.so'
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -m1 'package:'
+          mkdir -p dist/rpc-full-v5
+          cp "$APK" dist/rpc-full-v5/Winlator-LSFG-Aurora-11.2-rpc-experimental.5-arm64-debug.apk
+          (cd dist/rpc-full-v5 && sha256sum *.apk > SHA256SUMS.txt)
+      - name: Store verified RPC APK for device test
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: experimental-5-native-rpc-arm64
+          path: dist/rpc-full-v5/
+          if-no-files-found: error
+          retention-days: 7
+
+# The licensed SDK must not be committed. AAR is downloaded to a temporary CI
+# directory and hash-pinned. No untested public release is created here.
