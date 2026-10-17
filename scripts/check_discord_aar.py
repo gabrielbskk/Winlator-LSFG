@@ -49,7 +49,7 @@ def inspect(path: Path) -> None:
                 raise ValueError(f"Required C++ SDK API is missing: {symbol}")
 
         elf = package.read("jni/arm64-v8a/libdiscord_partner_sdk.so")
-        if len(elf) < 64 or elf[:4] != b"\\x7fELF" or elf[4] != 2:
+        if len(elf) < 64 or elf[:4] != b"\x7fELF" or elf[4] != 2:
             raise ValueError("The arm64-v8a library is not a 64-bit ELF")
         if struct.unpack_from("<H", elf, 18)[0] != 183:
             raise ValueError("The included ELF library is not AArch64")
