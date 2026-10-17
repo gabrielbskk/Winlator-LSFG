@@ -63,15 +63,16 @@ def fetch(url, limit):
 
 def download(url, destination):
     page, content_type, final_url = fetch(url, MAX_PAGE)
-    if page.startswith(b"PK\\x03\\x04"):
+    if page.startswith(b"PK\x03\x04"):
         raise ValueError("Direct binary response is larger than webpage limit")
     decoder = DownloadLinks()
     doc = page.decode("utf-8", "replace")
     decoder.feed(doc)
     links = sorted(decoder.candidates)
     # Some variants expose their CDN download URL in scripts instead of an href.
-    for link in re.findall(r"https?(?:\\\\/\\\\/|://)[^\\\"'<>\\s]+", doc):
-        link = link.replace("\\/", "/")
+    for link in re.findall(r"https?://[^\\s\\\"'<>]+", doc.replace(chr(92) + "/", "/")):
+        link = html.unescape(link)
+
         if "download" in link and "mediafire" in link:
             links.append((2, link))
     tried = set()
@@ -87,7 +88,7 @@ def download(url, destination):
         except (OSError, ValueError) as error:
             print("Candidate failed:", type(error).__name__, file=sys.stderr)
             continue
-        if not data.startswith(b"PK\\x03\\x04"):
+        if not data.startswith(b"PK\x03\x04"):
             continue
         digest = hashlib.sha256(data).hexdigest()
         if digest != EXPECTED:
