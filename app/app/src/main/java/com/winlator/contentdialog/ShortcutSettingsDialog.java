@@ -1,6 +1,12 @@
 package com.winlator.contentdialog;
 
 import android.content.Context;
+import android.app.AlertDialog;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.TextView;
 import android.content.Intent;
 import android.net.Uri;
 import android.graphics.Bitmap;
@@ -9,6 +15,9 @@ import android.widget.Button;
 import android.widget.Toast;
 import androidx.core.content.FileProvider;
 import com.winlator.discord.DiscordArtwork;
+import com.winlator.discord.SteamGameArtwork;
+import com.winlator.discord.SteamArtworkPreview;
+import com.winlator.discord.SteamStoreSearch;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -73,6 +82,9 @@ public class ShortcutSettingsDialog extends ContentDialog {
 
         final EditText etDiscordArtwork = findViewById(R.id.ETDiscordArtwork);
         etDiscordArtwork.setText(shortcut.getExtra("discord_rpc_image"));
+        final EditText etSteamAppId = findViewById(R.id.ETDiscordSteamId);
+        etSteamAppId.setText(shortcut.getExtra("discord_rpc_steam_id"));
+        setupSteamRpcArtwork(context, etName, etDiscordArtwork, etSteamAppId);
         final ImageView ivDiscordExeIcon = findViewById(R.id.IVDiscordExeIconPreview);
         if (shortcut.icon != null) {
             ivDiscordExeIcon.setImageBitmap(shortcut.icon);
@@ -239,6 +251,12 @@ public class ShortcutSettingsDialog extends ContentDialog {
             String screenSize = ContainerDetailFragment.getScreenSize(getContentView());
 
             String execArgs = etExecArgs.getText().toString();
+            String steamRaw = etSteamAppId.getText().toString().trim();
+            String steamId = SteamGameArtwork.appId(steamRaw);
+            if (!steamRaw.isEmpty() && steamId.isEmpty()) {
+                etSteamAppId.setError(context.getString(R.string.discord_steam_bad_id));
+                return;
+            }
             String rawArtwork = etDiscordArtwork.getText().toString().trim();
             String selectedArtwork = DiscordArtwork.normalize(rawArtwork);
             if (!rawArtwork.isEmpty() && selectedArtwork.isEmpty()) {
@@ -246,6 +264,7 @@ public class ShortcutSettingsDialog extends ContentDialog {
                 return;
             }
             shortcut.putExtra("discord_rpc_image", selectedArtwork.isEmpty() ? null : selectedArtwork);
+            shortcut.putExtra("discord_rpc_steam_id", steamId.isEmpty() ? null : steamId);
             shortcut.putExtra("execArgs", !execArgs.isEmpty() ? execArgs : null);
             shortcut.putExtra("screenSize", !screenSize.equals(shortcut.container.getScreenSize()) ? screenSize : null);
             shortcut.putExtra("graphicsDriver", !graphicsDriver.equals(shortcut.container.getGraphicsDriver()) ? graphicsDriver : null);
