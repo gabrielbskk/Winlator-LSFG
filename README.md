@@ -78,7 +78,7 @@ The integration is experimental. Features listed above are described by this for
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Android Discord Rich Presence** remains experimental. The consolidated [experimental 4 PR #7](../../pull/7) passed SDK-free JVM tests, but no verified RPC v4 APK is published. It requires a compatible, separately supplied official Discord SDK AAR and real-device tests before release; see the [RPC guide](docs/DISCORD_RPC.md). Do not confuse SDK-free CI APKs with functional Discord builds.
+**Experimental 4 preview is available:** [download the SDK-free Android ARM64 APK](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-4-sdkfree-preview). **Discord Rich Presence does not work in this preview**, because the Discord SDK was deliberately not bundled. The [full RPC experimental 4 PR #7](../../pull/7) remains unmerged pending an SDK-backed build and real-device verification; see the [RPC guide](docs/DISCORD_RPC.md).
 
 ## Maintainer and contributors
 
