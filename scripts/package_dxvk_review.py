@@ -26,7 +26,7 @@ def verify_pe(payload: bytes, machine: int):
     if len(payload) < 0x44 or payload[:2] != b"MZ":
         raise ValueError("Not a Windows DLL (MZ signature missing)")
     offset = int.from_bytes(payload[0x3c:0x40], "little")
-    if offset < 0x40 or offset + 6 > len(payload) or payload[offset:offset + 4] != b"PE\\0\\0":
+    if offset < 0x40 or offset + 6 > len(payload) or payload[offset:offset + 4] != (b"PE" + bytes(2)):
         raise ValueError("Invalid PE header")
     actual = int.from_bytes(payload[offset + 4:offset + 6], "little")
     if actual != machine:
@@ -75,7 +75,7 @@ def build_import_tar(source: Path, destination: Path, version: str):
                 if len(license_data) > 0:
                     put(output, "DXVK-UPSTREAM-LICENSE.txt", license_data)
         put(output, "aurora-dxvk-manifest.json",
-            (json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + "\\n").encode("utf-8"))
+            (json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + chr(10)).encode("utf-8"))
 
 
 def package(version: str, outdir: Path):
@@ -96,7 +96,7 @@ def package(version: str, outdir: Path):
         build_import_tar(upstream, intermediate, version)
         final = outdir / f"dxvk-{version}.tzst"
         subprocess.run(["zstd", "-T2", "-10", "-q", "-f", "-o", str(final), str(intermediate)], check=True)
-        with tarfile.open(fileobj=__import__("io").BytesIO(subprocess.check_output(["zstd", "-q", "-d", "-c", str(final)])), mode="r:") as archive:
+        with tarfile.open(fileobj=io.BytesIO(subprocess.check_output(["zstd", "-q", "-d", "-c", str(final)])), mode="r:") as archive:
             names = set(archive.getnames())
             expected = {f"{folder}/{dll}" for folder in ("system32", "syswow64") for dll in DLLS}
             if not expected.issubset(names) or "aurora-dxvk-manifest.json" not in names:
@@ -116,7 +116,7 @@ def main():
         print(f"{sha}  {file.name}")
     sums = args.output / "SHA256SUMS.txt"
     sums.write_text("".join(
-        f"{hashlib.sha256(file.read_bytes()).hexdigest()}  {file.name}\\n"
+        f"{hashlib.sha256(file.read_bytes()).hexdigest()}  {file.name}" + chr(10)
         for file in sorted(args.output.glob("dxvk-*.tzst"))), encoding="utf-8")
 
 
