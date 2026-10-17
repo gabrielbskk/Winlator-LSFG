@@ -182,13 +182,6 @@ public class ShortcutSettingsDialog extends ContentDialog {
             popupMenu.setOnMenuItemClickListener((menuItem) -> {
                 String value = String.valueOf(menuItem.getTitle());
                 String execArgs = etExecArgs.getText().toString();
-            String rawArtwork = etDiscordArtwork.getText().toString().trim();
-            String selectedArtwork = DiscordArtwork.normalize(rawArtwork);
-            if (!rawArtwork.isEmpty() && selectedArtwork.isEmpty()) {
-                etDiscordArtwork.setError(context.getString(R.string.discord_game_artwork_invalid));
-                return;
-            }
-            shortcut.putExtra("discord_rpc_image", selectedArtwork.isEmpty() ? null : selectedArtwork);
                 if (!execArgs.contains(value)) etExecArgs.setText(!execArgs.isEmpty() ? execArgs+" "+value : value);
                 return true;
             });
@@ -207,6 +200,13 @@ public class ShortcutSettingsDialog extends ContentDialog {
             String screenSize = ContainerDetailFragment.getScreenSize(getContentView());
 
             String execArgs = etExecArgs.getText().toString();
+            String rawArtwork = etDiscordArtwork.getText().toString().trim();
+            String selectedArtwork = DiscordArtwork.normalize(rawArtwork);
+            if (!rawArtwork.isEmpty() && selectedArtwork.isEmpty()) {
+                etDiscordArtwork.setError(context.getString(R.string.discord_game_artwork_invalid));
+                return;
+            }
+            shortcut.putExtra("discord_rpc_image", selectedArtwork.isEmpty() ? null : selectedArtwork);
             shortcut.putExtra("execArgs", !execArgs.isEmpty() ? execArgs : null);
             shortcut.putExtra("screenSize", !screenSize.equals(shortcut.container.getScreenSize()) ? screenSize : null);
             shortcut.putExtra("graphicsDriver", !graphicsDriver.equals(shortcut.container.getGraphicsDriver()) ? graphicsDriver : null);
