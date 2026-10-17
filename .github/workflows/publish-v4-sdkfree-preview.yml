@@ -1,10 +1,13 @@
 name: Publish experimental 4 SDK-free preview
 
 on:
-  push:
-    branches: [experimental/rpc-android-v4]
-    paths: ['.github/workflows/publish-v4-sdkfree-preview.yml']
   workflow_dispatch:
+    inputs:
+      confirm_publication:
+        description: Explicitly authorize publication or modification of releases
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: write
@@ -15,6 +18,7 @@ concurrency:
 
 jobs:
   build-and-publish:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:

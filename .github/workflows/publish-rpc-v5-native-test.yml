@@ -1,11 +1,13 @@
 name: Publish verified Experimental 5 native RPC prerelease
 
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/publish-rpc-v5-native-test.yml']
   workflow_dispatch:
     inputs:
+      confirm_publication:
+        description: Explicitly authorize publication or modification of releases
+        type: boolean
+        required: true
+        default: false
       source_run:
         description: Successful SDK-backed Actions run containing the APK
         required: true
@@ -22,6 +24,7 @@ concurrency:
 
 jobs:
   publish:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

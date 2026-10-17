@@ -1,10 +1,13 @@
-name: Build and publish Experimental 5 Full RPC (MediaFire SDK)
+name: Build authorized Aurora experimental milestone (Full RPC)
 
 on:
-  push:
-    branches: [experimental/rpc-android-v4]
-    paths: ['.github/workflows/publish-v5-rpc-mediafire.yml']
   workflow_dispatch:
+    inputs:
+      confirm_publication:
+        description: Explicitly authorize publication or modification of releases
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   contents: write
@@ -15,10 +18,13 @@ concurrency:
 
 jobs:
   build-native:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
     runs-on: ubuntu-latest
     timeout-minutes: 95
     steps:
       - uses: actions/checkout@v4
+      - name: Aurora resource regressions
+        run: python3 scripts/test_aurora_resources.py
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -73,19 +79,19 @@ jobs:
           unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libwinlator_discord.so'
           BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")"
           echo "$BADGING" | sed -n '1,3p'
-          echo "$BADGING" | grep -q "versionCode='37'"
-          echo "$BADGING" | grep -q "versionName='11.2-rpc-experimental.5'"
-          mkdir -p dist/rpc-v5-full
-          NAME="Winlator-LSFG-Aurora-11.2-RPC-Experimental.5-ARM64.apk"
-          cp "$APK" "dist/rpc-v5-full/$NAME"
-          (cd dist/rpc-v5-full && sha256sum "$NAME" > SHA256SUMS.txt)
+          echo "$BADGING" | grep -q "versionCode='38'"
+          echo "$BADGING" | grep -q "versionName='11.2-aurora-experimental.6'"
+          mkdir -p dist/aurora-experimental-6
+          NAME="Winlator-LSFG-Aurora-11.2-Experimental.6-ARM64.apk"
+          cp "$APK" "dist/aurora-experimental-6/$NAME"
+          (cd dist/aurora-experimental-6 && sha256sum "$NAME" > SHA256SUMS.txt)
 
       - name: Upload build artifacts for testing and recovery
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: rpc-v5-sdk-backed-full
-          path: dist/rpc-v5-full/
+          name: aurora-experimental-6-full-rpc
+          path: dist/aurora-experimental-6/
           retention-days: 7
           if-no-files-found: error
 
@@ -93,49 +99,20 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: rpc-android-experimental-5-full-native
+          TAG: aurora-experimental-6
         run: |
           set -euo pipefail
-          cat > /tmp/release-notes.md <<'NOTES'
-          # Winlator LSFG Aurora 11.2 — RPC Experimental 5 (Native SDK Candidate)
-
-          **BETA / TESTE EXPERIMENTAL — APK com Discord Social SDK integrado,
-          mas sem confirmação de funcionamento do RPC e das capas no aparelho.**
-          Este não é o APK "SDK-free" da Experimental 5.
-
-          - Android ARM64; Wine / Windows guest 32-bit e 64-bit preservados no empacotamento.
-          - Discord Rich Presence (Android): processo do jogo, nome, contador de sessão,
-            reconexão e gerenciamento de ciclo de vida.
-          - Imagem grande por jogo, chave de asset Discord/URL HTTPS ou Steam App ID.
-          - Suporte a URL SteamDB, detecção local de steam_appid.txt, busca manual por nome
-            e prévia visual na configuração do atalho.
-          - Ícone EXE extraído localmente, opção de compartilhar PNG. O Discord não
-            lê ícones locais diretamente: a imagem deve vir de asset público/URL.
-          - Identidade Aurora e créditos à Rafaela (@amyroseee) / Winlator original.
-          - SDK oficial fornecido separadamente para build; AAR não foi commitado.
-          - SHA-256 e arquivos nativos/Windows verificados no CI, testes JVM aprovados.
-          - Não há confirmação de testes no aparelho para esta compilação exata.
-            Testes do maintainer com a Experimental 3 indicaram RPC básico funcional.
-          - APK com assinatura debug; faça backup antes de instalar, pois chaves
-            de versões diferentes podem impedir atualização direta.
-          - Lossless.dll não incluído; fornecido independentemente pelo usuário.
-
-          **Teste esta build com o Discord Android conectado** e reporte jogo,
-          duração, imagem, fechamento/reabertura, Wi-Fi e dados móveis, sem enviar
-          tokens ou dados pessoais.
-          Código experimental: PR #7.
-          NOTES
-          APK=dist/rpc-v5-full/Winlator-LSFG-Aurora-11.2-RPC-Experimental.5-ARM64.apk
+          APK=dist/aurora-experimental-6/Winlator-LSFG-Aurora-11.2-Experimental.6-ARM64.apk
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "This tagged prerelease already exists. No replacement was made."
             exit 0
           fi
           for attempt in 1 2 3; do
-            if gh release create "$TAG" "$APK" dist/rpc-v5-full/SHA256SUMS.txt \
+            if gh release create "$TAG" "$APK" dist/aurora-experimental-6/SHA256SUMS.txt \
               --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-              --prerelease \
-              --title "Winlator LSFG Aurora 11.2 RPC Experimental 5 — SDK-backed candidate" \
-              --notes-file /tmp/release-notes.md; then
+              --prerelease --latest=false \
+              --title "Winlator LSFG Aurora 11.2 — Experimental 6" \
+              --notes-file docs/EXPERIMENTAL_6.md; then
               exit 0
             fi
             echo "Release attempt $attempt failed. Will retry if possible." >&2

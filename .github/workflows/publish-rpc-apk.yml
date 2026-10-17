@@ -3,6 +3,11 @@ name: Publish experimental RPC APK
 on:
   workflow_dispatch:
     inputs:
+      confirm_publication:
+        description: Explicitly authorize publication or modification of releases
+        type: boolean
+        required: true
+        default: false
       release_tag:
         description: Existing release tag
         required: true
@@ -21,6 +26,7 @@ permissions:
 
 jobs:
   publish:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
     runs-on: ubuntu-latest
     steps:
       - name: Download verified APK parts
