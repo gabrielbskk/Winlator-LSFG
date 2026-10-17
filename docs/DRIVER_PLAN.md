@@ -15,6 +15,10 @@
 | AdrenoTools | `app/app/src/main/cpp/libadrenotools/` já existe | Auditar chamadas e necessidade; não pressupor que removê-lo seja seguro |
 | Configuração | `GraphicsDriverPicker.java` cria seletores Vulkan/OpenGL; `TurnipConfigDialog.java` guarda versão e flags | Manter compatibilidade com configurações persistidas |
 
+## Trabalho simultâneo do Codex
+
+O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa o primeiro marco sobre a branch experimental de RPC: correções do tema, GPU, política Turnip por geração, Mali via driver do sistema, estabilização do RPC e testes. **Não repetir as mesmas mudanças.** Este documento e o script de inventário complementam o PR #19; reconcilie ambos antes de futuras alterações na `main`.
+
 ## Etapas e critérios de aceite
 
 ### A. Inventário de versões (primeiro PR de código)
