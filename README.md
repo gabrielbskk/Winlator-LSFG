@@ -16,6 +16,8 @@ An experimental derivative of Winlator LSFG with a separate visual identity and 
 
 1. Read the [available releases](https://github.com/gabrielbskk/Winlator-LSFG/releases), choose an appropriate build, and back up existing containers before installation.
 2. Create a container using suitable Wine/Box64, GPU driver and renderer settings.
+   - **Aurora experimental development:** new containers start with Vortek/Gladio. On Adreno, choose **Vulkan → Turnip**, then open driver settings and choose the **Turnip version manually**. Existing container choices remain saved. No GPU-based automatic Turnip selection.
+   - Mali defaults to the system Vulkan path; dedicated PANVK is **not** validated or bundled. Vortek currently cannot provide the LSFG swapchain behavior required for frame generation.
 3. For LSFG-VK, import your own legally obtained compatible `Lossless.dll` and configure a per-container 2x/3x/4x preset. The DLL is **not distributed** with this fork.
 4. Start with LSFG disabled to check basic game compatibility, then compare presets using reproducible settings.
 
@@ -51,7 +53,7 @@ More details: [Getting started](docs/GETTING_STARTED.md) · [Discord Rich Presen
   - Supports common Wine save locations
 
 - **Visual changes**
-  - Cyan app theme
+  - Aurora blue/indigo app theme
   - Updated launcher and internal visuals
 
 ## Lossless.dll
@@ -71,6 +73,7 @@ This project does not include or distribute `Lossless.dll`.
 The integration is experimental. Features listed above are described by this fork; performance and device compatibility may vary, and changes under development are **not** guaranteed.
 
 - [Development roadmap](ROADMAP.md): proposed LSFG-VK, GPU, RAM, ARM64 and Discord RPC improvements
+- [Stable release acceptance gate](docs/STABLE_RELEASE_GATE.md): required device validation, signing and regression checks before any version is called Stable
 - [Contributor guide](CONTRIBUTING.md): how to report, test and submit changes
 - [License (LGPL-2.1)](LICENSE) and component-specific licenses
 - [Testing matrix](docs/TESTING.md): how to reproduce performance and compatibility reports
