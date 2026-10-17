@@ -26,11 +26,15 @@ public abstract class GPUHelper {
         System.loadLibrary("winlator");
     }
 
+    private static final java.util.concurrent.atomic.AtomicBoolean identityProbeStarted =
+            new java.util.concurrent.atomic.AtomicBoolean();
+
     private static ArrayMap<String, String> loadGPUInformation(Context context) {
         final ArrayMap<String, String> gpuInfo = new ArrayMap<>();
         gpuInfo.put("renderer", "");
         gpuInfo.put("vendor", "");
         gpuInfo.put("version", "");
+        if (!identityProbeStarted.compareAndSet(false, true)) return gpuInfo;
         final java.util.concurrent.CountDownLatch completed = new java.util.concurrent.CountDownLatch(1);
         final Context appContext = context.getApplicationContext() != null
                 ? context.getApplicationContext() : context;
@@ -41,6 +45,11 @@ public abstract class GPUHelper {
             EGLContext eglContext = EGL10.EGL_NO_CONTEXT;
             javax.microedition.khronos.egl.EGLSurface surface = EGL10.EGL_NO_SURFACE;
             try {
+                String vulkanRenderer = vkGetRenderer();
+                if (vulkanRenderer != null && !vulkanRenderer.isEmpty()) {
+                    PreferenceManager.getDefaultSharedPreferences(appContext).edit()
+                            .putString("gpu_vulkan_renderer", vulkanRenderer).apply();
+                }
                 egl = (EGL10) EGLContext.getEGL();
                 display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
                 int[] version = new int[2];
@@ -96,11 +105,18 @@ public abstract class GPUHelper {
         probe.setDaemon(true);
         probe.start();
         try {
-            if (!completed.await(2500, java.util.concurrent.TimeUnit.MILLISECONDS))
+            if (!completed.await(2500, java.util.concurrent.TimeUnit.MILLISECONDS)) {
                 android.util.Log.w("GPUHelper", "GPU probe timed out; using safe system defaults");
+                ArrayMap<String, String> fallback = new ArrayMap<>();
+                fallback.put("renderer", ""); fallback.put("vendor", ""); fallback.put("version", "");
+                return fallback;
+            }
         }
         catch (InterruptedException error) {
             Thread.currentThread().interrupt();
+            ArrayMap<String, String> fallback = new ArrayMap<>();
+            fallback.put("renderer", ""); fallback.put("vendor", ""); fallback.put("version", "");
+            return fallback;
         }
         return gpuInfo;
     }
@@ -132,8 +148,31 @@ public abstract class GPUHelper {
         return gpuInfo.get("version");
     }
 
+    /** Vulkan identity is preferred; GLES remains available for GL version diagnostics. */
+    public static String getRenderer(Context context) {
+        String renderer = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("gpu_vulkan_renderer", "");
+        if (!renderer.isEmpty()) return renderer;
+        loadGPUInformation(context);
+        String glRenderer = glGetRenderer(context);
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString("gpu_vulkan_renderer", glRenderer);
+    }
+
+    public static String resolveTurnipVersion(Context context, String manualVersion) {
+        String renderer = getRenderer(context);
+        String version = TurnipPolicy.resolveVersion(renderer, manualVersion);
+        android.util.Log.i("AuroraGPU", "renderer=" + renderer + " model="
+                + GpuCompatibility.adrenoModelId(renderer) + " Turnip=" + version
+                + " selection=" + (manualVersion == null || manualVersion.isEmpty() ? "auto" : "manual")
+                + " policy=" + TurnipPolicy.REVISION + " reason=" + TurnipPolicy.reason(renderer));
+        return version.isEmpty() ? DefaultVersion.TURNIP : version;
+    }
+
+    private static native String vkGetRenderer();
+
     public static short getAdrenoModelId(Context context) {
-        return GpuCompatibility.adrenoModelId(glGetRenderer(context));
+        return GpuCompatibility.adrenoModelId(getRenderer(context));
     }
 
     public static int vkMakeVersion(String value) {

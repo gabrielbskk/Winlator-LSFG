@@ -82,7 +82,13 @@ public abstract class GraphicsDrivers {
         // Turnip uses Qualcomm/Adreno-specific interfaces. Mali-G52 and unknown
         // renderers keep the system Vulkan path (Vortek); no driver is forced
         // onto an unsupported GPU.
-        boolean adreno = com.winlator.core.GpuCompatibility.isTurnipCandidate(GPUHelper.glGetRenderer(context));
+        String renderer = GPUHelper.getRenderer(context);
+        boolean adreno = com.winlator.core.GpuCompatibility.isTurnipCandidate(renderer);
+        android.util.Log.i("AuroraGPU", "renderer=" + renderer + " model="
+                + com.winlator.core.GpuCompatibility.adrenoModelId(renderer)
+                + " policy=" + com.winlator.core.TurnipPolicy.REVISION + " turnip="
+                + com.winlator.core.TurnipPolicy.recommendedVersion(renderer) + " reason="
+                + com.winlator.core.TurnipPolicy.reason(renderer));
         return (adreno ? TURNIP : VORTEK) + "," + DEFAULT_OPENGL_DRIVER;
     }
 }

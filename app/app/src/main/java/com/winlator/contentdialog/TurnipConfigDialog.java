@@ -32,11 +32,15 @@ public class TurnipConfigDialog extends ContentDialog {
         AppUtils.setSpinnerSelectionFromMemorySize(sMaxDeviceMemory, config.get("maxDeviceMemory", "0"));
 
         String version = config.get("version");
-        GeneralComponents.initViews(GeneralComponents.Type.TURNIP, findViewById(R.id.TurnipToolbox), sVersion, version, DefaultVersion.TURNIP);
+        CheckBox automatic = findViewById(R.id.CBTurnipAutomatic);
+        automatic.setChecked(version.isEmpty() || version.equals("auto"));
+        GeneralComponents.initViews(GeneralComponents.Type.TURNIP, findViewById(R.id.TurnipToolbox), sVersion, version, GPUHelper.resolveTurnipVersion(context, ""));
+        sVersion.setEnabled(!automatic.isChecked());
+        automatic.setOnCheckedChangeListener((button, checked) -> sVersion.setEnabled(!checked));
 
         setOnConfirmCallback(() -> {
             KeyValueSet newConfig = new KeyValueSet();
-            newConfig.put("version", StringUtils.parseNumber(sVersion.getSelectedItem()));
+            if (!automatic.isChecked()) newConfig.put("version", StringUtils.parseNumber(sVersion.getSelectedItem()));
             newConfig.put("maxDeviceMemory", StringUtils.parseMemorySize(sMaxDeviceMemory.getSelectedItem()));
             newConfig.put("useHWBuf", cbUseHWBuf.isChecked() ? "1" : "0");
             newConfig.put("forceWaitForFences", cbForceWaitForFences.isChecked() ? "1" : "0");

@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
  */
 public final class GpuCompatibility {
     private static final Pattern ADRENO = Pattern.compile(
-            "\\badreno(?:\\s*\\(tm\\))?\\s*([678][0-9]{2})[a-z]?\\b", Pattern.CASE_INSENSITIVE);
+            "\\badreno(?:\\s*\\(tm\\))?\\s*a?\\s*([0-9]{3})[a-z]?\\b", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FREEDRENO = Pattern.compile("\\b(?:freedreno\\s+)?FD([67][0-9]{2})\\b", Pattern.CASE_INSENSITIVE);
     private static final Pattern MALI_G = Pattern.compile(
             "\\bmali[-\\s]*g([0-9]{2,3})\\b", Pattern.CASE_INSENSITIVE);
 
@@ -19,6 +20,8 @@ public final class GpuCompatibility {
     public static short adrenoModelId(String renderer) {
         if (renderer == null) return 0;
         Matcher matcher = ADRENO.matcher(renderer);
+        if (matcher.find()) return Short.parseShort(matcher.group(1));
+        matcher = FREEDRENO.matcher(renderer);
         return matcher.find() ? Short.parseShort(matcher.group(1)) : 0;
     }
 
@@ -37,9 +40,10 @@ public final class GpuCompatibility {
         return maliGModelId(renderer) == 52;
     }
 
-    /** Turnip is only a candidate on GPUs explicitly reporting Adreno 6xx/7xx/8xx. */
+    /** Automatic policy covers A6xx/A7xx only; manual selection remains available. */
     public static boolean isTurnipCandidate(String renderer) {
-        return adrenoModelId(renderer) > 0;
+        int model = adrenoModelId(renderer);
+        return model >= 600 && model < 800;
     }
 
     public static boolean isMali(String renderer) {
