@@ -17,6 +17,21 @@ A imagem definida vale apenas para o executável esperado do atalho. Se o launch
 
 Deixe o campo vazio para mostrar o ícone padrão da aplicação Discord. Não envie informações privadas para um serviço público de hospedagem sem querer. **O recurso é opcional; nenhuma imagem é enviada automaticamente**.
 
+## Identificação de jogos Steam / SteamDB
+
+Nas **Configurações do atalho → Sistema → Imagem do jogo no Discord**:
+
+- **App ID manual:** escreva um número Steam válido, por exemplo `620`, ou cole `https://steamdb.info/app/620/` ou `https://store.steampowered.com/app/620/`. O SteamDB usa o mesmo App ID, não é um identificador independente.
+- **Local automático:** se o atalho apontar para um EXE e existir um `steam_appid.txt` com um número válido ao lado desse EXE, o campo sugere/preenche o ID. O botão **Detectar** faz uma nova tentativa. Não são vasculhadas outras pastas nem é feita varredura no aparelho.
+- **Busca por nome:** o botão **Procurar na Steam** consulta o serviço de busca da Steam mediante ação do usuário e apresenta candidatos com nome e App ID para escolher. O primeiro resultado **nunca é atribuído sem confirmação**. A disponibilidade dessa pesquisa depende do serviço externo, que pode mudar.
+- **Prévia de aparência:** o painel de exemplo mostra o nome do jogo e a imagem do EXE, ou a capa Steam quando houver um App ID e a CDN fornecer a imagem. É uma **simulação local**, não uma captura do Discord.
+
+Quando um App ID válido está salvo, o RPC usa uma URL pública da **Steam CDN** para buscar a capa (`library_600x900.jpg`). A disponibilidade varia; algumas imagens podem estar ausentes ou ter URL diferente. Um asset do Discord ou uma URL HTTPS inserida manualmente no campo personalizado **tem prioridade** sobre a Steam, e um campo Steam vazio mantém o fallback existente.
+
+**Privacidade:** o Winlator não envia seu EXE nem o ícone local para a Steam. Porém, procurar pelo nome consulta um serviço da Steam, e carregar uma capa da Steam pode fazer uma requisição de rede contendo o App ID. Você controla a busca por nome e pode deixar o campo vazio.
+
+**Sem DRM:** o recurso lê apenas metadados ou exibe imagens; ele não acessa sua biblioteca, conta Steam ou altera jogos. O App ID Steam não substitui o Application ID do Discord.
+
 ## Sobre a versão
 
 As alterações estão inicialmente no PR experimental de imagens, empilhado sobre `experimental/rpc-android-v4`. O APK **Experimental 4 SDK-free preview** já publicado **não possui RPC funcional** e não muda automaticamente com alterações no código-fonte: será necessária uma compilação posterior com o SDK oficial para exibir as imagens no Discord.
