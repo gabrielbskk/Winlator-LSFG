@@ -1,25 +1,32 @@
 ---
 name: Game compatibility
-about: Report if a game works or has problems.
-title: ''
+about: Report game/app compatibility on an Android device.
+title: "[Compatibility] "
 labels: ''
 assignees: ''
-
 ---
 
-## Game
-Game name:
+## Application
+- Game/application name and version:
+- Windows executable bitness (32-bit or 64-bit):
+- Graphics API (DirectX 9/10/11/12, Vulkan, OpenGL, unknown):
 
 ## Device
-Device / SoC:
+- Model and Android version:
+- SoC / GPU family:
+- Driver and version:
 
-## Winlator
-Version:
-Turnip:
-DXVK / VKD3D:
+## Winlator setup
+- Fork release / commit:
+- Wine / Box64:
+- DXVK / VKD3D or renderer configuration:
+- Resolution and graphics settings:
+- LSFG on/off, multiplier and preset:
 
 ## Result
-Working / Issues / Not working:
+- Working / partially working / fails to start:
+- Steps to reproduce:
+- Observed performance, stutter, RAM usage and measurement method (if available):
 
-## Notes
-Write any problem or performance detail here:
+## Additional information
+Sanitized error logs and screenshots; do not share game binaries or private account information.
