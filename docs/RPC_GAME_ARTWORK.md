@@ -9,8 +9,9 @@ O Winlator LSFG Aurora já lê ícones Windows de arquivos `.exe` e salva versõ
 ## Configurar uma imagem por jogo
 
 1. No Winlator, abra a configuração do atalho Windows. Em **Imagem do jogo no Discord**, o ícone extraído do executável aparecerá na pré-visualização, quando disponível.
-2. Para usar **a mesma imagem** no seu Rich Presence, obtenha o PNG do atalho/ícone e **envie voluntariamente** essa imagem para a seção `Rich Presence → Art Assets` da sua aplicação no [Discord Developer Portal](https://discord.com/developers/applications). Recomenda-se uma imagem quadrada, preferencialmente 1024 × 1024. Informe a chave do asset no campo correspondente do Winlator. Como alternativa, informe uma URL HTTPS pública da imagem.
-3. Salve o atalho, reinicie o jogo e confirme o Rich Presence a partir de outra conta, usando um APK compilado com o Discord Social SDK oficial.
+2. Selecione **Compartilhar PNG do ícone do jogo** para exportar o ícone através do seletor de compartilhamento do Android (o arquivo é preparado no armazenamento privado do aplicativo). Escolha onde guardar o PNG; o Winlator **não faz upload automático**.
+3. Para usar **a mesma imagem** no seu Rich Presence, obtenha o PNG do atalho/ícone e **envie voluntariamente** essa imagem para a seção `Rich Presence → Art Assets` da sua aplicação no [Discord Developer Portal](https://discord.com/developers/applications). Recomenda-se uma imagem quadrada, preferencialmente 1024 × 1024. Informe a chave do asset no campo correspondente do Winlator. Como alternativa, informe uma URL HTTPS pública da imagem.
+4. Salve o atalho, reinicie o jogo e confirme o Rich Presence a partir de outra conta, usando um APK compilado com o Discord Social SDK oficial.
 
 A imagem definida vale apenas para o executável esperado do atalho. Se o launcher abrir outro programa/jogo, não será atribuída automaticamente a imagem do primeiro EXE ao segundo.
 
