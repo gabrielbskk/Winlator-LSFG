@@ -132,16 +132,19 @@ como estavam; otimizações desse pipeline dependem de medições em dispositivo
 
 ## Validação
 
-Nesta sessão, o build ARM64 sem o SDK e os dez testes JVM passaram. O APK dos
-testes instrumentados foi compilado, mas não executado: não há aparelho Android
-conectado. A ponte JNI foi compilada/linkada, inclusive pelo caminho Prefab/NDK 27,
-contra um AAR de referência **1.9.16441**, usado somente para verificar a integração
-do build. Essa versão é rejeitada em runtime pelo código; não serve para RPC
-Android. O AAR não foi incluído no Git nem no APK de teste entregue.
+Os builds ARM64 sem SDK e com o AAR **1.10.19337** fornecido pelo mantenedor
+passaram, incluindo a ponte JNI/Prefab com NDK 27 e os dez testes JVM. O APK dos
+testes instrumentados também foi compilado, mas não executado: não há aparelho
+Android conectado. O AAR é uma dependência local e não foi incluído no Git.
 
-A compilação e o funcionamento com o AAR oficial **1.10+** ainda precisam ser
-validados quando ele estiver disponível. Não foram medidos FPS, RAM ou consumo
-térmico em GPUs físicas.
+A versão `11.2-rpc-experimental.1` distribui um APK de debug ARM64 com o SDK
+1.10.19337 incluído. Ainda é necessário configurar um Application ID válido.
+Sua assinatura de teste pode diferir da instalação existente; faça backup dos
+dados antes de testar e não desinstale uma versão com dados importantes sem backup.
+
+O funcionamento do RPC em aparelho e a visibilidade da atividade por outra conta
+ainda precisam ser validados. Não foram medidos FPS, RAM ou consumo térmico em
+GPUs físicas. O SDK antigo 1.9 usado na verificação inicial não é distribuído.
 
 ```sh
 cd app
