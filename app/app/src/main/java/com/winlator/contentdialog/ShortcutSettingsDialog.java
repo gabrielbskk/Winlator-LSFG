@@ -301,6 +301,32 @@ public class ShortcutSettingsDialog extends ContentDialog {
             boolean requireRestart = graphicsDriver.equals(GraphicsDrivers.VORTEK) && VortekConfigDialog.isRequireRestart(oldGraphicsDriverConfig, graphicsDriverConfig);
             if (requireRestart) ContentDialog.confirm(context, R.string.the_settings_have_been_changed_do_you_want_to_restart_the_app, () -> AppUtils.restartApplication(context));
         });
+
+        // ContentDialog dismisses unconditionally after its confirm callback.
+        // Validate BEFORE a user can press Confirm, or invalid input would
+        // close the editor and discard changes instead of showing an error.
+        final View confirm = findViewById(R.id.BTConfirm);
+        Runnable validateRpcFields = () -> {
+            String steam = etSteamAppId.getText().toString().trim();
+            String artwork = etDiscordArtwork.getText().toString().trim();
+            boolean steamValid = steam.isEmpty() || !SteamGameArtwork.appId(steam).isEmpty();
+            boolean artworkValid = artwork.isEmpty() || !DiscordArtwork.normalize(artwork).isEmpty();
+            confirm.setEnabled(steamValid && artworkValid);
+            if (!steamValid) etSteamAppId.setError(context.getString(R.string.discord_steam_bad_id));
+            else etSteamAppId.setError(null);
+            if (!artworkValid) etDiscordArtwork.setError(context.getString(R.string.discord_game_artwork_invalid));
+            else etDiscordArtwork.setError(null);
+        };
+        android.text.TextWatcher validator = new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateRpcFields.run();
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        };
+        etSteamAppId.addTextChangedListener(validator);
+        etDiscordArtwork.addTextChangedListener(validator);
+        validateRpcFields.run();
     }
 
     /** Local preview is intentionally approximate; only Discord can render actual Rich Presence. */
