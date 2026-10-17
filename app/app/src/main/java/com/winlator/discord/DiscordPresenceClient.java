@@ -83,7 +83,7 @@ final class DiscordPresenceClient {
                     }
                 }
                 // Timestamp rendering is done by Discord, not by per-second RPC updates.
-                handler.postDelayed(this, title == null ? 1000 : 100);
+                handler.postDelayed(this, PresencePollingPolicy.delayMillis(result, title != null));
             } catch (RuntimeException | LinkageError e) { failed(e); }
         }
     };
@@ -107,9 +107,14 @@ final class DiscordPresenceClient {
             try { if (handle != 0) DiscordSdkBridge.poll(handle); }
             catch (RuntimeException | LinkageError ignored) {}
             finally {
-                if (handle != 0) DiscordSdkBridge.destroy(handle);
-                handle = 0;
-                thread.quitSafely();
+                try {
+                    if (handle != 0) DiscordSdkBridge.destroy(handle);
+                } catch (RuntimeException | LinkageError e) {
+                    Log.w("DiscordRPC", "Could not destroy the Discord SDK client", e);
+                } finally {
+                    handle = 0;
+                    thread.quitSafely();
+                }
             }
         }, 500);
     }
