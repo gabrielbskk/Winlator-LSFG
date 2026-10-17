@@ -44,10 +44,12 @@ public class InstalledComponentFilesTest {
         Path root = Files.createTempDirectory("aurora-installed-");
         try {
             File customDriver = Files.createDirectory(root.resolve("My driver")).toFile();
-            File soundfont = Files.write(root.resolve("My Bank.SF2"), new byte[]{1}).toFile();
+            File soundfont = Files.write(root.resolve("My Bank.sf2"), new byte[]{1}).toFile();
             File invalid = Files.write(root.resolve("soundfont-.partial"), new byte[]{1}).toFile();
             assertTrue(InstalledComponentFiles.isSelectable("adrenotools_driver", customDriver));
             assertTrue(InstalledComponentFiles.isSelectable("soundfont", soundfont));
+            File upperExtension = Files.write(root.resolve("Legacy.SF2"), new byte[]{1}).toFile();
+            assertFalse(InstalledComponentFiles.isSelectable("soundfont", upperExtension));
             assertFalse(InstalledComponentFiles.isSelectable("adrenotools_driver", soundfont));
             assertFalse(InstalledComponentFiles.isSelectable("soundfont", invalid));
             assertFalse(InstalledComponentFiles.isSelectable(null, soundfont));
