@@ -16,8 +16,8 @@ android {
         applicationId 'com.winlator'
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 38
-        versionName "11.2-aurora-experimental.6"
+        versionCode 39
+        versionName "11.3-aurora-rc.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testProguardFiles 'proguard-test-rules.pro'
         buildConfigField 'boolean', 'DISCORD_SDK_ENABLED', discordSdkEnabled.toString()

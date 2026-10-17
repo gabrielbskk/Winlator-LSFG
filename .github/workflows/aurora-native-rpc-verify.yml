@@ -72,7 +72,7 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x ./gradlew
-          ./gradlew :app:testDebugUnitTest :app:assembleDebug \
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest \
             -PdiscordSdkAar="$RUNNER_TEMP/discord_partner_sdk.aar" \
             -PandroidNdkVersion=27.2.12479018 \
             --no-daemon --stacktrace
@@ -85,6 +85,9 @@ jobs:
           test -s "$APK"
           python3 scripts/verify_rpc_v4_apk.py "$APK"
           unzip -tq "$APK" >/dev/null
+          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")"
+          echo "$BADGING" | grep -F "versionCode='39'"
+          echo "$BADGING" | grep -F "versionName='11.3-aurora-rc.1'"
           unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libwinlator_discord.so'
           unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libdiscord_partner_sdk.so'
           test -n "$(sha256sum "$APK")"
