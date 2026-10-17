@@ -439,18 +439,10 @@ public class ShortcutSettingsDialog extends ContentDialog {
     }
 
     private Bitmap getExecutableIcon() {
-        // Winlator already caches extracted EXE icons as shortcut PNGs.
+        // Prefer Winlator's cached shortcut icon, then extract from actual EXE.
         if (shortcut.icon != null) return shortcut.icon;
-        try {
-            MSLink.LinkInfo link = MSLink.extractLinkInfo(shortcut.getLinkFile());
-            if (link == null || link.targetPath == null) return null;
-            String path = WineUtils.dosToUnixPath(link.targetPath, shortcut.container);
-            if (path == null || !path.toLowerCase(java.util.Locale.ROOT).endsWith(".exe"))
-                return null;
-            return PEParser.extractIcon(new File(path));
-        } catch (RuntimeException error) {
-            return null;
-        }
+        File executable = getShortcutExecutable();
+        return executable == null ? null : PEParser.extractIcon(executable);
     }
 
     private void renameShortcut(String newName) {
