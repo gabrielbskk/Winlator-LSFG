@@ -4,9 +4,9 @@ Thanks for helping with Winlator LSFG. This is an unofficial Winlator fork focus
 
 ## Before contributing
 - Check existing issues and pull requests, including experimental work.
-- Open an issue for significant feature proposals and include the target devices and expected behavior.
+- Check existing PRs and the [development workflow](docs/DEVELOPMENT_WORKFLOW.md) before starting. GitHub Issues is currently disabled on this fork; discuss larger proposals in a draft PR until the maintainer enables Issues.
 - Keep changes focused: one feature or fix per branch/PR.
-- Do not commit proprietary `Lossless.dll`, copyrighted game files, credentials or device identifiers.
+- Do not commit proprietary `Lossless.dll`, `discord_partner_sdk.aar`, split SDK ZIP archives, copyrighted game files, credentials or device identifiers. GitHub Actions may fetch an authorized SDK to a temporary runner location with SHA-256 checking.
 
 ## Development and testing
 - State the build environment, Android SDK/NDK versions, build variant and any required dependencies.

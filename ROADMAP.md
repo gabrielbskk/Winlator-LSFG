@@ -23,12 +23,12 @@ This document tracks proposed work, not completed features. The project's main t
 - Avoid regressions in existing devices and games.
 
 ### 4. Discord Rich Presence on Android
-- Evaluate the experimental Discord RPC work in PR #1.
+- Continue Android Discord RPC integration and Steam/game artwork verification in [draft PR #7](https://github.com/gabrielbskk/Winlator-LSFG/pull/7); PRs #1, #4, and #5 are historical and superseded. The available SDK-backed Experimental 5 release is a test candidate, not proof of device-level stability.
 - Test game detection, lifecycle, user opt-in and behavior without the Discord app.
 - Keep RPC optional and avoid leaking game or device information without consent.
 
 ### 5. ARM64 / 64-bit builds
-- Assess a 64-bit-only experimental package while clearly describing 32-bit game/launcher limitations.
+- Prefer Android ARM64 packages containing both Windows 32-bit and 64-bit game assets; verify `i386-windows` and `syswow64` before release. Historical stripped-down APKs remain archived.
 - Verify bundle/archive integrity, licensing, and reproducible release steps.
 - Keep broader compatibility builds available where practical.
 
