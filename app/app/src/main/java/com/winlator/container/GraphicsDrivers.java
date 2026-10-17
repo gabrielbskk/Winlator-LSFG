@@ -79,6 +79,10 @@ public abstract class GraphicsDrivers {
     }
 
     public static String getDefaultDriver(Context context) {
-        return GPUHelper.getAdrenoModelId(context) > 0 ? GraphicsDrivers.TURNIP+","+GraphicsDrivers.DEFAULT_OPENGL_DRIVER : GraphicsDrivers.VORTEK+","+GraphicsDrivers.DEFAULT_OPENGL_DRIVER;
+        // Turnip uses Qualcomm/Adreno-specific interfaces. Mali-G52 and unknown
+        // renderers keep the system Vulkan path (Vortek); no driver is forced
+        // onto an unsupported GPU.
+        boolean adreno = com.winlator.core.GpuCompatibility.isTurnipCandidate(GPUHelper.glGetRenderer(context));
+        return (adreno ? TURNIP : VORTEK) + "," + DEFAULT_OPENGL_DRIVER;
     }
 }

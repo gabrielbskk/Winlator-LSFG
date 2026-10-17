@@ -51,7 +51,7 @@ public class VortekRendererComponent extends EnvironmentComponent implements Con
             Options options = new Options();
             String exposedDeviceExtensions = config.get("exposedDeviceExtensions", "all");
             if (!exposedDeviceExtensions.isEmpty() && !exposedDeviceExtensions.equals("all")) {
-                options.exposedDeviceExtensions = exposedDeviceExtensions.split("\\|");
+                options.exposedDeviceExtensions = exposedDeviceExtensions.split(":");
             }
 
             String vkMaxVersion = config.get("vkMaxVersion", VortekConfigDialog.DEFAULT_VK_MAX_VERSION);

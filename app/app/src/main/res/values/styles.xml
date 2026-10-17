@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppThemeBase" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorAccent">?attr/colorAccent</item>
         <item name="tabSelectedTextColor">?attr/colorPrimaryText</item>
         <item name="tabTextColor">?attr/colorSecondaryText</item>
         <item name="android:windowBackground">?attr/colorPrimarySurface</item>
@@ -21,36 +22,38 @@
         <item name="radioButtonStyle">@style/RadioButton</item>
     </style>
     <style name="AppThemeLight" parent="@style/AppThemeBase">
-        <item name="colorAccent">#2FA89A</item>
-        <item name="colorPrimary">#247E74</item>
-        <item name="colorPrimaryDark">#247E74</item>
-        <item name="colorControlNormal">#E0E0E0</item>
-        <item name="colorPrimaryText">#111111</item>
-        <item name="colorSecondaryText">#5E5E5E</item>
-        <item name="colorPrimarySurface">#F7F7F7</item>
+        <item name="colorActionSurface">#3B59C8</item>
+        <item name="colorAccent">#496BEB</item>
+        <item name="colorPrimary">#324BC0</item>
+        <item name="colorPrimaryDark">#253791</item>
+        <item name="colorControlNormal">#D1D9EA</item>
+        <item name="colorPrimaryText">#14203B</item>
+        <item name="colorSecondaryText">#4E5B79</item>
+        <item name="colorPrimarySurface">#EDF2FF</item>
         <item name="colorSecondarySurface">#FFFFFF</item>
-        <item name="colorPrimaryVariant">#2FA89A</item>
-        <item name="colorSecondaryVariant">#DADADA</item>
+        <item name="colorPrimaryVariant">#496BEB</item>
+        <item name="colorSecondaryVariant">#E0E7FA</item>
         <item name="colorError">#ef5350</item>
-        <item name="popupMenuBackground">@drawable/content_dialog_background_light</item>
+        <item name="popupMenuBackground">@drawable/aurora_surface_light</item>
         <item name="toolboxBackground">@drawable/toolbox_light</item>
         <item name="panelBackground">@drawable/panel_background_light</item>
         <item name="preloaderBackground">@drawable/preloader_background_light</item>
         <item name="progressBarIndeterminateImage">@drawable/progress_bar_indeterminate_light</item>
     </style>
     <style name="AppThemeDark" parent="@style/AppThemeBase">
-        <item name="colorAccent">#2FA89A</item>
-        <item name="colorPrimary">#0E0E0E</item>
-        <item name="colorPrimaryDark">#0E0E0E</item>
-        <item name="colorControlNormal">#1A1A1A</item>
-        <item name="colorPrimaryText">#FFFFFF</item>
-        <item name="colorSecondaryText">#B8B8B8</item>
-        <item name="colorPrimarySurface">#000000</item>
-        <item name="colorSecondarySurface">#0E0E0E</item>
-        <item name="colorPrimaryVariant">#2FA89A</item>
-        <item name="colorSecondaryVariant">#1A1A1A</item>
+        <item name="colorActionSurface">#3D5FC8</item>
+        <item name="colorAccent">#82A1FF</item>
+        <item name="colorPrimary">#111930</item>
+        <item name="colorPrimaryDark">#0D1427</item>
+        <item name="colorControlNormal">#2A3753</item>
+        <item name="colorPrimaryText">#F5F7FF</item>
+        <item name="colorSecondaryText">#B3BFDD</item>
+        <item name="colorPrimarySurface">#0A1021</item>
+        <item name="colorSecondarySurface">#18223A</item>
+        <item name="colorPrimaryVariant">#82A1FF</item>
+        <item name="colorSecondaryVariant">#253450</item>
         <item name="colorError">#ef5350</item>
-        <item name="popupMenuBackground">@drawable/content_dialog_background_dark</item>
+        <item name="popupMenuBackground">@drawable/aurora_surface_dark</item>
         <item name="toolboxBackground">@drawable/toolbox_dark</item>
         <item name="panelBackground">@drawable/panel_background_dark</item>
         <item name="preloaderBackground">@drawable/preloader_background_dark</item>
@@ -170,7 +173,7 @@
     </style>
     <style name="ButtonNeutral" parent="BaseButton">
         <item name="android:background">@drawable/button_neutral</item>
-        <item name="android:textColor">#ffffff</item>
+        <item name="android:textColor">?attr/colorPrimaryText</item>
     </style>
     <style name="ButtonPositive" parent="BaseButton">
         <item name="android:background">@drawable/button_positive</item>
@@ -253,12 +256,12 @@
     <style name="TableHeadRightLine">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">#247E74</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
     </style>
     <style name="TableHeadBottomLine">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">#247E74</item>
+        <item name="android:background">?attr/colorPrimaryVariant</item>
     </style>
     <style name="TableBodyRightLine">
         <item name="android:layout_width">1dp</item>

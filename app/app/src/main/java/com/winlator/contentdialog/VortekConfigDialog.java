@@ -31,7 +31,8 @@ public class VortekConfigDialog extends ContentDialog {
         final Spinner sResourceMemoryType = findViewById(R.id.SResourceMemoryType);
         final MultiSelectionComboBox mscbExposedExtensions = findViewById(R.id.MSCBExposedExtensions);
 
-        final String[] deviceExtensions = GPUHelper.vkGetDeviceExtensions();
+        String[] availableExtensions = GPUHelper.vkGetDeviceExtensions();
+        final String[] deviceExtensions = availableExtensions != null ? availableExtensions : new String[0];
         mscbExposedExtensions.setPopupWindowWidth(360);
         mscbExposedExtensions.setDisplayText(context.getString(R.string.multiselection_combobox_display_text));
         mscbExposedExtensions.setItems(deviceExtensions);
@@ -46,14 +47,14 @@ public class VortekConfigDialog extends ContentDialog {
         }
         else if (!exposedDeviceExtensionsVal.isEmpty()) {
             String[] selectedItems = exposedDeviceExtensionsVal.split(":");
-            mscbExposedExtensions.setSelectedItems(selectedItems.length > 1 ? selectedItems : deviceExtensions);
+            mscbExposedExtensions.setSelectedItems(selectedItems);
         }
 
         String adrenotoolsDriver = config.get("adrenotoolsDriver");
         GeneralComponents.initViews(GeneralComponents.Type.ADRENOTOOLS_DRIVER, findViewById(R.id.AdrenotoolsDriverToolbox), sAdrenotoolsDriver, adrenotoolsDriver, "System");
 
         View panvkInfo = findViewById(R.id.LLPanvkG52);
-        boolean maliG52 = GPUHelper.glGetRenderer(context).toLowerCase(java.util.Locale.ROOT).matches(".*mali[- ]?g52.*");
+        boolean maliG52 = com.winlator.core.GpuCompatibility.isMaliG52(GPUHelper.glGetRenderer(context));
         panvkInfo.setVisibility(maliG52 ? View.VISIBLE : View.GONE);
         findViewById(R.id.BTPanvkReleases).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/LukeValen/panvk-mali-g52/releases"));
