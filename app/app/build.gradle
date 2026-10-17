@@ -31,6 +31,12 @@ android {
         }
     }
 
+    // Large pre-compressed archives must not be deflated again by zipflinger.
+    // This avoids Gradle heap spikes without changing the asset contents.
+    androidResources {
+        noCompress += ['tzst']
+    }
+
     buildFeatures {
         buildConfig true
         prefab discordSdkEnabled
