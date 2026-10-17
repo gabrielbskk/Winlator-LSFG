@@ -409,6 +409,13 @@
                         android:scaleType="fitCenter"
                         android:contentDescription="@string/discord_exe_icon_preview" />
 
+                    <Button
+                        style="@style/ButtonNeutral"
+                        android:id="@+id/BTShareDiscordExeIcon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_share_exe_icon" />
+
                     <EditText
                         style="@style/EditText"
                         android:id="@+id/ETDiscordArtwork"
