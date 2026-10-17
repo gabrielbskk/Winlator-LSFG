@@ -73,7 +73,7 @@ This project does not include or distribute `Lossless.dll`.
 The integration is experimental. Features listed above are described by this fork; performance and device compatibility may vary, and changes under development are **not** guaranteed.
 
 - [Development roadmap](ROADMAP.md): proposed LSFG-VK, GPU, RAM, ARM64 and Discord RPC improvements
-- [Aurora 11.3 RC1 source and validation](docs/RELEASE_CANDIDATE_11_3.md): candidate branch in PR #19, not a published Stable APK
+- [Aurora 11.3 RC1 source and validation](docs/RELEASE_CANDIDATE_11_3.md): [Experimental 7 RC1 APK](../../releases/tag/aurora-11.3-experimental-7-rc1), not a published Stable APK
 - [Stable release acceptance gate](docs/STABLE_RELEASE_GATE.md): required device validation, signing and regression checks before any version is called Stable
 - [Contributor guide](CONTRIBUTING.md): how to report, test and submit changes
 - [License (LGPL-2.1)](LICENSE) and component-specific licenses

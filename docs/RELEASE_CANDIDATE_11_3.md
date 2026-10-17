@@ -1,6 +1,10 @@
 # Aurora 11.3 RC1 — candidato técnico (não Stable)
 
-O código de `feat/aurora-consolidation` / PR #19 aponta para `main` e usa `versionCode=39` e `versionName=11.3-aurora-rc.1`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
+O código de `feat/aurora-consolidation` / PR #19 usa `versionCode=39` e
+`versionName=11.3-aurora-rc.1`. A pré-release de testes
+[Aurora 11.3 Experimental 7 (RC1)](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-experimental-7-rc1)
+foi publicada a partir do commit `7e4f5a5`. Ela usa assinatura debug e não é
+uma Stable.
 
 ## Correções incluídas
 
