@@ -1,31 +1,38 @@
-## Summary
-Describe the change and why it is needed.
+## Resumo / Summary
+Explique o que mudou e por quê. Se este PR substitui outro, indique o número. Mantenha uma única alteração lógica por PR.
 
-## Related issue
-Closes #
+## PRs e dependências relacionados
+- PR relacionado / issue (se Issues estiver habilitado):
+- Branch base: `main` ou `experimental/rpc-android-v4`
+- Outros PRs necessários / substituídos:
 
-## Scope
-- [ ] Documentation / repository maintenance
-- [ ] Frame generation / LSFG integration
-- [ ] GPU / driver compatibility
-- [ ] Android / ARM64 / 64-bit compatibility
-- [ ] Discord RPC
-- [ ] Other
+## Escopo / Scope
+- [ ] Documentação e manutenção do repositório
+- [ ] Frame generation / LSFG
+- [ ] GPU, driver ou RAM
+- [ ] Android / ARM64 ou arquivos Windows 32/64 bits
+- [ ] Discord RPC e capas de jogos
+- [ ] Outro (explicar)
 
-## Verification
-- [ ] Build completed (provide environment and variant)
-- [ ] Automated tests (list results)
-- [ ] Tested on device (model / SoC / GPU / Android)
-- [ ] Regression tests (describe)
-- [ ] Not tested on device (explain limitations)
+## Verificação / Verification
+- [ ] Build concluído; ambiente, SDK/NDK e variante informados
+- [ ] Testes automatizados / JVM executados (link do Actions)
+- [ ] Teste em aparelho (modelo, Android, SoC, GPU/driver) documentado
+- [ ] Ainda **não** testado em aparelho (descreva pendências)
+- [ ] Regressões, Windows 32/64 bits e troca de jogos avaliados se aplicável
+- [ ] JNI/SDK do Discord e permissões verificadas se alterar RPC
+- [ ] Configurações e screenshots de UI conferidas quando necessário
 
-## Performance (if applicable)
-Baseline and new FPS, frame-time measurements, peak RAM, test settings and repeated runs. Write "not measured" if unavailable.
+## Desempenho / Performance, se aplicável
+Informe FPS, tempo de frame, pico de RAM, temperaturas, driver, jogo,
+resolução, comparação anterior/depois e repetição dos testes.
+Se não mediu, escreva **não medido** (não alegar melhoria).
 
-## Risks / compatibility
-Note 32-bit application compatibility, driver-specific behavior, privacy, memory and thermal effects as applicable.
+## Riscos, compatibilidade e reversão
+Descreva limites conhecidos, privacidade, erros possíveis e como reverter.
 
 ## Checklist
-- [ ] No proprietary binaries, game files or secrets added
-- [ ] Relevant docs updated
-- [ ] Third-party licenses and attribution preserved
+- [ ] Nenhum AAR, ZIP fragmentado do SDK, APK binário, Lossless.dll, token ou arquivo proprietário adicionado
+- [ ] Documentação / changelog / roadmap atualizados quando cabível
+- [ ] Créditos à Rafaela, brunodev85 e terceiros mantidos
+- [ ] PR em modo **draft** se ainda não estiver pronto para merge

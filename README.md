@@ -78,7 +78,7 @@ The integration is experimental. Features listed above are described by this for
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Experimental 4 preview is available:** [download the SDK-free Android ARM64 APK](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-4-sdkfree-preview). **Discord Rich Presence does not work in this preview**, because the Discord SDK was deliberately not bundled. The [RPC experimental 5 source candidate, PR #7](../../pull/7) includes game EXE icon extraction and configurable artwork, but is not a released APK and still requires an SDK-backed build and real-device verification. See [Experimental 5 notes](docs/RPC_EXPERIMENTAL_5.md), [EXE image guide](docs/RPC_GAME_ARTWORK.md) and [RPC guide](docs/DISCORD_RPC.md).
+**Versão principal — Winlator LSFG Aurora 11.2 (RPC + capas):** [baixar APK ARM64](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-rpc). Esta compilação inclui o Discord Social SDK e passou pelo build nativo e pelos testes de integridade do GitHub Actions. **Status: candidata a estável**, não estabilidade comprovada: o RPC e as capas desta compilação ainda precisam ser verificados em dispositivo real. As versões anteriores continuam preservadas como releases em rascunho, acessíveis aos administradores, com tags e histórico do Git intactos. Veja [histórico de versões](docs/RELEASES.md), [configuração de capas](docs/RPC_GAME_ARTWORK.md) e [guia de Discord RPC](docs/DISCORD_RPC.md).
 
 ## Maintainer and contributors
 
@@ -86,7 +86,7 @@ The integration is experimental. Features listed above are described by this for
 
 **Original Winlator LSFG fork credit:** Rafaela, [@amyroseee](https://github.com/amyroseee), [original source repository](https://github.com/amyroseee/Winlator-LSFG).
 
-See [CONTRIBUTORS.md](CONTRIBUTORS.md) for project participation and acknowledgments. Contributions are welcome through issues and pull requests.
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for project participation and acknowledgments. Contributions are welcome via pull requests; GitHub Issues is currently disabled on this fork. See [development workflow](docs/DEVELOPMENT_WORKFLOW.md).
 
 ## Credits
 

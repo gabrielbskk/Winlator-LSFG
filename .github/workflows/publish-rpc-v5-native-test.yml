@@ -1,0 +1,101 @@
+name: Publish verified Experimental 5 native RPC prerelease
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-rpc-v5-native-test.yml']
+  workflow_dispatch:
+    inputs:
+      source_run:
+        description: Successful SDK-backed Actions run containing the APK
+        required: true
+        default: '39031134753'
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: rpc-v5-native-prerelease
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Fetch exact SDK-backed APK produced by passing CI run
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_RUN: ${{ inputs.source_run || '39031134753' }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" \
+            --name experimental-5-native-rpc-arm64 --dir dist
+          APK=dist/Winlator-LSFG-Aurora-11.2-rpc-experimental.5-arm64-debug.apk
+          test -s "$APK"
+          (cd dist && sha256sum -c SHA256SUMS.txt)
+          unzip -tq "$APK" >/dev/null
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libwinlator_discord.so'
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libdiscord_partner_sdk.so'
+          unzip -Z1 "$APK" | grep -Fx 'assets/rootfs.tzst'
+          unzip -Z1 "$APK" | grep -Fx 'assets/wincomponents/direct3d.tzst'
+      - name: Publish experimental APK and checksum
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: rpc-android-experimental-5-full-rpc
+        run: |
+          set -euo pipefail
+          cat > /tmp/notes.md <<'NOTES'
+          # Winlator LSFG Aurora 11.2 — Experimental 5 Full RPC + Game Covers
+
+          **Pré-release experimental para testes, não validada nesta compilação em dispositivo real.**
+
+          APK Android ARM64 compilado com Discord Social SDK, ponte RPC JNI,
+          novas configurações de imagem por atalho e suporte a Steam App ID.
+          Este APK NÃO é a variante 'SDK-free': ele contém bibliotecas nativas
+          `libwinlator_discord.so` e `libdiscord_partner_sdk.so`.
+
+          ### O que mudou
+          - Discord Rich Presence (nome do jogo, tipo Playing, detalhes e tempo de sessão).
+          - Campo de capa personalizado: asset da aplicação Discord ou imagem pública HTTPS.
+          - Steam App ID manual, SteamDB, reconhecimento de `steam_appid.txt`
+            ao lado do EXE e busca por nome com confirmação de resultado.
+          - Capa por Steam CDN quando disponível.
+          - Prévia ilustrativa do Discord nas configurações de atalhos.
+          - Ícone extraído do EXE e compartilhamento manual do PNG. **Ícone local
+            não é enviado automaticamente ao Discord ou a serviços externos.**
+          - Aurora, créditos aos autores originais e componentes Windows 32/64-bit.
+
+          ### Validação
+          - Build nativo ARM64, testes JVM e integridade do APK passaram no
+            [GitHub Actions 39031134753](https://github.com/gabrielbskk/Winlator-LSFG/actions/runs/39031134753).
+          - AAR de entrada autenticado por SHA-256 (b1b2491f1e1848c79fd6f1986d5aa1e0c8019e88a6e62c7be06b89e8e4870933).
+          - O mantenedor informou RPC básico funcional em um APK Experimental 3
+            anterior; **isso não comprova que o RPC e as imagens da Experimental 5
+            já funcionam em todos os aparelhos**.
+          - Testes de login, Rich Presence, capa, troca de jogos e Windows 32 bits
+            em aparelho real ainda são necessários.
+          - Assinatura de debug: pode não atualizar um APK assinado com outra chave.
+            Faça backup dos contêineres e saves antes de instalar.
+          - `Lossless.dll` não está incluído; forneça sua própria cópia legítima.
+
+          Fonte compilada: commit ee1156d7b71433973abff375d65a0b29e43818a8 da branch
+          `ci/rpc-v5-mediafire-native` (derivada de `experimental/rpc-android-v4`).
+          Desenvolvimento e futuros testes: PR #7.
+          NOTES
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release tag already exists; do not overwrite it" >&2
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" \
+            dist/Winlator-LSFG-Aurora-11.2-rpc-experimental.5-arm64-debug.apk \
+            dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" \
+            --target ee1156d7b71433973abff375d65a0b29e43818a8 \
+            --title "Winlator LSFG Aurora Experimental 5 — RPC + Game Covers (test)" \
+            --prerelease --notes-file /tmp/notes.md

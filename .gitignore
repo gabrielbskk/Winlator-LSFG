@@ -43,5 +43,7 @@ Thumbs.db
 **/.externalNativeBuild/
 **/captures/
 
-# Proprietary Discord Social SDK (provided locally by the builder)
-/app/app/libs/discord_partner_sdk.aar
+# Proprietary Discord Social SDK — never place binary archives in Git
+**/discord_partner_sdk.aar
+**/discord_partner_sdk.zip.*
+**/discord_social_sdk.aar
