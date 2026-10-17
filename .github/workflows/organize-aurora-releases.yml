@@ -1,0 +1,123 @@
+name: Organize Aurora releases
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/organize-aurora-releases.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aurora-release-catalog
+  cancel-in-progress: false
+
+jobs:
+  organize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Set Aurora's main release and archive older releases safely
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          import tempfile
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          primary = "rpc-android-experimental-5-full-rpc"
+          archived = [
+              "rpc-android-experimental-5-full-native",
+              "rpc-android-experimental-5-sdkfree-preview",
+              "rpc-android-experimental-4-sdkfree-preview",
+              "rpc-android-experimental-3",
+              "rpc-android-experimental-2",
+              "rpc-android-experimental-1",
+          ]
+          expected_ids = {
+              primary: 415782873,
+              "rpc-android-experimental-5-full-native": 415781669,
+              "rpc-android-experimental-5-sdkfree-preview": 415767804,
+              "rpc-android-experimental-4-sdkfree-preview": 415747524,
+              "rpc-android-experimental-3": 415703253,
+              "rpc-android-experimental-2": 415700586,
+              "rpc-android-experimental-1": 415688682,
+          }
+
+          def api(method, path, payload=None):
+              cmd = ["gh", "api", "-X", method, "repos/" + repo + "/" + path]
+              if payload is None:
+                  out = subprocess.check_output(cmd, text=True)
+              else:
+                  with tempfile.NamedTemporaryFile(mode="w", suffix=".json", encoding="utf-8") as data:
+                      json.dump(payload, data, ensure_ascii=False)
+                      data.flush()
+                      out = subprocess.check_output(cmd + ["--input", data.name], text=True)
+              return json.loads(out)
+
+          # Preflight everything before changing public visibility.
+          releases = {}
+          for tag, expected in expected_ids.items():
+              release = api("GET", "releases/tags/" + tag)
+              if release.get("id") != expected or release.get("tag_name") != tag:
+                  raise RuntimeError("Unexpected release for tag " + tag)
+              if not release.get("assets"):
+                  raise RuntimeError("Cannot archive an empty release: " + tag)
+              releases[tag] = release
+
+          record = releases[primary]
+          apk = next((a for a in record["assets"]
+                      if a.get("name") == "Winlator-LSFG-Aurora-11.2-rpc-experimental.5-arm64-debug.apk"), None)
+          if not apk or apk.get("size") != 176187610:
+              raise RuntimeError("Primary APK differs from the verified native build")
+
+          preface = (
+              "## Canal principal — candidata a estável\\n\\n"
+              "**Esta é a versão principal recomendada para testes de Aurora 11.2.** "
+              "O APK contém o SDK e o RPC nativos, mas a integração com o Discord "
+              "e a exibição de capas **ainda não foram validadas neste APK em aparelho real**. "
+              "A designação \\"candidata a estável\\" não é garantia de estabilidade. "
+              "O APK original e o SHA-256 permanecem inalterados.\\n\\n"
+              "As versões anteriores foram mantidas como rascunhos para a equipe "
+              "(não são listadas nem baixáveis publicamente enquanto drafts), "
+              "e as tags e commits permanecem no GitHub.\\n\\n"
+              "---\\n\\n"
+          ).replace("\\n", "\n").replace('\\"', '"')
+          old_body = record.get("body") or ""
+          if not old_body.startswith("## Canal principal — candidata a estável"):
+              old_body = preface + old_body
+          new_name = "Winlator LSFG Aurora 11.2 — Estável (candidata) | RPC + Capas"
+
+          result = api("PATCH", "releases/" + str(record["id"]), {
+              "name": new_name,
+              "body": old_body,
+              "draft": False,
+              "prerelease": False,
+              "make_latest": "true",
+          })
+          if result.get("draft") or result.get("prerelease") or result.get("name") != new_name:
+              raise RuntimeError("Could not designate primary release")
+
+          for tag in archived:
+              previous = releases[tag]
+              if previous.get("draft"):
+                  print("Already archived:", tag)
+                  continue
+              updated = api("PATCH", "releases/" + str(previous["id"]), {"draft": True})
+              if not updated.get("draft") or updated.get("tag_name") != tag:
+                  raise RuntimeError("Archiving failed for " + tag)
+              print("Archived (not deleted):", tag)
+
+          latest = api("GET", "releases/latest")
+          if latest.get("id") != record["id"]:
+              raise RuntimeError("Latest release did not resolve to the expected stable candidate")
+          print("Primary release:", latest.get("html_url"))
+          print("All six historical releases are archived as drafts; assets/tags preserved.")
+          PY
