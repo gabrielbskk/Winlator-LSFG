@@ -18,6 +18,19 @@ jobs:
       - uses: actions/checkout@v4
       - name: Aurora resource regressions
         run: python3 scripts/test_aurora_resources.py
+      - name: Audit packaged GPU drivers (read-only)
+        run: |
+          python3 scripts/test_driver_inventory.py
+          python3 scripts/audit_graphics_drivers.py > /tmp/aurora-driver-inventory.json
+          python3 -m json.tool /tmp/aurora-driver-inventory.json > /dev/null
+          python3 - <<'PY'
+          import json
+          with open("/tmp/aurora-driver-inventory.json", encoding="utf-8") as handle:
+              result = json.load(handle)
+          assert result["declared_drivers"].get("TURNIP") == "turnip"
+          assert any(item["path"].endswith("turnip-26.1.0.tzst") for item in result["packaged"])
+          print("Packaged:", len(result["packaged"]), "Installable Turnip:", len(result["installable_turnip"]))
+          PY
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
