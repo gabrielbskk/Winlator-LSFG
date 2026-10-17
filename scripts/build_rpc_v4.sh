@@ -19,6 +19,9 @@ for bin in python3 java zstd tar unzip sha256sum; do
   fi
 done
 
+# Validate AAR shape (does not establish SDK authenticity or exact version).
+python3 "$ROOT/scripts/check_discord_aar.py" "$SDK_AAR"
+
 # Build with SDK 1.10+, including the JNI bridge, never a no-RPC fallback.
 (
   cd "$ROOT/app"
