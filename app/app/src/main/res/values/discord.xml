@@ -26,4 +26,22 @@
     <string name="discord_game_artwork_invalid">Enter a valid Discord asset key or a public HTTPS image URL.</string>
     <string name="discord_share_exe_icon">Share game EXE icon as PNG</string>
     <string name="discord_icon_unavailable">Could not extract or share this game icon.</string>
+    <string name="discord_steam_id_title">Steam App ID / SteamDB (optional)</string>
+    <string name="discord_steam_id_hint">620 or https://steamdb.info/app/620/</string>
+    <string name="discord_steam_detect_local">Detect game steam_appid.txt</string>
+    <string name="discord_steam_search_name">Search game by name on Steam</string>
+    <string name="discord_steam_help">Name search only happens when tapped; confirm the right game. Public Steam CDN artwork is used, without uploading the EXE.</string>
+    <string name="discord_steam_local_found">App ID found in steam_appid.txt: %1$s</string>
+    <string name="discord_steam_local_missing">No valid steam_appid.txt beside the EXE. Enter an ID or search by name.</string>
+    <string name="discord_steam_search_empty">No matching game found. Try another name or enter the ID.</string>
+    <string name="discord_steam_search_failed">Steam lookup unavailable. Enter the App ID manually.</string>
+    <string name="discord_steam_choose_game">Confirm Steam game</string>
+    <string name="discord_steam_bad_id">Enter a numeric App ID or a SteamDB/Steam /app/ URL.</string>
+    <string name="discord_rpc_example_title">Example Rich Presence preview</string>
+    <string name="discord_rpc_example_artwork">Rich Presence image preview</string>
+    <string name="discord_rpc_example_playing">Playing in Winlator LSFG Aurora</string>
+    <string name="discord_rpc_example_default">EXE icon (local preview)</string>
+    <string name="discord_rpc_example_steam">Steam ID %1$s image (if available)</string>
+    <string name="discord_rpc_example_manual">Custom Discord artwork (asset key or URL)</string>
+    <string name="discord_rpc_example_disclaimer">Local mockup, not a Discord screenshot. The actual image requires the SDK and a supported asset or URL.</string>
 </resources>

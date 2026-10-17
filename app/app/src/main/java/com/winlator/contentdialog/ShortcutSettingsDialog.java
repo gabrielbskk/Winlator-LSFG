@@ -1,6 +1,12 @@
 package com.winlator.contentdialog;
 
 import android.content.Context;
+import android.app.AlertDialog;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.TextView;
 import android.content.Intent;
 import android.net.Uri;
 import android.graphics.Bitmap;
@@ -9,6 +15,9 @@ import android.widget.Button;
 import android.widget.Toast;
 import androidx.core.content.FileProvider;
 import com.winlator.discord.DiscordArtwork;
+import com.winlator.discord.SteamGameArtwork;
+import com.winlator.discord.SteamArtworkPreview;
+import com.winlator.discord.SteamStoreSearch;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -73,6 +82,9 @@ public class ShortcutSettingsDialog extends ContentDialog {
 
         final EditText etDiscordArtwork = findViewById(R.id.ETDiscordArtwork);
         etDiscordArtwork.setText(shortcut.getExtra("discord_rpc_image"));
+        final EditText etSteamAppId = findViewById(R.id.ETDiscordSteamId);
+        etSteamAppId.setText(shortcut.getExtra("discord_rpc_steam_id"));
+        setupSteamRpcArtwork(context, etName, etDiscordArtwork, etSteamAppId);
         final ImageView ivDiscordExeIcon = findViewById(R.id.IVDiscordExeIconPreview);
         if (shortcut.icon != null) {
             ivDiscordExeIcon.setImageBitmap(shortcut.icon);
@@ -239,6 +251,12 @@ public class ShortcutSettingsDialog extends ContentDialog {
             String screenSize = ContainerDetailFragment.getScreenSize(getContentView());
 
             String execArgs = etExecArgs.getText().toString();
+            String steamRaw = etSteamAppId.getText().toString().trim();
+            String steamId = SteamGameArtwork.appId(steamRaw);
+            if (!steamRaw.isEmpty() && steamId.isEmpty()) {
+                etSteamAppId.setError(context.getString(R.string.discord_steam_bad_id));
+                return;
+            }
             String rawArtwork = etDiscordArtwork.getText().toString().trim();
             String selectedArtwork = DiscordArtwork.normalize(rawArtwork);
             if (!rawArtwork.isEmpty() && selectedArtwork.isEmpty()) {
@@ -246,6 +264,7 @@ public class ShortcutSettingsDialog extends ContentDialog {
                 return;
             }
             shortcut.putExtra("discord_rpc_image", selectedArtwork.isEmpty() ? null : selectedArtwork);
+            shortcut.putExtra("discord_rpc_steam_id", steamId.isEmpty() ? null : steamId);
             shortcut.putExtra("execArgs", !execArgs.isEmpty() ? execArgs : null);
             shortcut.putExtra("screenSize", !screenSize.equals(shortcut.container.getScreenSize()) ? screenSize : null);
             shortcut.putExtra("graphicsDriver", !graphicsDriver.equals(shortcut.container.getGraphicsDriver()) ? graphicsDriver : null);
@@ -284,19 +303,146 @@ public class ShortcutSettingsDialog extends ContentDialog {
         });
     }
 
-    private Bitmap getExecutableIcon() {
-        // Winlator already caches extracted EXE icons as shortcut PNGs.
-        if (shortcut.icon != null) return shortcut.icon;
+    /** Local preview is intentionally approximate; only Discord can render actual Rich Presence. */
+    private void setupSteamRpcArtwork(Context context, EditText etName,
+                                      EditText etArtwork, EditText etSteam) {
+        final ImageView preview = findViewById(R.id.IVDiscordRpcPreviewArtwork);
+        final TextView game = findViewById(R.id.TVDiscordRpcPreviewGame);
+        final TextView meta = findViewById(R.id.TVDiscordRpcPreviewMeta);
+        final TextView feedback = findViewById(R.id.TVSteamIdSource);
+        final Button local = findViewById(R.id.BTDetectSteamId);
+        final Button search = findViewById(R.id.BTSearchSteamName);
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final int[] generation = {0};
+
+        final Runnable refresh = () -> {
+            int request = ++generation[0];
+            String title = etName.getText().toString().trim();
+            game.setText(title.isEmpty() ? shortcut.name : title);
+            String custom = DiscordArtwork.normalize(etArtwork.getText().toString());
+            String steamId = SteamGameArtwork.appId(etSteam.getText().toString());
+            if (shortcut.icon != null) preview.setImageBitmap(shortcut.icon);
+            else preview.setImageResource(R.drawable.container_file_link);
+            if (!custom.isEmpty()) {
+                meta.setText(R.string.discord_rpc_example_manual);
+            } else if (!steamId.isEmpty()) {
+                meta.setText(context.getString(R.string.discord_rpc_example_steam, steamId));
+                // Public cover preview is a single bounded Steam CDN request, not EXE upload.
+                new Thread(() -> {
+                    Bitmap cover = SteamArtworkPreview.fetch(steamId);
+                    if (cover != null) preview.post(() -> {
+                        if (preview.isAttachedToWindow() && request == generation[0])
+                            preview.setImageBitmap(cover);
+                    });
+                }, "SteamRpcArtPreview").start();
+            } else {
+                meta.setText(R.string.discord_rpc_example_default);
+                if (shortcut.icon == null) new Thread(() -> {
+                    Bitmap icon = getExecutableIcon();
+                    if (icon != null) preview.post(() -> {
+                        if (preview.isAttachedToWindow() && request == generation[0])
+                            preview.setImageBitmap(icon);
+                    });
+                }, "SteamRpcLocalIcon").start();
+            }
+        };
+
+        TextWatcher watcher = new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                handler.removeCallbacks(refresh);
+                handler.postDelayed(refresh, 700);
+            }
+            @Override public void afterTextChanged(Editable editable) {}
+        };
+        etName.addTextChangedListener(watcher);
+        etArtwork.addTextChangedListener(watcher);
+        etSteam.addTextChangedListener(watcher);
+        refresh.run();
+
+        Runnable detectLocal = () -> new Thread(() -> {
+            String found = SteamGameArtwork.localId(getShortcutExecutable());
+            etSteam.post(() -> {
+                if (!etSteam.isAttachedToWindow()) return;
+                if (!found.isEmpty()) {
+                    etSteam.setText(found);
+                    feedback.setText(context.getString(R.string.discord_steam_local_found, found));
+                } else {
+                    feedback.setText(R.string.discord_steam_local_missing);
+                }
+            });
+        }, "SteamRpcLocalDetection").start();
+        local.setOnClickListener(v -> detectLocal.run());
+
+        // Recognize steam_appid.txt automatically, without guessing a game by name.
+        if (etSteam.getText().length() == 0) new Thread(() -> {
+            String found = SteamGameArtwork.localId(getShortcutExecutable());
+            if (!found.isEmpty()) etSteam.post(() -> {
+                if (etSteam.isAttachedToWindow() && etSteam.getText().length() == 0) {
+                    etSteam.setText(found);
+                    feedback.setText(context.getString(R.string.discord_steam_local_found, found));
+                }
+            });
+        }, "SteamRpcAutoDetect").start();
+
+        search.setOnClickListener(view -> {
+            String name = etName.getText().toString().trim();
+            if (name.length() < 2) name = shortcut.name;
+            if (name.length() < 2 || name.length() > 80) {
+                feedback.setText(R.string.discord_steam_search_empty);
+                return;
+            }
+            search.setEnabled(false);
+            final String query = name;
+            new Thread(() -> {
+                java.util.List<SteamStoreSearch.Match> matches = null;
+                try { matches = SteamStoreSearch.search(query); }
+                catch (Exception ignored) {}
+                final java.util.List<SteamStoreSearch.Match> result = matches;
+                view.post(() -> {
+                    search.setEnabled(true);
+                    if (!view.isAttachedToWindow()) return;
+                    if (result == null) {
+                        feedback.setText(R.string.discord_steam_search_failed);
+                    } else if (result.isEmpty()) {
+                        feedback.setText(R.string.discord_steam_search_empty);
+                    } else {
+                        CharSequence[] choices = new CharSequence[result.size()];
+                        for (int i = 0; i < choices.length; i++)
+                            choices[i] = result.get(i).toString();
+                        new AlertDialog.Builder(context)
+                            .setTitle(R.string.discord_steam_choose_game)
+                            .setItems(choices, (dialog, index) -> {
+                                etSteam.setText(result.get(index).id);
+                                feedback.setText(result.get(index).title);
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show();
+                    }
+                });
+            }, "SteamRpcNameSearch").start();
+        });
+    }
+
+    private File getShortcutExecutable() {
         try {
             MSLink.LinkInfo link = MSLink.extractLinkInfo(shortcut.getLinkFile());
-            if (link == null || link.targetPath == null) return null;
-            String path = WineUtils.dosToUnixPath(link.targetPath, shortcut.container);
-            if (path == null || !path.toLowerCase(java.util.Locale.ROOT).endsWith(".exe"))
-                return null;
-            return PEParser.extractIcon(new File(path));
+            String dosPath = link != null && link.targetPath != null
+                ? link.targetPath : shortcut.path;
+            if (dosPath == null ||
+                !dosPath.toLowerCase(java.util.Locale.ROOT).endsWith(".exe")) return null;
+            String unixPath = WineUtils.dosToUnixPath(dosPath, shortcut.container);
+            return unixPath == null ? null : new File(unixPath);
         } catch (RuntimeException error) {
             return null;
         }
+    }
+
+    private Bitmap getExecutableIcon() {
+        // Prefer Winlator's cached shortcut icon, then extract from actual EXE.
+        if (shortcut.icon != null) return shortcut.icon;
+        File executable = getShortcutExecutable();
+        return executable == null ? null : PEParser.extractIcon(executable);
     }
 
     private void renameShortcut(String newName) {
