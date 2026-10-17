@@ -1,0 +1,52 @@
+name: Aurora DXVK optional packages (review only)
+
+on:
+  push:
+    branches: [feat/aurora-dxvk-package-review]
+    paths:
+      - 'scripts/package_dxvk_review.py'
+      - 'scripts/test_dxvk_packaging.py'
+      - '.github/workflows/aurora-dxvk-review.yml'
+  pull_request:
+    branches: [feat/aurora-consolidation]
+    paths:
+      - 'scripts/package_dxvk_review.py'
+      - 'scripts/test_dxvk_packaging.py'
+      - '.github/workflows/aurora-dxvk-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Offline archive tests
+        run: python3 scripts/test_dxvk_packaging.py
+      - name: Install zstd
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v zstd >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq zstd
+          fi
+      - name: Fetch pinned official Wine DLLs and package optional DXVK
+        run: |
+          set -euo pipefail
+          python3 scripts/package_dxvk_review.py --output dist/aurora-dxvk-review
+          (cd dist/aurora-dxvk-review && sha256sum -c SHA256SUMS.txt)
+      - name: Upload installation packages for inspection (not a release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-dxvk-2.6.2-2.7.1-import-review
+          path: dist/aurora-dxvk-review/
+          retention-days: 7
+          if-no-files-found: error
+
+# DXVK 2.x requires Vulkan 1.3-capable drivers for recent releases.
+# This job does not change system defaults, upload archives into public releases,
+# or claim compatibility with Adreno/Mali devices.
