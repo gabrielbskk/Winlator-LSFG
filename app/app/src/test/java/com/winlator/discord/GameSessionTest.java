@@ -31,13 +31,13 @@ public class GameSessionTest {
 
     @Test public void stripsControlCharactersFromPublishedNames() {
         GameSession session = new GameSession();
-        session.select(10, "game.exe", " My\\nGame\\tName\\r ", 1000);
+        session.select(10, "game.exe", " My\nGame\tName\r ", 1000);
         assertEquals("My Game Name", session.getTitle());
     }
 
     @Test public void fallsBackToExecutableForBlankSanitizedName() {
         GameSession session = new GameSession();
-        session.select(10, "game.exe", "\\t\\n", 1000);
+        session.select(10, "game.exe", "\t\n", 1000);
         assertEquals("game", session.getTitle());
     }
 
