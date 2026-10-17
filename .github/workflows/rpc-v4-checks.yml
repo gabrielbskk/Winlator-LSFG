@@ -64,11 +64,11 @@ jobs:
             echo "Do not commit the proprietary SDK" >&2
             exit 1
           fi
-      - name: JVM regression tests without proprietary Discord SDK
+      - name: JVM regression tests and Android debug build without proprietary Discord SDK
         working-directory: app
         run: |
           chmod +x ./gradlew
-          ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
+          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace
       - name: Upload JVM test results
         if: always()
         uses: actions/upload-artifact@v4
