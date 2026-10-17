@@ -13,12 +13,15 @@ A Experimental 5 continua usando Android ARM64 e empacota os componentes Windows
 - O jogo mostrado recebe apenas a imagem do executável esperado: um launcher que inicia outro programa não herda indevidamente a arte do primeiro jogo.
 - Se a imagem for inválida ou estiver vazia, não envia uma imagem personalizada, permitindo a imagem padrão da aplicação Discord.
 - Filtros para bloquear arquivos locais, URLs não HTTPS e endereços de rede privada na configuração.
-- Conjunto de testes JVM para resolução de assets e URLs.
+- App ID Steam/SteamDB manual por jogo; detecção local em `steam_appid.txt` junto ao EXE e pesquisa voluntária na Steam com confirmação do resultado.
+- Prévia visual do Rich Presence nas configurações do atalho, combinando nome do jogo e ícone do EXE ou capa da CDN Steam.
+- O usuário pode preferir uma imagem personalizada; não há envio automático de executáveis ou ícones para serviços externos.
+- Conjunto de testes JVM para resolução de assets, URLs, IDs da Steam e metadados locais.
 - `versionName=11.2-rpc-experimental.5` e `versionCode=37`.
 
 ## Limitação importante da API
 
-O Discord Social SDK **não aceita um Bitmap Android, um `.exe`, caminho local `file://` ou `content://` como imagem do Rich Presence**. Ele exige um asset já cadastrado na aplicação ou uma URL pública. Por isso, a detecção/extração do ícone no Winlator é local e automática, mas a exibição de **essa mesma imagem no Discord requer que o usuário a cadastre ou hospede voluntariamente**. Não há upload automático de arquivos dos jogos.
+O Discord Social SDK **não aceita um Bitmap Android, um `.exe`, caminho local `file://` ou `content://` como imagem do Rich Presence**. Ele exige um asset já cadastrado na aplicação ou uma URL pública. Por isso, a extração do ícone no Winlator é local e automática, mas a exibição de **essa mesma imagem no Discord requer que o usuário a cadastre ou hospede voluntariamente**. Como alternativa, um App ID Steam válido permite apontar para uma capa pública da CDN Steam, quando disponível. Nenhum arquivo de jogo é enviado automaticamente.
 
 Para seguir o processo: [Guia da imagem do jogo](RPC_GAME_ARTWORK.md).
 
