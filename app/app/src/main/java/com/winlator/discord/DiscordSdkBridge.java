@@ -19,7 +19,7 @@ public final class DiscordSdkBridge {
     }
 
     static native long create(long applicationId);
-    static native void update(long handle, String title, long startSeconds);
+    static native void update(long handle, String title, long startSeconds, String artwork);
     static native int poll(long handle);
     static native void clear(long handle);
     static native void destroy(long handle);
