@@ -62,11 +62,12 @@ The integration is experimental. Features listed above are described by this for
 - [Development roadmap](ROADMAP.md): proposed LSFG-VK, GPU, RAM, ARM64 and Discord RPC improvements
 - [Contributor guide](CONTRIBUTING.md): how to report, test and submit changes
 - [Testing matrix](docs/TESTING.md): how to reproduce performance and compatibility reports
+- [RPC experimental 4 release candidate](docs/RPC_EXPERIMENTAL_4.md): improvements, build prerequisites and device-test checklist
 - [Architecture orientation](docs/ARCHITECTURE.md)
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled)
 
-**Android Discord Rich Presence** remains experimental in [PR #1](../../pull/1), with lifecycle and compatibility improvements proposed in stacked PRs. A full Windows 32-bit / 64-bit asset build is preferred; a reduced 64-bit-only distribution is not recommended. No untested features are announced as production-ready.
+**RPC experimental 4 is a development candidate, not a published APK.** It combines prior RPC work, lifecycle fixes and full Windows 32-bit assets on the Android ARM64 build; see the [v4 notes](docs/RPC_EXPERIMENTAL_4.md). A licensed Discord Social SDK AAR and real-device tests are needed before publication. No performance or compatibility gain is claimed without measurement.
 
 ## Maintainer and contributors
 
