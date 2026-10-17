@@ -39,10 +39,10 @@ class DownloadLinks(HTMLParser):
         if tag != "a":
             return
         d = dict(attrs)
-        href = html.unescape(d.get("href", ""))
+        href = html.unescape(d.get("href") or "")
         if not href:
             return
-        attrs_text = " ".join([d.get("id", ""), d.get("class", "")]).lower()
+        attrs_text = " ".join([d.get("id") or "", d.get("class") or ""]).lower()
         if "download" in attrs_text or "mediafire.com" in href:
             self.candidates.append((0 if "downloadbutton" in attrs_text else 1, href))
 
