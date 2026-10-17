@@ -26,4 +26,22 @@
     <string name="discord_game_artwork_invalid">Informe uma chave de imagem do Discord ou URL HTTPS pública válida.</string>
     <string name="discord_share_exe_icon">Compartilhar PNG do ícone do jogo</string>
     <string name="discord_icon_unavailable">Não foi possível extrair ou compartilhar o ícone deste jogo.</string>
+    <string name="discord_steam_id_title">Steam App ID / SteamDB (opcional)</string>
+    <string name="discord_steam_id_hint">620 ou https://steamdb.info/app/620/</string>
+    <string name="discord_steam_detect_local">Detectar pelo steam_appid.txt do jogo</string>
+    <string name="discord_steam_search_name">Procurar pelo nome na Steam</string>
+    <string name="discord_steam_help">Busca por nome somente ao tocar no botão; confirme o jogo correto. A imagem vem da CDN pública Steam, sem enviar o EXE.</string>
+    <string name="discord_steam_local_found">App ID encontrado no steam_appid.txt: %1$s</string>
+    <string name="discord_steam_local_missing">Nenhum steam_appid.txt válido ao lado do EXE. Informe o ID ou procure pelo nome.</string>
+    <string name="discord_steam_search_empty">Nenhum jogo encontrado. Tente outro nome ou informe o ID.</string>
+    <string name="discord_steam_search_failed">Não foi possível consultar a Steam. Use o App ID manualmente.</string>
+    <string name="discord_steam_choose_game">Confirme o jogo da Steam</string>
+    <string name="discord_steam_bad_id">Use um App ID numérico ou URL /app/ do SteamDB/Steam.</string>
+    <string name="discord_rpc_example_title">Exemplo de como o RPC pode aparecer</string>
+    <string name="discord_rpc_example_artwork">Prévia da imagem do Rich Presence</string>
+    <string name="discord_rpc_example_playing">Jogando no Winlator LSFG Aurora</string>
+    <string name="discord_rpc_example_default">Imagem do EXE (prévia local)</string>
+    <string name="discord_rpc_example_steam">Imagem Steam ID %1$s (sujeita à disponibilidade)</string>
+    <string name="discord_rpc_example_manual">Imagem personalizada do Discord (chave ou URL)</string>
+    <string name="discord_rpc_example_disclaimer">Simulação local, não é uma captura do Discord. A imagem real depende do SDK e de uma URL ou asset aceito.</string>
 </resources>
