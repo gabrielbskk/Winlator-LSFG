@@ -70,8 +70,8 @@ def download(url, destination):
     decoder.feed(doc)
     links = sorted(decoder.candidates)
     # Some variants expose their CDN download URL in scripts instead of an href.
-    for link in re.findall(r"https?://[^\\s\\\"'<>]+", doc.replace(chr(92) + "/", "/")):
-        link = html.unescape(link)
+    for link in re.findall(r'https?://\S+', doc.replace(chr(92) + "/", "/")):
+        link = html.unescape(link.split('"')[0].split("'")[0].split("<")[0].split(">")[0])
 
         if "download" in link and "mediafire" in link:
             links.append((2, link))
