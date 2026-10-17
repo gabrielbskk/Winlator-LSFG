@@ -244,6 +244,10 @@ public abstract class GeneralComponents {
 
     private static void downloadComponentFile(final Type type, final String filename, final Spinner spinner, final String defaultItem) {
         final Activity activity = (Activity)spinner.getContext();
+        if (!ComponentCatalog.isSafeFileName(type.lowerName(), filename)) {
+            AppUtils.showToast(activity, R.string.a_network_error_occurred);
+            return;
+        }
         File destination = new File(getComponentDir(type, activity), filename);
         HttpUtils.download(activity, String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/"+filename), destination, (success) -> {
             if (success) {
@@ -264,7 +268,9 @@ public abstract class GeneralComponents {
             if (list == null) { callback.call(false); return; }
             String filename = type.lowerName()+"-"+identifier+".tzst";
             boolean advertised = false;
-            for (String line : list.split("\\n")) if (line.trim().equals(filename)) { advertised = true; break; }
+            for (String safeName : ComponentCatalog.validFileNames(type.lowerName(), list)) {
+                if (safeName.equals(filename)) { advertised = true; break; }
+            }
             if (!advertised) { callback.call(false); return; }
             File destination = new File(getComponentDir(type, activity), filename);
             HttpUtils.download(activity, String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/"+filename), destination, callback);
@@ -370,18 +376,19 @@ public abstract class GeneralComponents {
         HttpUtils.download(String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/index.txt"), (content) -> activity.runOnUiThread(() -> {
             preloaderDialog.close();
             if (content != null) {
-                if (content.isEmpty()) {
+                final String[] filenames = ComponentCatalog.validFileNames(type.lowerName(), content);
+                if (filenames.length == 0) {
                     AppUtils.showToast(activity, R.string.there_are_no_items_to_download);
                     return;
                 }
-                final String[] filenames = content.split("\n");
                 final String[] items = filenames.clone();
                 for (int i = 0; i < items.length; i++) {
                     items[i] = type.title()+" "+parseDisplayText(type, items[i]);
                 }
 
                 ContentDialog.showSelectionList(activity, R.string.install_component, items, false, (positions) -> {
-                    if (!positions.isEmpty()) downloadComponentFile(type, filenames[positions.get(0)], spinner, defaultItem);
+                    if (!positions.isEmpty() && positions.get(0) >= 0 && positions.get(0) < filenames.length)
+                        downloadComponentFile(type, filenames[positions.get(0)], spinner, defaultItem);
                 });
             }
             else AppUtils.showToast(activity, R.string.a_network_error_occurred);
