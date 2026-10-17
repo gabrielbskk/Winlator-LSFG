@@ -22,6 +22,6 @@
     <string name="discord_game_artwork_title">Discord game artwork</string>
     <string name="discord_exe_icon_preview">Icon extracted from the Windows executable</string>
     <string name="discord_game_artwork_hint">Discord asset key or public HTTPS image URL</string>
-    <string name="discord_game_artwork_help">The icon above is extracted locally from the game EXE or its shortcut. Discord cannot display a local file directly: upload the image to the application&#39;s Rich Presence assets and enter its key, or use a public HTTPS image URL. Empty = default Discord application icon. No automatic upload.</string>
+    <string name="discord_game_artwork_help">The icon above is extracted locally from the game EXE or its shortcut. Discord cannot display a local file directly: upload the image to the Discord Rich Presence assets and enter its key, or use a public HTTPS image URL. Empty = default Discord application icon. No automatic upload.</string>
     <string name="discord_game_artwork_invalid">Enter a valid Discord asset key or a public HTTPS image URL.</string>
 </resources>
