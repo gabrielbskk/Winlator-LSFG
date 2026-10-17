@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Safe area is within the central 66 dp of the adaptive icon. -->
+    <path android:fillColor="#00000000"
+        android:strokeColor="#20CFFA"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round"
+        android:pathData="M29,59 C32,39 46,29 63,33 C70,34 77,40 80,46" />
+    <path android:fillColor="#00000000"
+        android:strokeColor="#57FFDD"
+        android:strokeWidth="5.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M36,72 L51,39 L55,39 L72,72" />
+    <path android:fillColor="#00000000"
+        android:strokeColor="#C7FFF8"
+        android:strokeWidth="4.8"
+        android:strokeLineCap="round"
+        android:pathData="M45,60 L64,60" />
+    <path android:fillColor="#00000000"
+        android:strokeColor="#286FAE"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:pathData="M36,76 C48,86 66,83 75,72" />
+</vector>
