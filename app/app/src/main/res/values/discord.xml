@@ -24,4 +24,6 @@
     <string name="discord_game_artwork_hint">Discord asset key or public HTTPS image URL</string>
     <string name="discord_game_artwork_help">The icon above is extracted locally from the game EXE or its shortcut. Discord cannot display a local file directly: upload the image to the Discord Rich Presence assets and enter its key, or use a public HTTPS image URL. Empty = default Discord application icon. No automatic upload.</string>
     <string name="discord_game_artwork_invalid">Enter a valid Discord asset key or a public HTTPS image URL.</string>
+    <string name="discord_share_exe_icon">Share game EXE icon as PNG</string>
+    <string name="discord_icon_unavailable">Could not extract or share this game icon.</string>
 </resources>
