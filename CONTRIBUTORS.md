@@ -1,10 +1,13 @@
 # Contributors and acknowledgments
 
 ## Project maintenance
-- [@gabrielbskk](https://github.com/gabrielbskk) — repository owner and current maintainer of this Winlator LSFG fork.
+- [@gabrielbskk](https://github.com/gabrielbskk) — repository owner and current maintainer of this Winlator LSFG Aurora derivative.
+
+## Original Winlator LSFG project
+- **Rafaela / [@amyroseee](https://github.com/amyroseee)** — maintainer of the [source Winlator LSFG fork](https://github.com/amyroseee/Winlator-LSFG) that this derivative builds upon. All original work and historical contributions remain credited to their respective authors.
 
 ## Upstream and third-party projects
-- [brunodev85/Winlator](https://github.com/brunodev85/winlator) — original Winlator project.
+- [brunodev85/Winlator](https://github.com/brunodev85/winlator) — original Winlator project (upstream of Winlator LSFG).
 - LSFG-VK and its maintainers, plus Wine, Box64, Mesa and other upstream components — see relevant source and licenses. Attribution in this file does not imply these developers maintain this fork.
 
 ## Contributing

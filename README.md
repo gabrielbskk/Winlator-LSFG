@@ -1,10 +1,14 @@
 <p align="center">
-	<img src="logo.png" width="376" height="128" alt="Winlator LSFG Logo" />
+	<img src="assets/branding/aurora-symbol.svg" width="170" height="170" alt="Winlator LSFG Aurora independent symbol" />
 </p>
 
-# Winlator LSFG
+<h1 align="center">Winlator LSFG Aurora</h1>
 
-A Winlator fork focused on integrating LSFG-VK frame generation into Android, along with a few practical additions for everyday use.
+<p align="center"><strong>Experiments in Android ARM64 Windows gaming and LSFG-VK integration.</strong></p>
+
+> **Attribution:** This community branch is based on [Rafaela's Winlator LSFG fork (@amyroseee)](https://github.com/amyroseee/Winlator-LSFG), itself derived from [Winlator by brunodev85](https://github.com/brunodev85/winlator). Aurora is a distinct, unofficial experimental identity; the original projects and their authors retain full credit.
+
+An experimental derivative of Winlator LSFG with a separate visual identity and a focus on compatibility, frame generation, and clear reporting of changes.
 
 ## Features
 
@@ -60,22 +64,26 @@ The integration is experimental. Features listed above are described by this for
 - [Testing matrix](docs/TESTING.md): how to reproduce performance and compatibility reports
 - [Architecture orientation](docs/ARCHITECTURE.md)
 - [Changelog](CHANGELOG.md)
-- [Open issues](../../issues) and [pull requests](../../pulls)
+- [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled)
 
-Work on **Android Discord Rich Presence** and a possible **64-bit-only package** is experimental in [PR #1](../../pull/1); it is not a released default-branch feature.
+**Android Discord Rich Presence** remains experimental in [PR #1](../../pull/1), with lifecycle and compatibility improvements proposed in stacked PRs. A full Windows 32-bit / 64-bit asset build is preferred; a reduced 64-bit-only distribution is not recommended. No untested features are announced as production-ready.
 
 ## Maintainer and contributors
 
-**Maintainer / repository owner:** [@gabrielbskk](https://github.com/gabrielbskk).
+**Maintainer of this derivative:** [@gabrielbskk](https://github.com/gabrielbskk).
+
+**Original Winlator LSFG fork credit:** Rafaela, [@amyroseee](https://github.com/amyroseee), [original source repository](https://github.com/amyroseee/Winlator-LSFG).
 
 See [CONTRIBUTORS.md](CONTRIBUTORS.md) for project participation and acknowledgments. Contributions are welcome through issues and pull requests.
 
 ## Credits
 
-Based on Winlator by **brunodev85**.
+- **Rafaela / [@amyroseee](https://github.com/amyroseee)** — original Winlator LSFG fork and its LSFG integration work.
+- **[brunodev85](https://github.com/brunodev85)** — original Winlator.
+- Current derivative maintenance: **[@gabrielbskk](https://github.com/gabrielbskk)**.
 
 LSFG-VK and other third-party components belong to their respective authors.
 
 ## Disclaimer
 
-This is an unofficial Winlator fork and is not affiliated with the original Winlator project or Lossless Scaling.
+This is an unofficial derivative of Winlator LSFG. It is not affiliated with or endorsed by Winlator, Rafaela's source project, Discord or Lossless Scaling. The new name and artwork do not imply original authorship of upstream code.

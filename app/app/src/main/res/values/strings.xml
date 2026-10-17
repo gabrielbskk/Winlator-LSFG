@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Winlator</string>
-    <string name="app_name_lsfg">Winlator LSFG</string>
+    <string name="app_name">Winlator LSFG Aurora</string>
+    <string name="app_name_lsfg">Winlator LSFG Aurora</string>
     <string name="run">Run</string>
     <string name="edit">Edit</string>
     <string name="remove">Remove</string>
