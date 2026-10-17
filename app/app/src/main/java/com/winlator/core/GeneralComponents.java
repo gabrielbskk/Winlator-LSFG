@@ -166,9 +166,13 @@ public abstract class GeneralComponents {
         File componentDir = getComponentDir(type, context);
         ArrayList<String> result = new ArrayList<>();
 
-        String[] names;
-        if (componentDir.isDirectory() && (names = componentDir.list()) != null) {
-            for (String name : names) result.add(parseDisplayText(type, name));
+        File[] entries;
+        if (componentDir.isDirectory() && (entries = componentDir.listFiles()) != null) {
+            for (File entry : entries) {
+                if (InstalledComponentFiles.isSelectable(type.lowerName(), entry)) {
+                    result.add(parseDisplayText(type, entry.getName()));
+                }
+            }
         }
         return result;
     }
