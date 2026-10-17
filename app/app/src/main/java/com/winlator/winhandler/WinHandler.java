@@ -21,21 +21,22 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WinHandler {
     private static final short SERVER_PORT = 7947;
     private static final short CLIENT_PORT = 7946;
-    private DatagramSocket socket;
+    private volatile DatagramSocket socket;
     protected final ByteBuffer sendData = ByteBuffer.allocate(256).order(ByteOrder.LITTLE_ENDIAN);
     protected final ByteBuffer receiveData = ByteBuffer.allocate(64).order(ByteOrder.LITTLE_ENDIAN);
     private final DatagramPacket sendPacket = new DatagramPacket(sendData.array(), sendData.capacity());
     private final DatagramPacket receivePacket = new DatagramPacket(receiveData.array(), receiveData.capacity());
     private final ArrayDeque<Runnable> actions = new ArrayDeque<>();
-    protected boolean initReceived = false;
-    private boolean running = false;
+    protected volatile boolean initReceived = false;
+    private volatile boolean running = false;
     private OnGetProcessInfoListener onGetProcessInfoListener;
+    private final CopyOnWriteArrayList<OnGetProcessInfoListener> processInfoObservers = new CopyOnWriteArrayList<>();
     private OnPreExecListener onPreExecListener;
     private InetAddress localhost;
     protected final XServerDisplayActivity activity;
@@ -53,7 +54,9 @@ public class WinHandler {
             if (size == 0) return false;
             sendPacket.setAddress(localhost);
             sendPacket.setPort(port);
-            socket.send(sendPacket);
+            DatagramSocket sender = socket;
+            if (sender == null) return false;
+            sender.send(sendPacket);
             return true;
         }
         catch (IOException e) {
@@ -66,12 +69,16 @@ public class WinHandler {
             sendPacket.setData(data);
             sendPacket.setAddress(localhost);
             sendPacket.setPort(port);
-            socket.send(sendPacket);
-            sendPacket.setData(sendData.array());
+            DatagramSocket sender = socket;
+            if (sender == null) return false;
+            sender.send(sendPacket);
             return true;
         }
         catch (IOException e) {
             return false;
+        }
+        finally {
+            sendPacket.setData(sendData.array());
         }
     }
 
@@ -122,14 +129,16 @@ public class WinHandler {
     }
 
     public void listProcesses() {
+        if (!running || !initReceived) {
+            notifyProcessInfo(0, 0, null);
+            return;
+        }
         addAction(() -> {
             sendData.rewind();
             sendData.put(RequestCodes.LIST_PROCESSES);
             sendData.putInt(0);
 
-            if (!sendPacket(CLIENT_PORT) && onGetProcessInfoListener != null) {
-                onGetProcessInfoListener.onGetProcessInfo(0, 0, null);
-            }
+            if (!sendPacket(CLIENT_PORT)) notifyProcessInfo(0, 0, null);
         });
     }
 
@@ -277,22 +286,37 @@ public class WinHandler {
         this.onPreExecListener = onPreExecListener;
     }
 
+    public void addProcessInfoObserver(OnGetProcessInfoListener listener) {
+        processInfoObservers.addIfAbsent(listener);
+    }
+
+    public void removeProcessInfoObserver(OnGetProcessInfoListener listener) {
+        processInfoObservers.remove(listener);
+    }
+
+    private void notifyProcessInfo(int index, int count, ProcessInfo process) {
+        if (onGetProcessInfoListener != null) onGetProcessInfoListener.onGetProcessInfo(index, count, process);
+        for (OnGetProcessInfoListener listener : processInfoObservers) listener.onGetProcessInfo(index, count, process);
+    }
+
     private void startSendThread() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        new Thread(() -> {
             while (running) {
                 synchronized (actions) {
                     while (initReceived && !actions.isEmpty()) actions.poll().run();
+                    if (!running) break;
                     try {
                         actions.wait();
                     }
                     catch (InterruptedException e) {}
                 }
             }
-        });
+        }, "WinHandler-send").start();
     }
 
     public void stop() {
         running = false;
+        initReceived = false;
 
         if (socket != null) {
             socket.close();
@@ -300,6 +324,7 @@ public class WinHandler {
         }
 
         synchronized (actions) {
+            actions.clear();
             actions.notify();
         }
 
@@ -321,7 +346,7 @@ public class WinHandler {
                 break;
             }
             case RequestCodes.GET_PROCESS: {
-                if (onGetProcessInfoListener == null) return;
+                if (onGetProcessInfoListener == null && processInfoObservers.isEmpty()) return;
                 receiveData.position(receiveData.position() + 4);
                 int numProcesses = receiveData.getShort();
                 int index = receiveData.getShort();
@@ -334,7 +359,7 @@ public class WinHandler {
                 receiveData.get(bytes);
                 String name = StringUtils.fromANSIString(bytes);
 
-                onGetProcessInfoListener.onGetProcessInfo(index, numProcesses, new ProcessInfo(pid, name, memoryUsage, affinityMask, wow64Process));
+                notifyProcessInfo(index, numProcesses, new ProcessInfo(pid, name, memoryUsage, affinityMask, wow64Process));
                 break;
             }
             case RequestCodes.GET_GAMEPAD: {
@@ -433,14 +458,19 @@ public class WinHandler {
 
         running = true;
         startSendThread();
-        Executors.newSingleThreadExecutor().execute(() -> {
+        new Thread(() -> {
             try {
-                socket = new DatagramSocket(null);
-                socket.setReuseAddress(true);
-                socket.bind(new InetSocketAddress((InetAddress)null, SERVER_PORT));
+                DatagramSocket listener = new DatagramSocket(null);
+                listener.setReuseAddress(true);
+                synchronized (actions) {
+                    if (!running) { listener.close(); return; }
+                    socket = listener;
+                }
+                listener.bind(new InetSocketAddress((InetAddress)null, SERVER_PORT));
 
                 while (running) {
-                    socket.receive(receivePacket);
+                    receivePacket.setLength(receiveData.capacity());
+                    listener.receive(receivePacket);
 
                     synchronized (actions) {
                         receiveData.rewind();
@@ -450,7 +480,17 @@ public class WinHandler {
                 }
             }
             catch (IOException e) {}
-        });
+            finally {
+                synchronized (actions) {
+                    running = false;
+                    initReceived = false;
+                    if (socket != null) socket.close();
+                    socket = null;
+                    actions.clear();
+                    actions.notifyAll();
+                }
+            }
+        }, "WinHandler-receive").start();
     }
 
     public boolean onGenericMotionEvent(MotionEvent event) {

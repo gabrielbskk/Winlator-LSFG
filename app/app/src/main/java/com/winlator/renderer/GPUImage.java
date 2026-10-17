@@ -31,15 +31,16 @@ public class GPUImage extends Texture {
         hardwareBufferPtr = createHardwareBuffer(owner.width, owner.height, cpuAccess, useHALPixelFormatBGRA8888);
         if (cpuAccess && hardwareBufferPtr != 0) {
             virtualData = lockHardwareBuffer(hardwareBufferPtr);
-            locked = true;
+            locked = virtualData != null;
         }
     }
 
     @Override
     public void allocateTexture(short width, short height, ByteBuffer data) {
-        if (isAllocated()) return;
+        if (isAllocated() || hardwareBufferPtr == 0) return;
         super.allocateTexture(width, height, null);
         imageKHRPtr = createImageKHR(hardwareBufferPtr, textureId);
+        if (imageKHRPtr == 0) super.destroy();
     }
 
     @Override
@@ -77,6 +78,7 @@ public class GPUImage extends Texture {
         virtualData = null;
         imageKHRPtr = 0;
         hardwareBufferPtr = 0;
+        locked = false;
         super.destroy();
     }
 

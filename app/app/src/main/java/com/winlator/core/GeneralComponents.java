@@ -319,6 +319,11 @@ public abstract class GeneralComponents {
                         byte[] manifestData = ZipUtils.read(source, "*.json");
                         if (manifestData != null) {
                             JSONObject manifestJSONObject = new JSONObject(new String(manifestData));
+                            int minApi = manifestJSONObject.optInt("minApi", 0);
+                            if (android.os.Build.VERSION.SDK_INT < minApi) {
+                                AppUtils.showToast(activity, activity.getString(R.string.custom_driver_android_required, minApi));
+                                return;
+                            }
                             String filename = manifestJSONObject.optString("name", manifestJSONObject.optString("libraryName", ""));
                             File destination = new File(getComponentDir(type, activity), filename);
                             if (destination.isDirectory()) FileUtils.delete(destination);

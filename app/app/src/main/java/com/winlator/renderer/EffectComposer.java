@@ -23,7 +23,11 @@ public class EffectComposer {
     }
 
     public synchronized void removeEffect(Effect effect) {
-        effects.remove(effect);
+        if (effects.remove(effect)) renderer.xServerView.queueEvent(() -> {
+            synchronized (EffectComposer.this) {
+                if (!effects.contains(effect)) effect.destroyMaterial();
+            }
+        });
         renderer.xServerView.requestRender();
     }
 
@@ -62,16 +66,25 @@ public class EffectComposer {
     private void initBuffers() {
         if (readBuffer == null) {
             readBuffer = new RenderTarget();
-            readBuffer.allocateFramebuffer(renderer.surfaceWidth, renderer.surfaceHeight);
         }
+        readBuffer.allocateFramebuffer(renderer.surfaceWidth, renderer.surfaceHeight);
 
-        if (writeBuffer == null) {
-            writeBuffer = new RenderTarget();
+        if (effects.size() > 1) {
+            if (writeBuffer == null) writeBuffer = new RenderTarget();
             writeBuffer.allocateFramebuffer(renderer.surfaceWidth, renderer.surfaceHeight);
+        } else if (writeBuffer != null) {
+            writeBuffer.destroy();
+            writeBuffer = null;
         }
     }
 
     public synchronized void render() {
+        if (effects.isEmpty()) {
+            releaseBuffers();
+            GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+            renderer.drawFrame();
+            return;
+        }
         initBuffers();
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, hasEffects() ? readBuffer.getFramebuffer() : 0);
@@ -86,7 +99,19 @@ public class EffectComposer {
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
             renderEffect(effect);
-            swapBuffers();
+            if (!renderToScreen) swapBuffers();
         }
+    }
+
+    /** GL-thread only. Context destruction itself frees obsolete GL names. */
+    public synchronized void onContextCreated() {
+        readBuffer = writeBuffer = null;
+        for (Effect effect : effects) effect.forgetMaterial();
+    }
+
+    private void releaseBuffers() {
+        if (readBuffer != null) readBuffer.destroy();
+        if (writeBuffer != null) writeBuffer.destroy();
+        readBuffer = writeBuffer = null;
     }
 }

@@ -39,6 +39,14 @@ A Winlator fork focused on integrating LSFG-VK frame generation into Android, al
   - Cyan app theme
   - Updated launcher and internal visuals
 
+## Android integration updates
+
+Optional Android Discord Rich Presence, resource-lifetime fixes, and experimental
+Mali G52 driver guidance are documented in
+[Android integration notes](docs/ANDROID_IMPROVEMENTS.md).
+Rich Presence requires a developer-provided Discord Social SDK 1.10+ Android AAR
+and an Application ID; builds without the SDK explicitly report it unavailable.
+
 ## Lossless.dll
 
 LSFG requires a compatible `Lossless.dll` provided by the user.

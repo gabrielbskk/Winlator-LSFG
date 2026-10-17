@@ -27,3 +27,6 @@ local.properties
 /.reference/
 /winlator-lsfg/
 CLOUDFLARE_LOGIN_URL.txt
+
+# Discord Social SDK, supplied by the developer under Discord's SDK terms.
+/app/app/libs/discord_partner_sdk.aar
