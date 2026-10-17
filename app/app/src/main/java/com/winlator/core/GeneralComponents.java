@@ -203,10 +203,10 @@ public abstract class GeneralComponents {
                 try {
                     JSONObject manifestJSONObject = new JSONObject(FileUtils.readString(manifestFiles[0]));
                     String libraryName = manifestJSONObject.optString("libraryName", "");
-                    File libraryFile = new File(source, libraryName);
+                    File libraryFile = ArchivePathGuard.resolveInside(source, libraryName);
                     return libraryFile.isFile() ? libraryFile.getPath() : null;
                 }
-                catch (JSONException e) {
+                catch (JSONException | java.io.IOException e) {
                     return null;
                 }
             }
@@ -334,10 +334,44 @@ public abstract class GeneralComponents {
                                 return;
                             }
                             String filename = manifestJSONObject.optString("name", manifestJSONObject.optString("libraryName", ""));
-                            File destination = new File(getComponentDir(type, activity), filename);
-                            if (destination.isDirectory()) FileUtils.delete(destination);
-                            destination.mkdirs();
-                            if (ZipUtils.extract(source, destination)) loadSpinner(type, spinner, filename, defaultItem);
+                            String libraryName = manifestJSONObject.optString("libraryName", "");
+                            if (!ArchivePathGuard.safeDriverLabel(filename)) {
+                                AppUtils.showToast(activity, R.string.invalid_configuration);
+                                return;
+                            }
+                            File componentDir = getComponentDir(type, activity);
+                            File staged = File.createTempFile(".aurora-driver-", ".staging", componentDir);
+                            if (!staged.delete() || !staged.mkdirs()) {
+                                AppUtils.showToast(activity, R.string.invalid_configuration);
+                                return;
+                            }
+                            try {
+                                if (!ZipUtils.extract(source, staged)
+                                        || !ArchivePathGuard.resolveInside(staged, libraryName).isFile()) {
+                                    AppUtils.showToast(activity, R.string.invalid_configuration);
+                                    return;
+                                }
+                                File destination = new File(componentDir, filename);
+                                File backup = null;
+                                if (destination.exists()) {
+                                    backup = new File(componentDir, ".aurora-backup-" + java.util.UUID.randomUUID());
+                                    if (!destination.renameTo(backup)) {
+                                        AppUtils.showToast(activity, R.string.invalid_configuration);
+                                        return;
+                                    }
+                                }
+                                if (!staged.renameTo(destination)) {
+                                    if (backup != null && !backup.renameTo(destination))
+                                        android.util.Log.e("AuroraDriver", "Driver rollback failed; backup retained: " + backup);
+                                    AppUtils.showToast(activity, R.string.invalid_configuration);
+                                    return;
+                                }
+                                if (backup != null) FileUtils.delete(backup);
+                                loadSpinner(type, spinner, filename, defaultItem);
+                            }
+                            finally {
+                                if (staged.exists()) FileUtils.delete(staged);
+                            }
                         }
                         break;
                     }
@@ -351,7 +385,9 @@ public abstract class GeneralComponents {
                             String identifier = StringUtils.parseIdentifier(manifestJSONObject.optString("versionName", ""));
                             JSONArray filesJSONArray = manifestJSONObject.optJSONArray("files");
 
-                            if (contentType.equals(type.name()) && !identifier.isEmpty() && filesJSONArray != null) {
+                            if (contentType.equals(type.name()) && filesJSONArray != null
+                                    && ComponentCatalog.isSafeFileName(type.lowerName(),
+                                            type.lowerName()+"-"+identifier+".tzst")) {
                                 installFromPackagedFile(activity, compressedType, type, source, identifier, filesJSONArray);
                                 loadSpinner(type, spinner, identifier, defaultItem);
                             }
@@ -360,7 +396,10 @@ public abstract class GeneralComponents {
                     }
                 }
             }
-            catch (JSONException e) {}
+            catch (JSONException | java.io.IOException e) {
+                android.util.Log.w("AuroraDriver", "Invalid custom driver package", e);
+                AppUtils.showToast(activity, R.string.invalid_configuration);
+            }
         });
 
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);

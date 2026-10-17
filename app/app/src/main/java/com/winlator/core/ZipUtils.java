@@ -70,35 +70,41 @@ public abstract class ZipUtils {
     }
 
     public static boolean extract(File source, File destination) {
-        try {
-            ZipFile zipFile = new ZipFile(source);
+        // Custom driver ZIP files come from user storage. Reject path traversal,
+        // unsafe symlinks and nested paths through symlinks before writing.
+        if (source == null || !source.isFile() || destination == null) return false;
+        try (ZipFile zipFile = new ZipFile(source)) {
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry entry = entries.nextElement();
-                File file = new File(destination, entry.getName());
+                File file = ArchivePathGuard.resolveInside(destination, entry.getName());
 
                 if (entry.isDirectory()) {
-                    if (!file.isDirectory()) file.mkdirs();
+                    if (!file.isDirectory() && !file.mkdirs()) return false;
                 }
                 else {
+                    File parent = file.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) return false;
                     if (entry.isUnixSymlink()) {
-                        FileUtils.symlink(zipFile.getUnixSymlink(entry), file.getAbsolutePath());
+                        String linkTarget = zipFile.getUnixSymlink(entry);
+                        if (!ArchivePathGuard.symlinkTargetInside(destination, file, linkTarget))
+                            return false;
+                        FileUtils.symlink(linkTarget, file.getAbsolutePath());
                     }
                     else {
                         try (InputStream inStream = zipFile.getInputStream(entry);
-                            BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(file), StreamUtils.BUFFER_SIZE)) {
+                             BufferedOutputStream outStream = new BufferedOutputStream(
+                                     new FileOutputStream(file), StreamUtils.BUFFER_SIZE)) {
                             if (!StreamUtils.copy(inStream, outStream)) return false;
                         }
                     }
                 }
-
                 FileUtils.chmod(file, 0771);
             }
-
-            zipFile.close();
             return true;
         }
-        catch (Exception e) {
+        catch (Exception error) {
+            android.util.Log.w("ZipUtils", "Unsafe or invalid component ZIP", error);
             return false;
         }
     }
