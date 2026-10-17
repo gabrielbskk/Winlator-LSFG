@@ -41,11 +41,14 @@ public final class DiscordPresenceManager implements OnGetProcessInfoListener {
     private int nextIndex;
     private long lastSnapshotMillis;
 
-    public DiscordPresenceManager(XServerDisplayActivity activity, String executable, String name, String artwork) {
+    public DiscordPresenceManager(XServerDisplayActivity activity, String executable, String name,
+                                  String artwork, String steamAppId) {
         this.activity = activity;
         expectedExecutable = GameSession.executableName(executable);
         shortcutName = name;
-        shortcutArtwork = DiscordArtwork.normalize(artwork);
+        // Explicit image overrides Steam metadata; neither path uploads the EXE.
+        String custom = DiscordArtwork.normalize(artwork);
+        shortcutArtwork = !custom.isEmpty() ? custom : SteamGameArtwork.coverUrl(steamAppId);
     }
 
     public static int configurationStatus(Context context, boolean enabled, String id) {
