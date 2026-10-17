@@ -19,6 +19,8 @@ public class DiscordArtworkTest {
             "file:///storage/game.png", "content://app/game.png",
             "C:\\Games\\game.exe", "/sdcard/icon.png", "data:image/png;base64,AAAA",
             "http://example.org/game.png", "https://localhost/game.png",
+            "https://127.0.0.1/icon.png", "https://192.168.1.5/icon.png",
+            "https://172.22.0.1/icon.png",
             "https://example.local/game.png", "https://foo:8080/game.png",
             "https://user:password@example.com/x.png", "https://example.org/img.png#secret",
             "icon png"
