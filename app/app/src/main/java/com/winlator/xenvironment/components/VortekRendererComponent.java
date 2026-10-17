@@ -61,9 +61,13 @@ public class VortekRendererComponent extends EnvironmentComponent implements Con
                     options.vkMaxVersion = GPUHelper.vkMakeVersion(GPUHelper.vkVersionMajor(parsed), GPUHelper.vkVersionMinor(parsed), 128);
             }
 
-            options.maxDeviceMemory = (short)config.getInt("maxDeviceMemory");
-            options.imageCacheSize = (short)config.getInt("imageCacheSize", VortekRendererComponent.IMAGE_CACHE_SIZE);
-            options.resourceMemoryType = (byte)config.getInt("resourceMemoryType");
+            // Invalid imported values must not wrap short/byte fields and reach JNI.
+            options.maxDeviceMemory = com.winlator.core.VortekConfigLimits.memoryLimitMB(
+                    config.getInt("maxDeviceMemory"));
+            options.imageCacheSize = com.winlator.core.VortekConfigLimits.imageCacheMB(
+                    config.getInt("imageCacheSize", VortekRendererComponent.IMAGE_CACHE_SIZE));
+            options.resourceMemoryType = com.winlator.core.VortekConfigLimits.resourceMemoryType(
+                    config.getInt("resourceMemoryType"));
 
             String adrenotoolsDriver = config.get("adrenotoolsDriver");
             options.libvulkanPath = GeneralComponents.getDefinitivePath(GeneralComponents.Type.ADRENOTOOLS_DRIVER, context, adrenotoolsDriver);

@@ -69,7 +69,8 @@ public class VortekConfigDialog extends ContentDialog {
         AppUtils.setSpinnerSelectionFromValue(sVkMaxVersion, config.get("vkMaxVersion", DEFAULT_VK_MAX_VERSION));
         AppUtils.setSpinnerSelectionFromMemorySize(sMaxDeviceMemory, config.get("maxDeviceMemory", "0"));
         AppUtils.setSpinnerSelectionFromNumber(sImageCacheSize, config.get("imageCacheSize", String.valueOf(VortekRendererComponent.IMAGE_CACHE_SIZE)));
-        sResourceMemoryType.setSelection(config.getInt("resourceMemoryType"));
+        sResourceMemoryType.setSelection(
+                com.winlator.core.VortekConfigLimits.resourceMemoryType(config.getInt("resourceMemoryType")));
 
         setOnConfirmCallback(() -> {
             KeyValueSet newConfig = new KeyValueSet();
