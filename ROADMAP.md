@@ -33,7 +33,7 @@ This document tracks proposed work, not completed features. The project's main t
 - Keep broader compatibility builds available where practical.
 
 ## Proposed workflow
-1. Create an issue describing the symptom or goal and a reproducible baseline.
+1. Describe the symptom or goal and a reproducible baseline in an issue (if Issues is enabled) or a draft PR.
 2. Implement one independent change per feature branch.
 3. Open a draft pull request; attach tests and before/after measurements.
 4. Merge only after review and compatibility checks.
