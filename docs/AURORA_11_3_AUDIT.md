@@ -59,7 +59,7 @@ sem uma tarefa específica. Preservar LGPL e créditos Rafaela/amyroseee,
 brunodev85 e componentes upstream.
 
 Baseline local: main passou 4 testes JVM e assembleDebug. Branch RPC passou
-27 testes JVM; build completo ainda em execução ao registrar este relatório.
+27 testes JVM e assembleDebug.
 Existem avisos C/C++ de qualificadores const e enums no código nativo.
 Não foram executados testes de GPU física, FPS, frametime, RAM, conexão Discord
 ou interface em diferentes telas. Compilar não comprova essas propriedades.
@@ -82,3 +82,43 @@ ou interface em diferentes telas. Compilar não comprova essas propriedades.
 
 Esta lista é plano, não declaração de implementação. O registro de execução
 deve separar cada correção efetiva dos bloqueios e testes pendentes.
+
+## Atualização de autorização
+
+Após esta auditoria, o mantenedor autorizou pré-releases experimentais por marco
+concluído. Experimental 6 é o primeiro marco; 11.3 estável continua pendente,
+assim como substituição da release principal. Publicação é manual, explícita,
+com gates de build/testes; nunca promovida automaticamente por push.
+
+## Inventário Turnip preservado
+
+Versões internas: 24.3.4.1, 25.0.0.1, 25.0.7.1, 25.1.9.1, 25.3.6.1,
+26.1.0, 26.1.8.1 e 26.2.1.1. Nenhuma foi removida ou substituída.
+A revisão 1 em `TurnipPolicy.java` tem linhas distintas para 600–699 e
+700–799, ambas com 26.1.0 por continuidade da baseline. Não há evidência
+para ordenar as alternativas por estabilidade ou desempenho; registrar jogo,
+modelo, Android/kernel e driver nos testes antes de alterar essa política.
+
+## Resultado do primeiro marco
+
+- Implementado: centralização parcial Aurora e contrastes confirmados; regex
+  A6xx/A7xx, probe Vulkan/driver properties com fallback EGL, política versionada
+  e seleção manual; painel Mali e bloqueio de Turnip em sessão Mali; correções
+  de persistência, workers e prévia RPC. Ver commits da branch de integração.
+- Validado localmente: builds SDK-free e SDK-backed, 33 testes JVM e 3 testes
+  estáticos de recursos, integridade do APK e arquivos Windows 32-bit.
+- Preservado: AdrenoTools, versões Turnip, assets Windows32/64, presets LSFG,
+  RPC/JNI, nomes de pacote Android, créditos e histórico original.
+- Bloqueado: integração PANVK dedicada, dependente de driver verificável e
+  dispositivo compatível. Não copiar configuração do WinlatorMali sem revisar
+  a implementação/licença do fork exato; nenhuma foi copiada neste marco.
+- Pendente: matriz em hardware, medição RAM/FPS/frametime, renderização visual
+  em telas reais, todos os casos de LSFG ligado/desligado e Discord ao vivo.
+  Testes JVM cobrem política/configuração; não criam contêineres reais.
+- A revisão LSFG encontrou proteção existente contra Vortek (swapchain);
+  mantida. Não houve alteração do algoritmo nem alegação de frame pacing melhor.
+- As alterações locais antigas em `/workspace/Winlator-LSFG` foram preservadas;
+  esta implementação usa worktree e branch próprias.
+
+A Experimental 6 permite testar esse marco. A candidata 11.3 e as demais fases
+não estão concluídas enquanto esses gates permanecem pendentes.
