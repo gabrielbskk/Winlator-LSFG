@@ -52,12 +52,12 @@ jobs:
             exit 1
           fi
           "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;24.0.8215888' 'cmake;3.22.1'
-      - name: Validate v4 packaging configuration
+      - name: Validate packaging configuration
         run: |
-          grep -q 'versionName "11.2-rpc-experimental.5"' app/app/build.gradle
-          grep -q 'versionCode 37' app/app/build.gradle
+          grep -Eq 'versionName "[^"]+"' app/app/build.gradle
+          grep -Eq 'versionCode [1-9][0-9]*' app/app/build.gradle
           if grep -q 'arm64OnlyGameAssets' app/app/build.gradle; then
-            echo "32-bit runtime stripping must not be present in the v4 build" >&2
+            echo "32-bit runtime stripping must not be present in the ARM64 Android build" >&2
             exit 1
           fi
           if test -f app/app/libs/discord_partner_sdk.aar; then

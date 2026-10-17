@@ -19,8 +19,10 @@ não representa aprovação nem merge do PR #7 na main.
   Turnip internos e três downloads inventariados têm hashes distintos;
   diferença de hash não comprova compatibilidade nem melhor desempenho.
 - PANVK não tem carregamento dedicado validado. Importação genérica de ZIP
-  não comprova suporte Mali/kernel/ABI. O endereço público fornecido para
-  LukeValen/panvk-mali-g52 respondeu 404 nesta auditoria. Não criar uma opção
+  não comprova suporte Mali/kernel/ABI. Uma primeira consulta a
+  LukeValen/panvk-mali-g52 falhou; a reconsulta confirmou releases públicas
+  v0.0.1-alpha e v0.0.2-alpha. O autor documenta Redmi 13C/G52 MC2,
+  Android 14, Linux 4.19.191 e kbase UAPI 11.38 via /dev/mali0. Não criar uma opção
   que prometa suporte sem demonstrar o caminho de carregamento.
 - LSFG tem controles de multiplicador e presets; alterações possíveis aqui
   são integração, sincronização, configuração e ciclo de vida. O algoritmo
@@ -109,8 +111,8 @@ modelo, Android/kernel e driver nos testes antes de alterar essa política.
   estáticos de recursos, integridade do APK e arquivos Windows 32-bit.
 - Preservado: AdrenoTools, versões Turnip, assets Windows32/64, presets LSFG,
   RPC/JNI, nomes de pacote Android, créditos e histórico original.
-- Bloqueado: integração PANVK dedicada, dependente de driver verificável e
-  dispositivo compatível. Não copiar configuração do WinlatorMali sem revisar
+- Bloqueado: integração PANVK dedicada, dependente de validação do pacote alpha
+  publicado e dispositivo compatível nesta implementação. Não copiar configuração do WinlatorMali sem revisar
   a implementação/licença do fork exato; nenhuma foi copiada neste marco.
 - Pendente: matriz em hardware, medição RAM/FPS/frametime, renderização visual
   em telas reais, todos os casos de LSFG ligado/desligado e Discord ao vivo.

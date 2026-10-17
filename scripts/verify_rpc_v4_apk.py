@@ -41,8 +41,8 @@ def validate_tar_asset(apk, asset, required_dir):
                 proc.kill()
                 proc.wait()
         if not found:
-            raise ValueError(f"Missing Windows 32-bit files under {required_dir} in {asset}")
-        print(f"OK 32-bit runtime: {asset} -> {required_dir}")
+            raise ValueError(f"Missing Windows guest files under {required_dir} in {asset}")
+        print(f"OK Windows runtime: {asset} -> {required_dir}")
 
 
 def main():
@@ -62,10 +62,12 @@ def main():
             raise ValueError("A proprietary Lossless.dll must not be bundled")
         for asset, directory in (
             ("assets/rootfs.tzst", "opt/wine/lib/wine/i386-windows/"),
+            ("assets/rootfs.tzst", "opt/wine/lib/wine/x86_64-windows/"),
             ("assets/wincomponents/direct3d.tzst", "syswow64/"),
+            ("assets/wincomponents/direct3d.tzst", "system32/"),
         ):
             validate_tar_asset(apk, asset, directory)
-    print("APK integrity, RPC native bridge and Windows 32-bit file checks passed.")
+    print("APK integrity, RPC native bridge and Windows 32/64-bit file checks passed.")
     print("Device RPC/login and game compatibility still require manual testing.")
 
 

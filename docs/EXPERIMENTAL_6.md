@@ -43,7 +43,10 @@ RPC/login/capas/reconexão offline, interface em diferentes telas e benchmarks
 reproduzíveis de RAM/FPS/frametime. Não há promessa de ganho percentual.
 
 PANVK depende de um pacote verificável e de compatibilidade kernel/firmware/ABI.
-O link histórico LukeValen/panvk-mali-g52 respondeu 404 na auditoria. LSFG
+O autor de [PANVK G52](https://github.com/LukeValen/panvk-mali-g52/releases)
+documenta testes externos em Redmi 13C/G52 MC2, Android 14 e kbase UAPI
+11.38; isso não valida esta build Aurora nem G57/G68. A alpha ainda possui
+limitações de recursos Vulkan e não é conforme. LSFG
 continua indisponível via Vortek por limitações de swapchain; os presets
 Performance/Balanced/Quality/Custom e 2x/3x/4x foram preservados. Não houve
 alteração do algoritmo proprietário de Lossless.dll, que não está no APK.
