@@ -204,7 +204,7 @@ public abstract class GeneralComponents {
                     JSONObject manifestJSONObject = new JSONObject(FileUtils.readString(manifestFiles[0]));
                     String libraryName = manifestJSONObject.optString("libraryName", "");
                     File libraryFile = ArchivePathGuard.resolveInside(source, libraryName);
-                    return libraryFile.isFile() ? libraryFile.getPath() : null;
+                    return ArchivePathGuard.isArm64SharedLibrary(libraryFile) ? libraryFile.getPath() : null;
                 }
                 catch (JSONException | java.io.IOException e) {
                     return null;
@@ -347,7 +347,7 @@ public abstract class GeneralComponents {
                             }
                             try {
                                 if (!ZipUtils.extract(source, staged)
-                                        || !ArchivePathGuard.resolveInside(staged, libraryName).isFile()) {
+                                        || !ArchivePathGuard.isArm64SharedLibrary(ArchivePathGuard.resolveInside(staged, libraryName))) {
                                     AppUtils.showToast(activity, R.string.invalid_configuration);
                                     return;
                                 }
