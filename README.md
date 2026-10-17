@@ -78,7 +78,7 @@ The integration is experimental. Features listed above are described by this for
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Experimental 5 Full RPC (SDK-backed native candidate) is available:** [download the Android ARM64 APK](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-native). Its Discord SDK was included and CI validated the APK, but Rich Presence and Steam artwork are **not yet confirmed on this exact build in a physical device**. The [SDK-free preview](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-sdkfree-preview) remains available for UI testing without Discord RPC. The [experimental code PR #7](../../pull/7) remains under review, with [configuration guide](docs/RPC_GAME_ARTWORK.md) and [RPC setup](docs/DISCORD_RPC.md).
+**Versão principal — Winlator LSFG Aurora 11.2 (RPC + capas):** [baixar APK ARM64](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-rpc). Esta compilação inclui o Discord Social SDK e passou pelo build nativo e pelos testes de integridade do GitHub Actions. **Status: candidata a estável**, não estabilidade comprovada: o RPC e as capas desta compilação ainda precisam ser verificados em dispositivo real. As versões anteriores continuam preservadas como releases em rascunho, acessíveis aos administradores, com tags e histórico do Git intactos. Veja [histórico de versões](docs/RELEASES.md), [configuração de capas](docs/RPC_GAME_ARTWORK.md) e [guia de Discord RPC](docs/DISCORD_RPC.md).
 
 ## Maintainer and contributors
 
