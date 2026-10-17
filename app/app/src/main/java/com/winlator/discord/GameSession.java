@@ -57,10 +57,12 @@ public final class GameSession {
         if (pid == newPid && executable.equals(normalized)) return;
         pid = newPid;
         executable = normalized;
-        title = displayName == null || displayName.trim().isEmpty()
-            ? normalized.substring(0, normalized.length() - 4) : displayName.trim();
-        // Discord fields are small; do not expose paths or arbitrary window titles.
-        if (title.length() > 128) title = title.substring(0, 128);
+        // Avoid passing control characters or multiline user-supplied shortcut names
+        // to the SDK. Publish only a short display name, never process paths.
+        String clean = displayName == null ? "" : displayName
+            .replaceAll("[\\p{Cntrl}]", " ").trim();
+        title = clean.isEmpty() ? normalized.substring(0, normalized.length() - 4) : clean;
+        if (title.length() > 128) title = title.substring(0, 128).trim();
         accumulatedMillis = 0;
         resumedAtMillis = nowMillis;
     }
