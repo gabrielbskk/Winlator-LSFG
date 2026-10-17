@@ -69,7 +69,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class SettingsFragment extends Fragment {
@@ -352,7 +351,7 @@ public class SettingsFragment extends Fragment {
         }
 
         preloaderDialog.show(R.string.removing_wine);
-        Executors.newSingleThreadExecutor().execute(() -> {
+        com.winlator.core.OneShotTask.execute(() -> {
             FileUtils.delete(wineDir);
             FileUtils.delete(containerPatternFile);
             preloaderDialog.closeOnUiThread();
@@ -422,7 +421,7 @@ public class SettingsFragment extends Fragment {
             return;
         }
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        com.winlator.core.OneShotTask.execute(() -> {
             File dllDir = new File(context.getFilesDir(), "lsfg-vk");
             File dllFile = new File(dllDir, "Lossless.dll");
             File stagingFile = new File(dllDir, "Lossless.dll.staging");
