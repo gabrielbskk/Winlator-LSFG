@@ -42,3 +42,13 @@ Cada teste em hardware deve registrar modelo/SoC, Android/kernel, driver e vers�
 5. Somente depois dos gates, preparar tag inédita, notas da versão, checksum e assinatura apropriada.
 
 **Histórico:** não fazer force-push, apagar tags/releases ou reescrever créditos de Rafaela (@amyroseee), brunodev85 e outros autores.
+
+## Verificação da RC2 (commit e CI específicos)
+
+- [x] PR #23: downloads com catálogo e nome de arquivo validados; CI de PR aprovado.
+- [x] PR #24: parâmetros EnvVars/Vortek importados com limites e testes; CI de PR aprovado.
+- [x] PR #25: caminho/symlink ZIP e instalação com staging/backup, testes JVM e teste de instrumentação compilável; CI de PR aprovado.
+- [ ] Compilar RC2 com RPC nativo, SDK-free, testes JVM e AndroidTest **no mesmo commit RC2**; anotar links dos runs após conclusão.
+- [ ] Inspecionar hash e metadados do artifact `aurora-11.3-rc2-arm64-native-review`.
+- [ ] Testes instrumentados executados em dispositivo real (o CI somente os compila).
+- [ ] Todos os gates físicos e de assinatura listados acima. **Não publicar Stable sem validação.**

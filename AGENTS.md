@@ -8,7 +8,7 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 - **PR #19** (`feat/aurora-consolidation` → `main`) já contém tema, detecção Adreno/Mali, seleção manual de Turnip (driver e versão), correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
 - **PRs #20 e #21** já foram mesclados à `main` e incorporados ao PR #19 pelo commit `fffef037` (merge de histórico, sem force-push): script de auditoria, testes e política de Turnip inteiramente manual. Não repetir nem reverter.
 - **PR #7** permanece como referência histórica RPC; não mesclá-lo independentemente, pois o PR #19 já reúne RPC e Aurora para revisão na `main`.
-- **RC1:** código-fonte 11.3-aurora-rc.1 (versionCode 39), sem Stable publicada. Ver `docs/RELEASE_CANDIDATE_11_3.md` e gates antes de distribuição.
+- **RC2:** código-fonte 11.3-aurora-rc.2 (versionCode 40), sem Stable publicada. Ver `docs/RELEASE_CANDIDATE_11_3.md` e gates antes de distribuição.
 - **Correção de estabilidade** `8e43032f`: `KeyValueSet` ignora campos importados malformados; testes JVM verificam leitura, persistência e pares de drivers. Revisar antes de qualquer edição nesse parser.
 
 ## Antes de qualquer mudança
@@ -38,3 +38,8 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 
 ## Entrega por PR
 Descrever: objetivo; GPU/SoC e Android; versões dos drivers; diferenças antes/depois; testes JVM/Android CI; testes em dispositivo (ou **pendentes**); riscos; fallback; plano de reversão. Preferir commits `feat(driver):`, `fix(gpu):`, `test(gpu):`, `perf(lsfg):` e `docs(driver):`.
+
+## Estado atual de correções para RC2
+- PRs #23, #24, #25 já integrados em `feat/aurora-consolidation`: catálogos de download, configuração inválida e importação ZIP com staging. **Não duplicar nem reverter**.
+- Atualização de versão RC2 permanece experimental; exige build RPC nativo e SDK-free no mesmo SHA.
+- Dispositivos reais, assinatura não-debug, rollback/backup, LSFG, jogos x86/x64 e RPC online continuam pendentes antes da Stable.

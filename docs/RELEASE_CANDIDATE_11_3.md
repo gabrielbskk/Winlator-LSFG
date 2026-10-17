@@ -1,6 +1,6 @@
-# Aurora 11.3 RC1 — candidato técnico (não Stable)
+# Aurora 11.3 RC2 — candidato técnico (não Stable)
 
-O código de `feat/aurora-consolidation` / PR #19 aponta para `main` e usa `versionCode=39` e `versionName=11.3-aurora-rc.1`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
+O código de `feat/aurora-consolidation` / PR #19 aponta para `main` e usa `versionCode=40` e `versionName=11.3-aurora-rc.2`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
 
 ## Correções incluídas
 
@@ -25,3 +25,13 @@ O código de `feat/aurora-consolidation` / PR #19 aponta para `main` e usa `vers
 Para cada teste físico, registre dispositivo/SoC/GPU, Android/kernel, driver/versão, Wine/Box64/DXVK, jogo, configurações, passos, logs sem tokens e resultados. Registre falhas e regressões, não apenas sucessos.
 
 A Stable só pode ser declarada depois do gate de qualidade em [STABLE_RELEASE_GATE.md](STABLE_RELEASE_GATE.md) e aprovação do responsável. Não alterar a Experimental 6 ou a release principal anterior.
+
+## Hardening da RC2 — 17/10/2026
+
+- PR #23: valida índice e caminho de download de Turnip, DXVK e demais componentes; rejeita caminhos relativos maliciosos e duplicatas.
+- PR #24: ignora parâmetros importados inválidos de EnvVars e limita memória/cache/tipo de recurso Vortek antes de converter para JNI.
+- PR #25: valida caminhos e links de ZIPs de drivers personalizados, valida metadados e preserva o driver anterior durante substituição com pasta temporária/rollback.
+- Testes JVM e de instrumentação Android adicionais. O teste instrumental de extração de ZIP só é **compilado** no CI e não foi executado em dispositivo Android real.
+- O workflow nativo deve gerar artifact `aurora-11.3-rc2-arm64-native-review` com APK debug e `SHA256SUMS.txt`, **somente se testes e validação do APK passarem no mesmo commit**.
+
+**Ainda não é Stable:** dependências de assinatura release apropriada, instalação e atualização com backup real, jogos Windows 32/64, RPC em dispositivo, LSFG/frametime e GPUs Adreno 619/642 e Mali G52. PANVK permanece não integrado; Turnip sempre manual.
