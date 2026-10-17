@@ -54,6 +54,23 @@
             android:id="@+id/SVkMaxVersion"
             android:entries="@array/vk_version_entries" />
 
+        <LinearLayout
+            android:id="@+id/LLPanvkG52"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/panvk_g52_help" />
+            <Button
+                android:id="@+id/BTPanvkReleases"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/panvk_g52_releases" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

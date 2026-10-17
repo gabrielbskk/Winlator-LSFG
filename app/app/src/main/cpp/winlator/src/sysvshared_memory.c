@@ -74,16 +74,20 @@ Java_com_winlator_sysvshm_SysVSharedMemory_ashmemCreateRegion(JNIEnv *env, jobje
 
 JNIEXPORT jobject JNICALL
 Java_com_winlator_sysvshm_SysVSharedMemory_mapSHMSegment(JNIEnv *env, jobject obj, jint fd, jlong size, jint offset, jboolean readonly) {
+    if (fd < 0 || size <= 0 || offset < 0) return NULL;
     char *data = mmap(NULL, size, readonly ? PROT_READ : PROT_WRITE | PROT_READ, MAP_SHARED, fd, offset);
     if (data == MAP_FAILED) return NULL;
-    return (*env)->NewDirectByteBuffer(env, data, size);
+    jobject buffer = (*env)->NewDirectByteBuffer(env, data, size);
+    if (!buffer) munmap(data, size);
+    return buffer;
 }
 
 JNIEXPORT void JNICALL
 Java_com_winlator_sysvshm_SysVSharedMemory_unmapSHMSegment(JNIEnv *env, jobject obj, jobject data,
                                                            jlong size) {
+    if (!data || size <= 0) return;
     char *dataAddr = (*env)->GetDirectBufferAddress(env, data);
-    munmap(dataAddr, size);
+    if (dataAddr) munmap(dataAddr, size);
 }
 
 JNIEXPORT jint JNICALL

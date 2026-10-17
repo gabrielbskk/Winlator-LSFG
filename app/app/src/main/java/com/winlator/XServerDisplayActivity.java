@@ -65,6 +65,7 @@ import com.winlator.core.WineStartMenuCreator;
 import com.winlator.core.WineThemeManager;
 import com.winlator.core.WineUtils;
 import com.winlator.inputcontrols.ControlsProfile;
+import com.winlator.discord.DiscordPresenceManager;
 import com.winlator.inputcontrols.ExternalController;
 import com.winlator.inputcontrols.InputControlsManager;
 import com.winlator.math.Mathf;
@@ -103,7 +104,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 public class XServerDisplayActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private XServerView xServerView;
@@ -139,6 +139,9 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
     public int frameRatingWindowId = -1;
     private Win32AppWorkarounds win32AppWorkarounds;
     private String screenEffectProfile;
+    private DiscordPresenceManager discordPresence;
+    private boolean displayPaused;
+    private volatile boolean lsfgLayerStaged;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -270,14 +273,14 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
         setupUI();
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        new Thread(() -> {
             if (!isGenerateWineprefix()) {
                 setupWineSystemFiles();
                 extractGraphicsDriverFiles();
                 changeWineAudioDriver();
             }
             setupXEnvironment();
-        });
+        }, "Winlator-setup").start();
     }
 
     @Override
@@ -315,6 +318,8 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
     @Override
     public void onResume() {
         super.onResume();
+        displayPaused = false;
+        if (discordPresence != null) discordPresence.resume();
         if (environment != null) {
             xServerView.onResume();
             environment.onResume();
@@ -324,7 +329,9 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
     @Override
     public void onPause() {
         super.onPause();
-        if (environment != null && !isInPictureInPictureMode()) {
+        displayPaused = !isInPictureInPictureMode();
+        if (displayPaused && discordPresence != null) discordPresence.pause();
+        if (environment != null && displayPaused) {
             environment.onPause();
             xServerView.onPause();
         }
@@ -332,6 +339,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
     @Override
     protected void onDestroy() {
+        if (discordPresence != null) discordPresence.close();
         winHandler.stop();
         if (environment != null) environment.stopEnvironmentComponents();
         super.onDestroy();
@@ -394,6 +402,13 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
                 break;
             case R.id.menu_item_lsfg_vk:
                 (new LSFGVKConfigDialog(this)).show();
+                drawerLayout.closeDrawers();
+                break;
+            case R.id.menu_item_discord_presence:
+                ContentDialog presenceDialog = new ContentDialog(this);
+                presenceDialog.setTitle(R.string.discord_presence);
+                presenceDialog.setMessage(discordPresence != null ? discordPresence.getStatus() : getString(R.string.discord_waiting_game));
+                presenceDialog.show();
                 drawerLayout.closeDrawers();
                 break;
             case R.id.menu_item_pip_mode:
@@ -564,6 +579,13 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         environment.startEnvironmentComponents();
 
         winHandler.start();
+        runOnUiThread(() -> {
+            if (isFinishing() || isDestroyed() || isGenerateWineprefix()) return;
+            String executable = shortcut != null ? shortcut.path : getIntent().getStringExtra("exec_path");
+            discordPresence = new DiscordPresenceManager(this, executable, shortcut != null ? shortcut.name : null);
+            if (displayPaused) discordPresence.pause();
+            discordPresence.start();
+        });
         envVars.clear();
         graphicsDriver = null;
         dxwrapperConfig = null;
@@ -574,6 +596,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
     }
 
     private void configureLSFGVK() {
+        lsfgLayerStaged = false;
         // Do not let a stale/custom environment activate the implicit layer without the complete,
         // validated configuration below.
         envVars.remove("ENABLE_LSFG");
@@ -586,6 +609,16 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
         if (container == null || !container.isLSFGEnabled()) {
             Log.d("LSFG-VK", "Not enabled for this container");
+            return;
+        }
+
+        // Vortek currently aliases its swapchain images and always acquires index 0.
+        // It cannot satisfy LSFG's additional acquisitions, even with a custom PanVK ICD.
+        if (graphicsDriver[0].equals(GraphicsDrivers.VORTEK)) {
+            envVars.put("DISABLE_LSFG", "1");
+            envVars.put("DISABLE_LSFGVK", "1");
+            Log.w("LSFG-VK", "Vortek swapchain does not support frame generation; launching without LSFG");
+            AppUtils.showToast(this, R.string.lsfg_vortek_unsupported);
             return;
         }
 
@@ -627,6 +660,9 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         envVars.put("LSFG_PROCESS", "winlator-lsfg");
         envVars.put("LSFGVK_CONFIG", configFile.getAbsolutePath());
         envVars.put("LSFGVK_PROFILE", "winlator-lsfg");
+        lsfgLayerStaged = true;
+        runOnUiThread(() -> ((NavigationView)findViewById(R.id.NavigationView)).getMenu()
+            .findItem(R.id.menu_item_lsfg_vk).setEnabled(true));
         Log.i("LSFG-VK", "Activation requested: layer="+layerLibrary.getAbsolutePath()+
             " ("+layerLibrary.length()+" bytes), manifest="+layerManifest.getAbsolutePath()+
             ", Lossless.dll="+losslessDLL.getAbsolutePath()+" ("+losslessDLL.length()+
@@ -689,7 +725,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
     public boolean applyLSFGVKConfig(int multiplier, float flowScale, String preset) {
         File losslessDLL = new File(getFilesDir(), "lsfg-vk/Lossless.dll");
-        if (container == null || !container.isLSFGEnabled() || !losslessDLL.isFile() ||
+        if (!lsfgLayerStaged || container == null || !container.isLSFGEnabled() || !losslessDLL.isFile() ||
             !losslessDLL.canRead() || losslessDLL.length() == 0) {
             Log.w("LSFG-VK", "Live configuration rejected because a runtime requirement is missing");
             return false;
@@ -710,9 +746,8 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
     private void setupUI() {
         MenuItem lsfgMenuItem = ((NavigationView)findViewById(R.id.NavigationView)).getMenu().findItem(R.id.menu_item_lsfg_vk);
         boolean lsfgEnabled = container != null && container.isLSFGEnabled();
-        File losslessDLL = new File(getFilesDir(), "lsfg-vk/Lossless.dll");
         lsfgMenuItem.setVisible(lsfgEnabled);
-        lsfgMenuItem.setEnabled(lsfgEnabled && losslessDLL.isFile() && losslessDLL.canRead() && losslessDLL.length() > 0);
+        lsfgMenuItem.setEnabled(false); // Enabled after staging; this is not proof of runtime GPU support.
 
         FrameLayout rootView = findViewById(R.id.FLXServerDisplay);
         xServerView = new XServerView(this, xServer);

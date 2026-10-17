@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discord_presence">Discord Rich Presence</string>
+    <string name="discord_enable">Mostrar jogo e tempo de sessão no Discord</string>
+    <string name="discord_application_id">Application ID do Discord</string>
+    <string name="discord_help">Opcional. Requer o aplicativo Discord no Android conectado à sua conta e um Application ID do Portal de Desenvolvedores do Discord. Não precisa de token de usuário. Ative o compartilhamento de atividade no Discord. O tempo suspenso não é contado. Tem efeito na próxima abertura de um contêiner.</string>
+    <string name="discord_disabled">Rich Presence desativado.</string>
+    <string name="discord_id_required">Informe um Application ID público válido do Discord (17–19 dígitos).</string>
+    <string name="discord_sdk_missing">Este build não inclui o Discord Social SDK 1.10+. Rich Presence indisponível.</string>
+    <string name="discord_sdk_error">Não foi possível iniciar o SDK do Discord. Verifique a versão do SDK e os logs do aplicativo.</string>
+    <string name="discord_app_missing">Instale o Discord para Android e conecte sua conta para usar Rich Presence.</string>
+    <string name="discord_waiting_game">Aguardando uma janela de jogo e seu processo em execução.</string>
+    <string name="discord_connecting">Enviando Rich Presence ao Discord…</string>
+    <string name="discord_published">Rich Presence aceito pelo Discord.</string>
+    <string name="discord_retrying">O Discord ainda não aceitou a atualização. Verifique se a conta está conectada; novas tentativas serão feitas automaticamente.</string>
+    <string name="discord_paused">Sessão suspensa; Rich Presence limpo.</string>
+    <string name="discord_processes_unavailable">Não foi possível verificar os processos do jogo. A presença foi limpa até o helper Windows responder.</string>
+    <string name="lsfg_vortek_unsupported">LSFG indisponível com a swapchain atual do Vortek. O jogo será executado sem geração de frames.</string>
+    <string name="panvk_g52_help">PanVK experimental opcional para Mali-G52 MC2. Baixe o ZIP e importe pelo botão de instalar driver acima; depois selecione-o explicitamente. A compatibilidade depende do Android e do kernel. Este alpha não é conforme ao Vulkan e não habilita LSFG no Vortek.</string>
+    <string name="panvk_g52_releases">Versões do PanVK G52</string>
+    <string name="custom_driver_android_required">Este driver requer Android API %1$d ou superior.</string>
+</resources>

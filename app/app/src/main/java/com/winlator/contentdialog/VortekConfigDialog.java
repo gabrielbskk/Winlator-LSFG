@@ -1,6 +1,8 @@
 package com.winlator.contentdialog;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import android.widget.Spinner;
 
@@ -49,6 +51,14 @@ public class VortekConfigDialog extends ContentDialog {
 
         String adrenotoolsDriver = config.get("adrenotoolsDriver");
         GeneralComponents.initViews(GeneralComponents.Type.ADRENOTOOLS_DRIVER, findViewById(R.id.AdrenotoolsDriverToolbox), sAdrenotoolsDriver, adrenotoolsDriver, "System");
+
+        View panvkInfo = findViewById(R.id.LLPanvkG52);
+        boolean maliG52 = GPUHelper.glGetRenderer(context).toLowerCase(java.util.Locale.ROOT).matches(".*mali[- ]?g52.*");
+        panvkInfo.setVisibility(maliG52 ? View.VISIBLE : View.GONE);
+        findViewById(R.id.BTPanvkReleases).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/LukeValen/panvk-mali-g52/releases"));
+            if (intent.resolveActivity(context.getPackageManager()) != null) context.startActivity(intent);
+        });
 
         AppUtils.setSpinnerSelectionFromValue(sVkMaxVersion, config.get("vkMaxVersion", DEFAULT_VK_MAX_VERSION));
         AppUtils.setSpinnerSelectionFromMemorySize(sMaxDeviceMemory, config.get("maxDeviceMemory", "0"));

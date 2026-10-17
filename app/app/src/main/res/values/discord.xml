@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discord_presence">Discord Rich Presence</string>
+    <string name="discord_enable">Show my game and session time on Discord</string>
+    <string name="discord_application_id">Discord Application ID</string>
+    <string name="discord_help">Optional. Requires the Android Discord app signed in and an Application ID from the Discord Developer Portal. No user token is needed. Enable activity sharing in Discord. Suspended time is excluded. Takes effect the next time you open a container.</string>
+    <string name="discord_disabled">Rich Presence disabled.</string>
+    <string name="discord_id_required">Enter a valid public Discord Application ID (17–19 digits).</string>
+    <string name="discord_sdk_missing">This build does not include Discord Social SDK 1.10+. Rich Presence is unavailable.</string>
+    <string name="discord_sdk_error">Discord SDK could not start. Check the SDK version and application logs.</string>
+    <string name="discord_app_missing">Install the Android Discord app and sign in to use Rich Presence.</string>
+    <string name="discord_waiting_game">Waiting for a game window and its running process.</string>
+    <string name="discord_connecting">Sending Rich Presence to Discord…</string>
+    <string name="discord_published">Rich Presence accepted by Discord.</string>
+    <string name="discord_retrying">Discord has not accepted the update. Check that it is signed in; retrying automatically.</string>
+    <string name="discord_paused">Session suspended; Rich Presence cleared.</string>
+    <string name="discord_processes_unavailable">Game processes could not be verified. Presence cleared until the Windows helper responds.</string>
+    <string name="lsfg_vortek_unsupported">LSFG is unavailable with the current Vortek swapchain. The game will run without frame generation.</string>
+    <string name="panvk_g52_help">Optional experimental PanVK for Mali-G52 MC2. Download the ZIP and import it using the driver install button above, then select it explicitly. Compatibility depends on Android and the kernel. This alpha is not Vulkan conformant and does not enable LSFG on Vortek.</string>
+    <string name="panvk_g52_releases">PanVK G52 releases</string>
+    <string name="custom_driver_android_required">This driver requires Android API %1$d or newer.</string>
+</resources>

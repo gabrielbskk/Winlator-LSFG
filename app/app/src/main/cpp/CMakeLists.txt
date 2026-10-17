@@ -6,3 +6,8 @@ add_subdirectory(virglrenderer)
 add_subdirectory(midihandler)
 add_subdirectory(libadrenotools)
 add_subdirectory(gladiorenderer)
+
+option(WINLATOR_DISCORD_RPC "Build the Android Discord Social SDK bridge" OFF)
+if(WINLATOR_DISCORD_RPC)
+    add_subdirectory(discordrpc)
+endif()
