@@ -1,12 +1,20 @@
 name: Publish experimental RPC APK
 
 on:
-  push:
-    branches:
-      - experimental/discord-rpc-android
-    paths:
-      - .github/workflows/publish-rpc-apk.yml
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag
+        required: true
+        type: string
+      staging_ref:
+        description: Branch containing release.zip.001 and release.zip.002
+        required: true
+        type: string
+      apk_name:
+        description: Name of the complete APK inside the ZIP
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -18,20 +26,24 @@ jobs:
       - name: Download verified APK parts
         uses: actions/checkout@v4
         with:
-          ref: downloads/rpc-experimental-1
+          ref: ${{ inputs.staging_ref }}
           persist-credentials: false
       - name: Reassemble and verify APK
+        env:
+          APK_NAME: ${{ inputs.apk_name }}
         run: |
           set -euo pipefail
           sha256sum -c PARTS-SHA256SUMS.txt
-          cat Winlator-LSFG-RPC-experimental-1.zip.001 Winlator-LSFG-RPC-experimental-1.zip.002 > release.zip
+          cat release.zip.001 release.zip.002 > release.zip
           unzip -t release.zip
-          unzip -j release.zip 'Winlator-LSFG-11.2-rpc-experimental.1-arm64.apk' -d .
+          unzip -j release.zip "$APK_NAME" -d .
           sha256sum -c SHA256SUMS.txt
       - name: Upload complete APK to experimental release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          APK_NAME: ${{ inputs.apk_name }}
         run: |
-          gh release upload rpc-android-experimental-1 \
-            Winlator-LSFG-11.2-rpc-experimental.1-arm64.apk \
+          gh release upload "$RELEASE_TAG" \
+            "$APK_NAME" \
             SHA256SUMS.txt --repo gabrielbskk/Winlator-LSFG --clobber

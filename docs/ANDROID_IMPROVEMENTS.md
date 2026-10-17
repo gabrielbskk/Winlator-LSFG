@@ -7,6 +7,36 @@ no Android/Bionic. Ela não usa o Discord do Windows/Wine nem tokens de usuário
 Sem o AAR oficial, o aplicativo continua compilando e mostra explicitamente que o
 RPC está indisponível. A ponte nativa só é compilada quando o AAR está presente.
 
+## APK experimental otimizado para jogos de 64 bits
+
+A pré-release `11.2-rpc-experimental.2` usa o perfil de build
+`-Parm64OnlyGameAssets=true`. Ele retira os módulos `i386-windows` do rootfs e
+as DLLs `syswow64` dos pacotes Direct3D, DXVK, D8VK e VKD3D. Os diretórios vazios são preservados para
+que a criação do contêiner continue funcionando. Os arquivos de 64 bits são
+mantidos. Esse perfil **não atende jogos Windows de 32 bits nem launchers que
+precisem de componentes de 32 bits**; use a versão completa para esses casos.
+Não foram feitos testes em aparelho, inclusive de criação do contêiner, para
+certificar a compatibilidade do perfil reduzido. O APK passou de 176.160.333
+para 147.669.713 bytes, redução de 28.490.620 bytes (16,2%). Todos os arquivos
+mantidos nos seis arquivos TAR recomprimidos foram comparados byte a byte pelo
+SHA-256 com os originais. A integridade do APK, sua assinatura e os dez testes
+JVM foram verificados.
+
+O script `scripts/prepare_arm64_assets.py` monta a variante em `app/app/build/`
+sem alterar os arquivos originais do repositório. O build exige Python 3 e o
+executável `zstd`. Exemplo:
+
+```sh
+cd app
+./gradlew :app:assembleDebug \
+  -PdiscordSdkAar=/caminho/discord_partner_sdk.aar \
+  -Parm64OnlyGameAssets=true
+```
+
+Uma Action em `.github/workflows/publish-rpc-apk.yml` confere os hashes, junta
+as partes temporárias de transporte e publica o APK inteiro como anexo da
+release. O usuário baixa apenas um APK, sem precisar juntar arquivos.
+
 O build padrão não contém o SDK proprietário. Para ativar o RPC, ainda são
 necessários um Application ID próprio, o AAR Android do Social SDK **1.10 ou
 superior** e validação em um aparelho com o Discord instalado e conectado.
