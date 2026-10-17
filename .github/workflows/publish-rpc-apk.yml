@@ -38,6 +38,43 @@ jobs:
           unzip -t release.zip
           unzip -j release.zip "$APK_NAME" -d .
           sha256sum -c SHA256SUMS.txt
+      - name: Check packaged Windows 32-bit components
+        env:
+          APK_NAME: ${{ inputs.apk_name }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user 'zstandard>=0.23,<1'
+          python3 - <<'PY'
+          import os
+          import sys
+          import tarfile
+          import zipfile
+          import zstandard
+
+          checks = {
+              "assets/rootfs.tzst": "/i386-windows/",
+              "assets/wincomponents/direct3d.tzst": "/syswow64/",
+          }
+          apk = os.environ["APK_NAME"]
+          try:
+              with zipfile.ZipFile(apk) as package:
+                  for asset, required in checks.items():
+                      if asset not in package.namelist():
+                          raise RuntimeError("Missing required asset: " + asset)
+                      with package.open(asset) as stream:
+                          with zstandard.ZstdDecompressor().stream_reader(stream) as decoded:
+                              with tarfile.open(fileobj=decoded, mode="r|") as archive:
+                                  present = any(
+                                      required.strip("/") in ("/" + item.name.strip("/") + "/")
+                                      for item in archive
+                                  )
+                      if not present:
+                          raise RuntimeError("Windows 32-bit assets missing from " + asset)
+                      print("Verified Windows 32-bit components:", asset)
+          except Exception as exc:
+              print("Full Windows compatibility package validation failed:", exc, file=sys.stderr)
+              sys.exit(1)
+          PY
       - name: Upload complete APK to experimental release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
