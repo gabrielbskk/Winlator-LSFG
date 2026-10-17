@@ -1,23 +1,34 @@
-# Architecture overview
+# Repository architecture (high-level map)
 
-This is a high-level orientation to top-level directories, not an exhaustive code audit.
+This is an orientation to the checked-in repository, not a complete dependency or security audit.
 
-| Area | Location | Purpose |
-| --- | --- | --- |
-| Android application | `app/` | Android app sources and integration |
-| Native audio | `android_alsa/` | ALSA integration |
-| Graphics-related components | `gladio/` | Native project component; consult its code before changing behavior |
-| Runtime patches | `glibc_patches/` | Patches associated with the glibc environment |
-| Controls | `input_controls/` | Input control resources |
-| Installable assets | `installable_components/` | Components distributed/managed by the project |
-| Project automation | `.github/` | Contribution templates and workflows, where available |
+| Directory | Scope |
+| --- | --- |
+| `app/` | Android/Gradle project, Java sources, native C/C++ integration and packaged assets |
+| `android_alsa/` | Native Android ALSA integration |
+| `gladio/` | Separate native graphics-related component |
+| `glibc_patches/` | glibc-related patches |
+| `input_controls/` | Game-specific input control profiles |
+| `installable_components/` | Downloadable or installable runtime components and indexes |
+| `tools/lsfg-vk-glibc/` | Build script and compatibility patch for LSFG-VK in glibc environments |
+| `vortek/` | Native graphics/Vulkan-related project |
+| `wine_addons/` | Tracked Wine Mono/Gecko installers |
+| `.github/` | Issue/PR templates and code ownership guidance |
 
-## Areas to investigate
-- **LSFG-VK**: trace Android configuration through launch/container logic into the frame-generation integration.
-- **Graphics compatibility**: identify renderer selection, driver packaging, Vulkan capabilities and error handling.
-- **Memory**: profile both the Android process and guest environment before changing caches.
-- **Discord RPC**: see experimental PR #1; not considered part of the default branch until merged and verified.
-- **ARM64 distribution**: differentiate Android host architecture from Windows guest executable bitness.
+## Specific entry points
 
-## Safety of changes
-Keep edits to core rendering, Wine, Box64 and runtime code separate from documentation changes. Preserve third-party licenses and verify build/release assets before publishing.
+- Android app Gradle module: `app/app/build.gradle`
+- Android Java sources: `app/app/src/main/java/com/winlator/`
+- Native components: `app/app/src/main/cpp/`
+- LSFG configuration UI: `app/app/src/main/java/com/winlator/contentdialog/LSFGVKConfigDialog.java`
+- LSFG-VK integration assets: `app/app/src/main/assets/lsfg-vk/`
+- GPU driver assets: `app/app/src/main/assets/graphics_driver/`
+
+## Proposed investigation paths
+- **Frame generation**: trace LSFG settings into container startup, Vulkan layer configuration and frame pacing. Test on-device before claiming improvements.
+- **Graphics**: identify actual Vulkan renderer and driver loading paths for each GPU; Turnip drivers target Qualcomm, not Mali.
+- **Memory**: profile allocations and guest/container RAM separately before changing resource caches.
+- **Discord Rich Presence**: experimental PR #1. No default-branch support until integrated.
+- **ARM64 builds**: distinguish Android host ARM64 ABI from the architecture (32/64-bit) of Windows applications run through Wine/Box64.
+
+Do not broadly move native directories or large runtime archives in a housekeeping PR. See [Repository audit](REPOSITORY_AUDIT.md) and [Testing matrix](TESTING.md).
