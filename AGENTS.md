@@ -3,6 +3,12 @@
 ## Missão e limites
 Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogos Windows x86 e x64 dentro dos contêineres. Não integrar XenDroid/Xbox 360. Prioridades: estabilidade, drivers Adreno/Mali, LSFG-VK/frame pacing, memória e Discord RPC opcional.
 
+## Branch de integração em andamento
+
+- **PR #19** (`feat/aurora-consolidation` → `experimental/rpc-android-v4`) já contém tema, detecção Adreno/Mali, política automática Turnip, correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
+- **PR #20** (`docs/codex-aurora-driver-plan` → `main`) mantém orientações e inventário de pacotes; merge ou cherry-pick somente depois de checar a base adequada.
+- **PR #7** permanece a referência RPC original e não deve ser mesclado automaticamente.
+
 ## Antes de qualquer mudança
 1. Leia `README.md`, `ROADMAP.md`, `docs/DEVELOPMENT_WORKFLOW.md`, `docs/GPU_COMPATIBILITY_AURORA.md` e `docs/DRIVER_PLAN.md`.
 2. Consulte PRs abertos e a árvore da branch atual; **não duplique trabalho em andamento**.
