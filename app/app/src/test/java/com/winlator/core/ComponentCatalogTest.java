@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 
 public class ComponentCatalogTest {
     @Test public void retainsAllowedVersionsAndDeduplicatesCRLFCatalog() {
-        String raw = "turnip-26.1.0.tzst\\r\\nturnip-24.3.4.1.tzst\\n"
-                + "turnip-26.1.0.tzst\\n\\n# comment\\n";
+        String raw = "turnip-26.1.0.tzst\r\nturnip-24.3.4.1.tzst\n"
+                + "turnip-26.1.0.tzst\n\n# comment\n";
         assertArrayEquals(new String[]{"turnip-26.1.0.tzst", "turnip-24.3.4.1.tzst"},
                 ComponentCatalog.validFileNames("turnip", raw));
         assertTrue(ComponentCatalog.isSafeFileName("vkd3d", "vkd3d-3.0b.tzst"));
@@ -28,8 +28,8 @@ public class ComponentCatalogTest {
     }
 
     @Test public void corruptCatalogCannotExposeAnyDownload() {
-        String raw = "turnip-../../steal.tzst\\nturnip-26.0.3.tzst.tmp\\n"
-                + "dxvk-2.4.1.tzst\\n/absolute.tzst\\n";
+        String raw = "turnip-../../steal.tzst\nturnip-26.0.3.tzst.tmp\n"
+                + "dxvk-2.4.1.tzst\n/absolute.tzst\n";
         assertEquals(0, ComponentCatalog.validFileNames("turnip", raw).length);
     }
 }
