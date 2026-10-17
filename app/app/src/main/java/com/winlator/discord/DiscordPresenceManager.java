@@ -28,6 +28,7 @@ public final class DiscordPresenceManager implements OnGetProcessInfoListener {
     private final List<ProcessInfo> incoming = new ArrayList<>();
     private final String expectedExecutable;
     private final String shortcutName;
+    private final String shortcutArtwork;
     private DiscordPresenceClient client;
     private int status = R.string.discord_disabled;
     private boolean paused;
@@ -40,10 +41,11 @@ public final class DiscordPresenceManager implements OnGetProcessInfoListener {
     private int nextIndex;
     private long lastSnapshotMillis;
 
-    public DiscordPresenceManager(XServerDisplayActivity activity, String executable, String name) {
+    public DiscordPresenceManager(XServerDisplayActivity activity, String executable, String name, String artwork) {
         this.activity = activity;
         expectedExecutable = GameSession.executableName(executable);
         shortcutName = name;
+        shortcutArtwork = DiscordArtwork.normalize(artwork);
     }
 
     public static int configurationStatus(Context context, boolean enabled, String id) {
@@ -183,7 +185,9 @@ public final class DiscordPresenceManager implements OnGetProcessInfoListener {
             publishedExecutable = session.getExecutable();
             publishedStart = session.startSeconds(System.currentTimeMillis(), SystemClock.elapsedRealtime());
         }
-        client.update(session.getTitle(), publishedStart);
+        // Avoid showing the wrong game's artwork if a launcher starts another EXE.
+        String image = executable.equals(expectedExecutable) ? shortcutArtwork : "";
+        client.update(session.getTitle(), publishedStart, image);
     }
 
     private void processesUnavailable() {
