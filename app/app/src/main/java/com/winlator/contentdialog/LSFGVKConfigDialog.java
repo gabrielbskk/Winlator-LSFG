@@ -14,6 +14,9 @@ import com.winlator.widget.SeekBar;
 public class LSFGVKConfigDialog extends ContentDialog {
     public LSFGVKConfigDialog(XServerDisplayActivity activity) {
         super(activity, R.layout.lsfg_vk_config_dialog);
+        findViewById(R.id.LSFGScroll).getLayoutParams().width = Math.min(
+                activity.getResources().getDimensionPixelSize(R.dimen.aurora_dialog_content_width),
+                AppUtils.getPreferredDialogWidth(activity));
         setTitle(R.string.lsfg_vk);
         setIcon(R.drawable.icon_screen_effect);
 

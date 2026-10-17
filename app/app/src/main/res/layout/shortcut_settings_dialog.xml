@@ -479,7 +479,7 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:padding="12dp"
-                        android:background="#182638">
+                        android:background="?attr/colorSecondarySurface">
 
                         <ImageView
                             android:id="@+id/IVDiscordRpcPreviewArtwork"

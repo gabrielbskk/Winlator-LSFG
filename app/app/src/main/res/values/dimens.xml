@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="aurora_card_radius">14dp</dimen>
+    <dimen name="aurora_dialog_content_width">360dp</dimen>
+</resources>
