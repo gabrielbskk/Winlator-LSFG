@@ -46,7 +46,9 @@ public abstract class GraphicsDrivers {
     public static String[] parseIdentifiers(String graphicsDriver) {
         if (graphicsDriver == null || graphicsDriver.isEmpty()) return new String[]{DEFAULT_VULKAN_DRIVER, DEFAULT_OPENGL_DRIVER};
         if (graphicsDriver.contains(",")) {
-            return graphicsDriver.split(",");
+            String[] parts = graphicsDriver.split(",", -1);
+            return new String[]{isVulkanDriver(parts[0]) ? parts[0] : DEFAULT_VULKAN_DRIVER,
+                    parts.length > 1 && isOpenGLDriver(parts[1]) ? parts[1] : DEFAULT_OPENGL_DRIVER};
         }
         else {
             if (isVulkanDriver(graphicsDriver)) {
@@ -68,7 +70,7 @@ public abstract class GraphicsDrivers {
             return new KeyValueSet[]{new KeyValueSet(first), new KeyValueSet(second)};
         }
         else {
-            if (isVulkanDriver(graphicsDriver)) {
+            if (isVulkanDriver(graphicsDriver) || (graphicsDriver != null && graphicsDriver.contains(","))) {
                 return new KeyValueSet[]{new KeyValueSet(graphicsDriverConfig), new KeyValueSet()};
             }
             else if (isOpenGLDriver(graphicsDriver)) {
