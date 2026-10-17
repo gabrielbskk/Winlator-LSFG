@@ -1,0 +1,112 @@
+name: Publish Aurora 11.3 Experimental 7 (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_publication:
+        description: Publish Experimental 7 as a public prerelease (not Stable)?
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: aurora-11-3-experimental-7-manual-release
+  cancel-in-progress: false
+
+jobs:
+  publish-experimental-7:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Verify source commit and three successful CI workflows
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="7e4f5a5b4c63a2ac2849025cafe89be713e28eb8"
+          SOURCE_RUN="39047623193"
+          for RUN in "$SOURCE_RUN" 39047627335 39047627315; do
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN" \
+              --jq '[.head_sha, .conclusion, .status, .head_repository.full_name] | @tsv' \
+              > /tmp/aurora-run-check.txt
+            IFS=$'\t' read -r SHA CONCLUSION STATUS SOURCE_REPO < /tmp/aurora-run-check.txt
+            if [[ "$SHA" != "$EXPECTED_SHA" || "$CONCLUSION" != "success" ||
+                  "$STATUS" != "completed" || "$SOURCE_REPO" != "$GITHUB_REPOSITORY" ]]; then
+              echo "CI run $RUN does not match verified commit" >&2
+              exit 1
+            fi
+          done
+          TAG="aurora-11.3-experimental-7-rc1"
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1 ||
+             gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release tag already exists; refusing overwrite" >&2
+            exit 1
+          fi
+
+      - name: Download already verified native ARM64 test artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          gh run download 39047623193 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name aurora-11.3-rc1-arm64-native-review \
+            --dir dist
+          APK="dist/Winlator-LSFG-Aurora-11.3-RC1-ARM64-debug.apk"
+          test -s "$APK"
+          (cd dist && sha256sum -c SHA256SUMS.txt)
+          unzip -tq "$APK" >/dev/null
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libwinlator_discord.so'
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libdiscord_partner_sdk.so'
+          unzip -Z1 "$APK" | grep -Fx 'assets/rootfs.tzst'
+          unzip -Z1 "$APK" | grep -Fx 'assets/wincomponents/direct3d.tzst'
+          if unzip -Z1 "$APK" | grep -iE '(^|/)lossless\.dll$'; then
+            echo "Do not redistribute Lossless.dll" >&2
+            exit 1
+          fi
+
+      - name: Publish Experimental 7 as prerelease (never Latest or Stable)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="aurora-11.3-experimental-7-rc1"
+          cat > /tmp/aurora-experimental-notes.md <<'NOTES'
+          # Winlator LSFG Aurora 11.3 — Experimental 7 (RC1)
+
+          **Versão experimental de testes. NÃO é uma Stable validada em hardware.**
+          APK Android ARM64 (assinatura debug) com Discord RPC nativo e capas Steam.
+
+          - Turnip e versão selecionados **manualmente**; novos contêineres usam Vortek/Gladio.
+          - Drivers Turnip anteriores preservados, com fallback seguro para configurações legadas.
+          - Correções de detecção de GPU, persistência, importação de configurações e downloads.
+          - LSFG-VK/presets e arquivos de jogos Windows x86/x64 mantidos; Lossless.dll não incluída.
+          - PANVK para Mali G52 ainda não foi integrado/validado.
+          - CI SDK-free, testes JVM e build nativo Discord aprovados no mesmo commit.
+          - **Pendente:** jogos e GPUs em aparelhos reais; LSFG, RAM/frametime, login Discord/capas, atualização e rollback.
+
+          **Código-fonte:** 7e4f5a5b4c63a2ac2849025cafe89be713e28eb8 (PR #19).
+          **Build nativo:** https://github.com/gabrielbskk/Winlator-LSFG/actions/runs/39047623193
+          **CI SDK-free:** https://github.com/gabrielbskk/Winlator-LSFG/actions/runs/39047627335
+          **Testes JVM:** https://github.com/gabrielbskk/Winlator-LSFG/actions/runs/39047627315
+
+          Faça backup de contêineres e saves antes de instalar. APK debug pode não atualizar versões com
+          assinatura diferente; não desinstale sem backup confirmado.
+          Esta build não substitui a versão principal e não implica suporte garantido a Adreno/Mali.
+          Créditos: Rafaela (@amyroseee), brunodev85 e autores dos componentes upstream.
+          NOTES
+          gh release create "$TAG" \
+            dist/Winlator-LSFG-Aurora-11.3-RC1-ARM64-debug.apk \
+            dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "7e4f5a5b4c63a2ac2849025cafe89be713e28eb8" \
+            --prerelease --latest=false \
+            --title "Winlator LSFG Aurora 11.3 — Experimental 7 (RC1, ARM64 + RPC)" \
+            --notes-file /tmp/aurora-experimental-notes.md
