@@ -392,6 +392,38 @@
                             android:src="@drawable/icon_menu" />
                     </LinearLayout>
 
+                    <!-- The icon preview is extracted locally. Only a user-approved
+                         Discord asset key / public HTTPS URL reaches Discord. -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/discord_game_artwork_title" />
+
+                    <ImageView
+                        android:id="@+id/IVDiscordExeIconPreview"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_gravity="center_horizontal"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@string/discord_exe_icon_preview" />
+
+                    <EditText
+                        style="@style/EditText"
+                        android:id="@+id/ETDiscordArtwork"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textUri"
+                        android:maxLength="300"
+                        android:singleLine="true"
+                        android:hint="@string/discord_game_artwork_hint" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/discord_game_artwork_help" />
+
                     <CheckBox
                         android:id="@+id/CBForceFullscreen"
                         android:layout_width="wrap_content"
