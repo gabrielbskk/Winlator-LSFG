@@ -1,23 +1,38 @@
-## O que mudou?
-Resuma objetivo e escopo. Se substituir outro PR, informe o número e evite duplicar commits.
+## Resumo / Summary
+Explique o que mudou e por quê. Se este PR substitui outro, indique o número. Mantenha uma única alteração lógica por PR.
 
-## Onde testar
-- Branch de destino: `main` / `experimental/rpc-android-v4`
-- Dispositivo/Android, SoC/GPU e driver:
-- Wine/Box64 e tipo de jogo Windows (32-bit/64-bit):
-- Teste manual realizado (ou **ainda não realizado**):
+## PRs e dependências relacionados
+- PR relacionado / issue (se Issues estiver habilitado):
+- Branch base: `main` ou `experimental/rpc-android-v4`
+- Outros PRs necessários / substituídos:
 
-## Verificações
-- [ ] Código/revisão de arquivos relevantes concluídos
-- [ ] Testes JVM/Android CI executados (coloque o link do workflow)
-- [ ] Empacotamento Windows 32-bit verificado, se alterar assets
-- [ ] JNI e Discord Social SDK verificados, se alterar RPC
-- [ ] Capturas e comportamento real do Discord no dispositivo (se aplicável)
-- [ ] README/changelog/documentação atualizados se necessário
-- [ ] Nenhum AAR/ZIP proprietário, token, chave ou arquivo de jogo incluído
+## Escopo / Scope
+- [ ] Documentação e manutenção do repositório
+- [ ] Frame generation / LSFG
+- [ ] GPU, driver ou RAM
+- [ ] Android / ARM64 ou arquivos Windows 32/64 bits
+- [ ] Discord RPC e capas de jogos
+- [ ] Outro (explicar)
 
-## Riscos / compatibilidade
-Liste regressões possíveis, partes experimentais e medidas para reverter.
+## Verificação / Verification
+- [ ] Build concluído; ambiente, SDK/NDK e variante informados
+- [ ] Testes automatizados / JVM executados (link do Actions)
+- [ ] Teste em aparelho (modelo, Android, SoC, GPU/driver) documentado
+- [ ] Ainda **não** testado em aparelho (descreva pendências)
+- [ ] Regressões, Windows 32/64 bits e troca de jogos avaliados se aplicável
+- [ ] JNI/SDK do Discord e permissões verificadas se alterar RPC
+- [ ] Configurações e screenshots de UI conferidas quando necessário
 
-## Dependências e PRs relacionados
-Informe o PR consolidado, referências de release e o que permanece pendente.
+## Desempenho / Performance, se aplicável
+Informe FPS, tempo de frame, pico de RAM, temperaturas, driver, jogo,
+resolução, comparação anterior/depois e repetição dos testes.
+Se não mediu, escreva **não medido** (não alegar melhoria).
+
+## Riscos, compatibilidade e reversão
+Descreva limites conhecidos, privacidade, erros possíveis e como reverter.
+
+## Checklist
+- [ ] Nenhum AAR, ZIP fragmentado do SDK, APK binário, Lossless.dll, token ou arquivo proprietário adicionado
+- [ ] Documentação / changelog / roadmap atualizados quando cabível
+- [ ] Créditos à Rafaela, brunodev85 e terceiros mantidos
+- [ ] PR em modo **draft** se ainda não estiver pronto para merge
