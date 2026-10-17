@@ -9,9 +9,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <CheckBox android:id="@+id/CBTurnipAutomatic"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="@string/turnip_automatic_baseline" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/turnip_manual_note" />
 
         <TextView
             android:layout_width="wrap_content"

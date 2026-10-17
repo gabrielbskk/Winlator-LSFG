@@ -173,16 +173,6 @@ public abstract class GPUHelper {
                 .getString("gpu_vulkan_renderer", glRenderer);
     }
 
-    public static String resolveTurnipVersion(Context context, String manualVersion) {
-        String renderer = getRenderer(context);
-        String version = TurnipPolicy.resolveVersion(renderer, manualVersion);
-        android.util.Log.i("AuroraGPU", "renderer=" + renderer + " model="
-                + GpuCompatibility.adrenoModelId(renderer) + " Turnip=" + version
-                + " selection=" + (manualVersion == null || manualVersion.isEmpty() ? "auto" : "manual")
-                + " policy=" + TurnipPolicy.REVISION + " reason=" + TurnipPolicy.reason(renderer));
-        return version.isEmpty() ? DefaultVersion.TURNIP : version;
-    }
-
     private static native String vkGetRenderer();
 
     public static short getAdrenoModelId(Context context) {

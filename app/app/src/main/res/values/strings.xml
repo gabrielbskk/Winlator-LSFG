@@ -434,6 +434,6 @@
     <string name="unknown_compatibility">Unknown</string>
     <string name="required_components">Required Components</string>
     <string name="device">Device</string><string name="soc">SoC</string><string name="gpu">GPU</string><string name="ram">RAM</string><string name="graphics">Graphics</string><string name="cpu_box64">CPU / Box64</string><string name="compatibility">Compatibility</string><string name="preview_changes">Preview Changes</string><string name="online_config_count">%1$d settings</string><string name="online_setting_singular">1 setting</string><string name="not_specified">Not specified</string><string name="no_compatible_shortcut">No compatible shortcut found</string><string name="using_cached_data">Using cached data</string>
-    <string name="turnip_automatic_baseline">Automatic baseline (hardware validation pending)</string>
+    <string name="turnip_manual_note">Choose the Turnip driver and version manually. Saved settings in existing containers are preserved.</string>
     <string name="mali_system_fallback">Turnip is incompatible with Mali. This session will use system Vulkan; review the container driver settings.</string>
 </resources>

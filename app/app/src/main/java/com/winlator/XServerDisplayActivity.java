@@ -905,7 +905,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
 
         String cacheId = "";
         if (graphicsDriver[0].equals(GraphicsDrivers.TURNIP)) {
-            cacheId += graphicsDriver[0]+"-"+GPUHelper.resolveTurnipVersion(this, graphicsDriverConfig[0].get("version"));
+            cacheId += graphicsDriver[0]+"-"+com.winlator.core.TurnipVersionSelection.resolve(graphicsDriverConfig[0].get("version"));
         }
         else cacheId += graphicsDriver[0]+"-"+DefaultVersion.valueOf(graphicsDriver[0]);
         cacheId += "-"+graphicsDriver[1]+"-"+DefaultVersion.valueOf(graphicsDriver[1]);
@@ -932,7 +932,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             TurnipConfigDialog.setEnvVars(this, graphicsDriverConfig[0], envVars);
 
             if (changed) {
-                String version = GPUHelper.resolveTurnipVersion(this, graphicsDriverConfig[0].get("version"));
+                String version = com.winlator.core.TurnipVersionSelection.resolve(graphicsDriverConfig[0].get("version"));
                 GeneralComponents.extractFile(GeneralComponents.Type.TURNIP, this, version, DefaultVersion.TURNIP);
             }
         }

@@ -31,16 +31,15 @@ public class TurnipConfigDialog extends ContentDialog {
         cbForceWaitForFences.setChecked(config.getBoolean("forceWaitForFences"));
         AppUtils.setSpinnerSelectionFromMemorySize(sMaxDeviceMemory, config.get("maxDeviceMemory", "0"));
 
-        String version = config.get("version");
-        CheckBox automatic = findViewById(R.id.CBTurnipAutomatic);
-        automatic.setChecked(version.isEmpty() || version.equals("auto"));
-        GeneralComponents.initViews(GeneralComponents.Type.TURNIP, findViewById(R.id.TurnipToolbox), sVersion, version, GPUHelper.resolveTurnipVersion(context, ""));
-        sVersion.setEnabled(!automatic.isChecked());
-        automatic.setOnCheckedChangeListener((button, checked) -> sVersion.setEnabled(!checked));
+        // Always show and persist the exact selected version. Old missing/"auto"
+        // values resolve to the bundled fallback without guessing from the GPU.
+        String version = com.winlator.core.TurnipVersionSelection.resolve(config.get("version"));
+        GeneralComponents.initViews(GeneralComponents.Type.TURNIP,
+                findViewById(R.id.TurnipToolbox), sVersion, version, DefaultVersion.TURNIP);
 
         setOnConfirmCallback(() -> {
             KeyValueSet newConfig = new KeyValueSet();
-            if (!automatic.isChecked()) newConfig.put("version", StringUtils.parseNumber(sVersion.getSelectedItem()));
+            newConfig.put("version", StringUtils.parseNumber(sVersion.getSelectedItem(), DefaultVersion.TURNIP));
             newConfig.put("maxDeviceMemory", StringUtils.parseMemorySize(sMaxDeviceMemory.getSelectedItem()));
             newConfig.put("useHWBuf", cbUseHWBuf.isChecked() ? "1" : "0");
             newConfig.put("forceWaitForFences", cbForceWaitForFences.isChecked() ? "1" : "0");

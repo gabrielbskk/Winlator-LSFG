@@ -40,7 +40,7 @@ public final class GpuCompatibility {
         return maliGModelId(renderer) == 52;
     }
 
-    /** Automatic policy covers A6xx/A7xx only; manual selection remains available. */
+    /** Informational capability check only: never auto-select a graphics driver. */
     public static boolean isTurnipCandidate(String renderer) {
         int model = adrenoModelId(renderer);
         return model >= 600 && model < 800;

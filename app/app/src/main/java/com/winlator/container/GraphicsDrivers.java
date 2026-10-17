@@ -2,7 +2,6 @@ package com.winlator.container;
 
 import android.content.Context;
 
-import com.winlator.core.GPUHelper;
 import com.winlator.core.KeyValueSet;
 
 public abstract class GraphicsDrivers {
@@ -80,17 +79,12 @@ public abstract class GraphicsDrivers {
         }
     }
 
+    /**
+     * New containers start with the existing Vortek/Gladio fallback.
+     * Turnip is an explicit per-container choice, never selected from GPU probes.
+     * Keeping the Context parameter avoids changing existing call sites.
+     */
     public static String getDefaultDriver(Context context) {
-        // Turnip uses Qualcomm/Adreno-specific interfaces. Mali-G52 and unknown
-        // renderers keep the system Vulkan path (Vortek); no driver is forced
-        // onto an unsupported GPU.
-        String renderer = GPUHelper.getRenderer(context);
-        boolean adreno = com.winlator.core.GpuCompatibility.isTurnipCandidate(renderer);
-        android.util.Log.i("AuroraGPU", "renderer=" + renderer + " model="
-                + com.winlator.core.GpuCompatibility.adrenoModelId(renderer)
-                + " policy=" + com.winlator.core.TurnipPolicy.REVISION + " turnip="
-                + com.winlator.core.TurnipPolicy.recommendedVersion(renderer) + " reason="
-                + com.winlator.core.TurnipPolicy.reason(renderer));
-        return (adreno ? TURNIP : VORTEK) + "," + DEFAULT_OPENGL_DRIVER;
+        return DEFAULT_VULKAN_DRIVER + "," + DEFAULT_OPENGL_DRIVER;
     }
 }
