@@ -10,14 +10,14 @@
 | OpenGL | `zink`, `virgl`, `gladio` | Evitar regressões de configuração por contêiner |
 | Turnip empacotado | `app/app/src/main/assets/graphics_driver/` contém 8 arquivos `turnip-*.tzst` (24.3.4.1 até 26.2.1.1) | **Não remover** versões sem matriz de compatibilidade |
 | Turnip instalável | `installable_components/turnip/` contém `index.txt` e três pacotes `turnip-*.tzst` | Diferenciar assets embarcados de downloads/instalação; conferir índice e atualização |
-| Mali G52 | `GraphicsDrivers.getDefaultDriver()` seleciona Vortek em vez de Turnip quando GPU não é Adreno | Validar Vulkan do sistema e fallback Gladio em dispositivo |
+| Mali G52 | No PR #19, novos contêineres usam Vortek/Gladio independentemente da GPU | Validar Vulkan do sistema e fallback Gladio em dispositivo |
 | PANVK | Não consta como opção em `GraphicsDrivers.java` nem como pacote em `assets/graphics_driver/` | Investigar dependências reais e viabilidade antes de integrar |
 | AdrenoTools | `app/app/src/main/cpp/libadrenotools/` já existe | Auditar chamadas e necessidade; não pressupor que removê-lo seja seguro |
 | Configuração | `GraphicsDriverPicker.java` cria seletores Vulkan/OpenGL; `TurnipConfigDialog.java` guarda versão e flags | Manter compatibilidade com configurações persistidas |
 
 ## Trabalho simultâneo do Codex
 
-O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa o primeiro marco sobre a branch experimental de RPC: correções do tema, GPU, política Turnip por geração, Mali via driver do sistema, estabilização do RPC e testes. **Não repetir as mesmas mudanças.** Este documento e o script de inventário complementam o PR #19; reconcilie ambos antes de futuras alterações na `main`.
+O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa o primeiro marco sobre a branch experimental de RPC: correções do tema, GPU, controle manual do Turnip, Mali via driver do sistema, estabilização do RPC e testes. **Não repetir as mesmas mudanças.** Este documento e o script de inventário complementam o PR #19; reconcilie ambos antes de futuras alterações na `main`.
 
 ## Etapas e critérios de aceite
 
@@ -29,7 +29,8 @@ O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa 
 
 ### B. Adreno A6xx/A7xx
 - Cobrir identificação de Adreno 619, 642/642L e A7xx com testes unitários.
-- Verificar escolha Turnip por padrão apenas quando compatível e fallback seguro quando ausente.
+- Verificar que novos contêineres começam com Vortek/Gladio e que o usuário escolhe Turnip e sua versão manualmente; não reintroduzir autodetecção como política de escolha.
+- Testar contêineres antigos: `turnip` com versão explícita permanece intacto; versão vazia/`auto` usa fallback fixo empacotado.
 - Medir abertura do contêiner, renderização e consumo de RAM em aparelhos reais.
 - **Aceite:** sem regressão em Vulkan/OpenGL; testes por modelo registrados.
 
@@ -40,7 +41,7 @@ O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa 
 - **Aceite:** inicialização e renderização comprovadas em Mali real, sem Turnip forçado.
 
 ### D. UI e presets
-- Seletor de driver deve indicar GPU detectada, driver escolhido e fallback; configurações antigas continuam legíveis.
+- Seletor de driver deve indicar GPU detectada **para diagnóstico**, driver escolhido manualmente e fallback; configurações antigas continuam legíveis.
 - Separar mudanças de driver das de LSFG-VK e Discord RPC para facilitar diagnóstico.
 
 ### E. Frame generation e memória
@@ -52,5 +53,7 @@ O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa 
 - [PR #7 — Discord RPC Experimental 5](https://github.com/gabrielbskk/Winlator-LSFG/pull/7): draft; não mesclar automaticamente.
 - [PR #18 — tema Aurora, Adreno 619/642 e Mali G52](https://github.com/gabrielbskk/Winlator-LSFG/pull/18): já integrado; preservar suas correções.
 - [Workflow de desenvolvimento](DEVELOPMENT_WORKFLOW.md).
+
+**Decisão do mantenedor (pós Experimental 6):** remover completamente o controle automático de Turnip. O PR #19 deve manter driver/versão manual e incluir testes. Não promover Stable antes dos gates de `docs/STABLE_RELEASE_GATE.md` na branch de integração.
 
 **Observação:** uma APK Android ARM64 pode conter recursos para jogos Windows 32 e 64 bits. Não confundir ABI do aplicativo com arquitetura do executável convidado.
