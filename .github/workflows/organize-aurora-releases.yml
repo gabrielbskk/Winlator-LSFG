@@ -30,6 +30,7 @@ jobs:
           import os
           import subprocess
           import tempfile
+          import textwrap
 
           repo = os.environ["GITHUB_REPOSITORY"]
           primary = "rpc-android-experimental-5-full-rpc"
@@ -78,7 +79,8 @@ jobs:
           if not apk or apk.get("size") != 176187610:
               raise RuntimeError("Primary APK differs from the verified native build")
 
-          preface = """## Canal principal — candidata a estável
+          preface = textwrap.dedent("""
+          ## Canal principal — candidata a estável
 
           **Esta é a versão principal recomendada para testes de Aurora 11.2.**
           O APK contém o SDK e o RPC nativos, mas a integração com o Discord
@@ -91,8 +93,7 @@ jobs:
           As tags e commits permanecem no GitHub.
 
           ---
-
-          """
+          """)
           old_body = record.get("body") or ""
           if not old_body.startswith("## Canal principal — candidata a estável"):
               old_body = preface + old_body
