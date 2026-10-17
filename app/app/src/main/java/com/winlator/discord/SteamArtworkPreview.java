@@ -53,8 +53,18 @@ public final class SteamArtworkPreview {
                         output.write(buffer, 0, bytes);
                     }
                     byte[] data = output.toByteArray();
+                    // Reject decompression bombs even if the compressed JPEG/PNG
+                    // fits within the network byte limit.
+                    BitmapFactory.Options bounds = new BitmapFactory.Options();
+                    bounds.inJustDecodeBounds = true;
+                    BitmapFactory.decodeByteArray(data, 0, data.length, bounds);
+                    if (bounds.outWidth <= 0 || bounds.outHeight <= 0 ||
+                        bounds.outWidth > 8192 || bounds.outHeight > 8192) return null;
                     BitmapFactory.Options opts = new BitmapFactory.Options();
-                    opts.inSampleSize = 2;
+                    int sample = 1;
+                    while (bounds.outWidth / sample > 1024 ||
+                           bounds.outHeight / sample > 1024) sample *= 2;
+                    opts.inSampleSize = sample;
                     return BitmapFactory.decodeByteArray(data, 0, data.length, opts);
                 }
             }
