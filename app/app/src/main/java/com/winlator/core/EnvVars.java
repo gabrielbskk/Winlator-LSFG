@@ -22,9 +22,14 @@ public class EnvVars implements Iterable<String> {
     public void putAll(String[] items) {
         if (items == null) return;
         for (String item : items) {
-            int index = item.indexOf("=");
+            // Imported/edited environment strings can contain a bare token.
+            // Ignore that token instead of throwing StringIndexOutOfBoundsException
+            // and aborting game/container initialization.
+            if (item == null) continue;
+            int index = item.indexOf('=');
+            if (index <= 0) continue;
             String name = item.substring(0, index);
-            String value = item.substring(index+1);
+            String value = item.substring(index + 1);
             data.put(name, value);
         }
     }
