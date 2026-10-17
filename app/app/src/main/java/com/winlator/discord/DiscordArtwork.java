@@ -31,7 +31,12 @@ public final class DiscordArtwork {
             String host = uri.getHost().toLowerCase(Locale.ROOT);
             if (!host.contains(".") || host.equals("localhost") ||
                 host.endsWith(".localhost") || host.endsWith(".local") ||
-                host.endsWith(".internal") || host.endsWith(".test")) return "";
+                host.endsWith(".internal") || host.endsWith(".test") ||
+                host.startsWith("127.") || host.startsWith("10.") ||
+                host.startsWith("192.168.") || host.startsWith("169.254.") ||
+                host.equals("0.0.0.0") || host.equals("255.255.255.255") ||
+                host.matches("172\\.(1[6-9]|2[0-9]|3[01])\\..*"))
+                return "";
             // Avoid nonstandard local endpoints and malformed addresses.
             if (uri.getPort() != -1) return "";
             if (trimmed.indexOf('\n') != -1 || trimmed.indexOf('\r') != -1) return "";
