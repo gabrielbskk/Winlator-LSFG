@@ -340,13 +340,31 @@ public class ShortcutSettingsDialog extends ContentDialog {
         final Button search = findViewById(R.id.BTSearchSteamName);
         final Handler handler = new Handler(Looper.getMainLooper());
         final int[] generation = {0};
+        final boolean[] disposed = {false};
+        final String[] lastArtwork = {null};
+        final java.util.concurrent.ThreadPoolExecutor artworkWorker = new java.util.concurrent.ThreadPoolExecutor(
+                1, 1, 0L, java.util.concurrent.TimeUnit.MILLISECONDS,
+                new java.util.concurrent.ArrayBlockingQueue<>(1),
+                task -> new Thread(task, "SteamRpcArtPreview"),
+                new java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy());
+        setOnDismissListener(dialog -> {
+            disposed[0] = true;
+            generation[0]++;
+            handler.removeCallbacksAndMessages(null);
+            artworkWorker.shutdownNow();
+        });
 
         final Runnable refresh = () -> {
-            int request = ++generation[0];
+            if (disposed[0]) return;
             String title = etName.getText().toString().trim();
             game.setText(title.isEmpty() ? shortcut.name : title);
             String custom = DiscordArtwork.normalize(etArtwork.getText().toString());
             String steamId = SteamGameArtwork.appId(etSteam.getText().toString());
+            String artworkKey = custom + ":" + steamId;
+            // Editing only the game title must not redownload the same cover.
+            if (artworkKey.equals(lastArtwork[0])) return;
+            lastArtwork[0] = artworkKey;
+            int request = ++generation[0];
             if (shortcut.icon != null) preview.setImageBitmap(shortcut.icon);
             else preview.setImageResource(R.drawable.container_file_link);
             if (!custom.isEmpty()) {
@@ -354,22 +372,22 @@ public class ShortcutSettingsDialog extends ContentDialog {
             } else if (!steamId.isEmpty()) {
                 meta.setText(context.getString(R.string.discord_rpc_example_steam, steamId));
                 // Public cover preview is a single bounded Steam CDN request, not EXE upload.
-                new Thread(() -> {
+                artworkWorker.execute(() -> {
                     Bitmap cover = SteamArtworkPreview.fetch(steamId);
                     if (cover != null) preview.post(() -> {
                         if (preview.isAttachedToWindow() && request == generation[0])
                             preview.setImageBitmap(cover);
                     });
-                }, "SteamRpcArtPreview").start();
+                });
             } else {
                 meta.setText(R.string.discord_rpc_example_default);
-                if (shortcut.icon == null) new Thread(() -> {
+                if (shortcut.icon == null) artworkWorker.execute(() -> {
                     Bitmap icon = getExecutableIcon();
                     if (icon != null) preview.post(() -> {
                         if (preview.isAttachedToWindow() && request == generation[0])
                             preview.setImageBitmap(icon);
                     });
-                }, "SteamRpcLocalIcon").start();
+                });
             }
         };
 
