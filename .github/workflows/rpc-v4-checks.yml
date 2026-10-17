@@ -1,8 +1,8 @@
-name: RPC experimental 5 checks
+name: RPC experimental 5 — Steam artwork checks
 
 on:
   push:
-    branches: [feat/rpc-game-artwork]
+    branches: [feat/rpc-steam-artwork-preview]
   pull_request:
     branches:
       - main
