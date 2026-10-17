@@ -17,20 +17,21 @@ public class KeyValueSet implements Iterable<String[]> {
         this.data = data != null && !data.isEmpty() ? data : "";
     }
 
+    /**
+     * Ignore malformed imported fields rather than crashing when a segment
+     * has no '='. Keep the original serialized string intact for rollback.
+     */
     private int[] indexOfKey(String key) {
         int start = 0;
-        int end = data.indexOf(",");
-        if (end == -1) end = data.length();
-
-        while (start < end) {
-            int index = data.indexOf("=", start);
-            String currKey = data.substring(start, index);
-            if (currKey.equals(key)) return new int[]{start, end};
-            start = end+1;
-            end = data.indexOf(",", start);
-            if (end == -1) end = data.length();
+        while (start < data.length()) {
+            int separator = data.indexOf(',', start);
+            int end = separator >= 0 ? separator : data.length();
+            int equals = data.indexOf('=', start);
+            if (equals > start && equals < end && data.substring(start, equals).equals(key)) {
+                return new int[]{start, end};
+            }
+            start = end + 1;
         }
-
         return null;
     }
 
@@ -105,25 +106,47 @@ public class KeyValueSet implements Iterable<String[]> {
     @NonNull
     @Override
     public Iterator<String[]> iterator() {
-        int index = data.indexOf(",");
-        final int[] start = {0};
-        final int[] end = {index != -1 ? index : data.length()};
-        final String[] item = new String[2];
         return new Iterator<String[]>() {
+            private int cursor = 0;
+            private int fieldStart = -1;
+            private int equals;
+            private int fieldEnd;
+
+            {
+                advance();
+            }
+
+            private void advance() {
+                fieldStart = -1;
+                while (cursor < data.length()) {
+                    int start = cursor;
+                    int separator = data.indexOf(',', start);
+                    int end = separator >= 0 ? separator : data.length();
+                    cursor = end + 1;
+                    int equalPosition = data.indexOf('=', start);
+                    if (equalPosition > start && equalPosition < end) {
+                        fieldStart = start;
+                        equals = equalPosition;
+                        fieldEnd = end;
+                        return;
+                    }
+                }
+            }
+
             @Override
             public boolean hasNext() {
-                return start[0] < end[0];
+                return fieldStart >= 0;
             }
 
             @Override
             public String[] next() {
-                int index = data.indexOf("=", start[0]);
-                item[0] = data.substring(start[0], index);
-                item[1] = data.substring(index+1, end[0]);
-                start[0] = end[0]+1;
-                end[0] = data.indexOf(",", start[0]);
-                if (end[0] == -1) end[0] = data.length();
-                return item;
+                if (!hasNext()) throw new java.util.NoSuchElementException();
+                String[] entry = new String[]{
+                        data.substring(fieldStart, equals),
+                        data.substring(equals + 1, fieldEnd)
+                };
+                advance();
+                return entry;
             }
         };
     }
