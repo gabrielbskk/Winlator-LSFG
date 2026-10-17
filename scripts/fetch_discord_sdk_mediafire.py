@@ -19,7 +19,7 @@ import urllib.request
 MAX_BYTES = 100 * 1024 * 1024
 MIN_BYTES = 1 * 1024 * 1024
 USER_AGENT = "Mozilla/5.0 (compatible; Winlator-LSFG-Aurora-CI/1.0)"
-CDN_HOST = re.compile(r"download[0-9]+\\.mediafire\\.com", re.I)
+CDN_HOST = re.compile(r"download[0-9]+\.mediafire\.com", re.I)
 
 
 def open_url(url):
@@ -65,7 +65,7 @@ def extract_link(page):
     candidates = list(parser.urls)
     # The regular expression is only a fallback for documented MediaFire pages;
     # the allowlist is enforced on all extracted links.
-    candidates.extend(re.findall(r'https://download[0-9]+\\.mediafire\\.com/[^\\"\'<> ]+', page))
+    candidates.extend(re.findall(r"https://download[0-9]+\.mediafire\.com/[^\s\"'<>]+", page))
     for candidate in candidates:
         candidate = candidate.replace("&amp;", "&")
         if allowed_download_url(candidate):
