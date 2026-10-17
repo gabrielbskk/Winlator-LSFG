@@ -2,6 +2,7 @@ package com.winlator.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileInputStream;
 
 /** Resolve entries from untrusted custom driver archives inside their root. */
 public final class ArchivePathGuard {
@@ -29,6 +30,26 @@ public final class ArchivePathGuard {
         if (!child.getPath().startsWith(prefix))
             throw new IOException("Archive entry outside destination");
         return child;
+    }
+
+    /** Android APK is ARM64-only. Refuse non-ELF, 32-bit and wrong-CPU Vulkan libraries. */
+    public static boolean isArm64SharedLibrary(File library) throws IOException {
+        if (library == null || !library.isFile()) return false;
+        byte[] header = new byte[20];
+        try (FileInputStream input = new FileInputStream(library)) {
+            int read = 0;
+            while (read < header.length) {
+                int n = input.read(header, read, header.length - read);
+                if (n < 0) return false;
+                read += n;
+            }
+        }
+        // ELF64 little-endian, ET_DYN (3), EM_AARCH64 (183).
+        return (header[0] & 255) == 0x7f && header[1] == 'E'
+                && header[2] == 'L' && header[3] == 'F'
+                && header[4] == 2 && header[5] == 1
+                && header[16] == 3 && header[17] == 0
+                && (header[18] & 255) == 183 && header[19] == 0;
     }
 
     public static boolean symlinkTargetInside(File root, File link, String target) throws IOException {
