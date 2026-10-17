@@ -56,6 +56,11 @@ public class VortekConfigDialog extends ContentDialog {
         View panvkInfo = findViewById(R.id.LLPanvkG52);
         boolean maliG52 = com.winlator.core.GpuCompatibility.isMali(GPUHelper.getRenderer(context));
         panvkInfo.setVisibility(maliG52 ? View.VISIBLE : View.GONE);
+        if (maliG52) {
+            android.widget.TextView diagnostics = findViewById(R.id.TVMaliDiagnostics);
+            diagnostics.setText(context.getString(R.string.mali_driver_diagnostics,
+                    GPUHelper.getRenderer(context), deviceExtensions.length));
+        }
         findViewById(R.id.BTPanvkReleases).setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/LukeValen/panvk-mali-g52/releases"));
             if (intent.resolveActivity(context.getPackageManager()) != null) context.startActivity(intent);

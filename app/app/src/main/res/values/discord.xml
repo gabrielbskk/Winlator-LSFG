@@ -16,7 +16,7 @@
     <string name="discord_paused">Session suspended; Rich Presence cleared.</string>
     <string name="discord_processes_unavailable">Game processes could not be verified. Presence cleared until the Windows helper responds.</string>
     <string name="lsfg_vortek_unsupported">LSFG is unavailable with the current Vortek swapchain. The game will run without frame generation.</string>
-    <string name="panvk_g52_help">Optional experimental PanVK for Mali-G52 MC2. Download the ZIP and import it using the driver install button above, then select it explicitly. Compatibility depends on Android and the kernel. This alpha is not Vulkan conformant and does not enable LSFG on Vortek.</string>
+    <string name="panvk_g52_help">Mali: system Vulkan is the baseline. PANVK loading is not validated in this build; ZIP import alone does not prove compatibility. Kernel, firmware and driver ABI must match. VirGL/WineD3D remain alternatives. LSFG is unavailable through Vortek.</string>
     <string name="panvk_g52_releases">PanVK G52 releases</string>
     <string name="custom_driver_android_required">This driver requires Android API %1$d or newer.</string>
     <string name="discord_game_artwork_title">Discord game artwork</string>
@@ -44,4 +44,5 @@
     <string name="discord_rpc_example_steam">Steam ID %1$s image (if available)</string>
     <string name="discord_rpc_example_manual">Custom Discord artwork (asset key or URL)</string>
     <string name="discord_rpc_example_disclaimer">Local mockup, not a Discord screenshot. The actual image requires the SDK and a supported asset or URL.</string>
+    <string name="mali_driver_diagnostics">%1$s — system Vulkan exposes %2$d extensions. See the extension selector below; availability does not guarantee DXVK compatibility.</string>
 </resources>
