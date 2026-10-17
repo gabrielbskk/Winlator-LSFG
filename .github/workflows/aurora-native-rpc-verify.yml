@@ -35,8 +35,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Check Aurora UI resources
-        run: python3 scripts/test_aurora_resources.py
+      - name: Check Aurora UI resources and driver inventory
+        run: |
+          python3 scripts/test_aurora_resources.py
+          python3 scripts/test_driver_inventory.py
+          python3 scripts/audit_graphics_drivers.py > /tmp/aurora-driver-inventory.json
+          python3 -m json.tool /tmp/aurora-driver-inventory.json > /dev/null
 
       - name: Android SDK and ARM64 NDK (no publication)
         shell: bash

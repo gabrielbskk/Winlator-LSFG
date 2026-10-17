@@ -6,8 +6,8 @@ e o PR de consolidação são candidatos de desenvolvimento.
 
 ## Sequência de estabilização
 
-1. Corrigir regressões reproduzíveis e preservar funcionalidades existentes.
-2. Passar **JVM, testes estáticos de recursos, build ARM64 SDK-free e build com o
+1. Corrigir regressões reproduzíveis e preservar funcionalidades existentes, incluindo importações legadas malformadas em `KeyValueSet`.
+2. Passar **JVM, inventário auditável Turnip, testes estáticos de recursos, build ARM64 SDK-free e build com o
    Discord SDK autorizado** para o MESMO commit/tag da candidata.
 3. Inspecionar APK/JNI e conteúdo Windows `i386-windows`, `x86_64-windows`,
    `syswow64`, bibliotecas Vulkan, shaders e arquitetura `arm64-v8a`.
@@ -63,6 +63,8 @@ Modelo/SoC/GPU, versão Android/kernel, driver+versão escolhida, jogo e API gr�
 Wine/Box64, resolução, LSFG, taxa de FPS/percentis de frametime, RAM pico,
 logcat sem tokens e passos exatos para reprodução. Para atualização, informar
 origem da APK anterior, assinatura, backup e resultados do rollback.
+
+**Acompanhamento:** [AURORA_STABLE_TRACKER.md](AURORA_STABLE_TRACKER.md) registra o que já foi integrado, os resultados de CI por commit e os bloqueios físicos pendentes.
 
 **Repositório:** PR #19 (consolidação) e PR #7 (RPC) continuam sujeitos à revisão.
 Compilações CI anteriores não substituem novos testes para o commit final.

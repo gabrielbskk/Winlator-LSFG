@@ -17,12 +17,12 @@
 
 ## Trabalho simultâneo do Codex
 
-O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa o primeiro marco sobre a branch experimental de RPC: correções do tema, GPU, controle manual do Turnip, Mali via driver do sistema, estabilização do RPC e testes. **Não repetir as mesmas mudanças.** Este documento e o script de inventário complementam o PR #19; reconcilie ambos antes de futuras alterações na `main`.
+O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa o primeiro marco sobre a branch experimental de RPC: correções de tema/GPU, Turnip manual, fallback Mali, RPC e testes. O merge `fffef037` incorporou os PRs #20/#21 e os testes de inventário sem apagar o histórico. **Não repetir essas implementações.** A validação em aparelhos ainda falta.
 
 ## Etapas e critérios de aceite
 
 ### A. Inventário de versões (primeiro PR de código)
-- Criar teste ou script que compare `assets/graphics_driver`, `installable_components/turnip/index.txt` e os identificadores da UI.
+- **Implementado:** `scripts/audit_graphics_drivers.py` e `scripts/test_driver_inventory.py` com inventário do pacote e comparação de índices; complementar a cobertura conforme mudanças nos drivers.
 - Documentar origem, hash, ABI, licença e mecanismo de seleção de cada pacote, onde for possível verificar.
 - Testar configuração legada de contêiner e migração sem perda de dados.
 - **Aceite:** inventário reproduzível, nenhuma versão removida, CI verde.
