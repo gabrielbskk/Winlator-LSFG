@@ -9,6 +9,13 @@ RPC está indisponível. A ponte nativa só é compilada quando o AAR está pres
 
 ## APK experimental otimizado para jogos de 64 bits
 
+Na pré-release `11.2-rpc-experimental.3`, o nome do jogo detectado é enviado
+como `Activity.Name`, com tipo `Playing` e `StatusDisplayTypes.Name`. O campo de
+detalhes contém `Winlator`. Segundo a documentação do Discord, isso apresenta
+“Jogando [nome do jogo]” (ou o equivalente no idioma do Discord) e abaixo
+“Winlator”. O tempo de sessão continua no timestamp. A aparência final ainda
+depende do cliente Discord e precisa ser conferida em aparelho.
+
 A pré-release `11.2-rpc-experimental.2` usa o perfil de build
 `-Parm64OnlyGameAssets=true`. Ele retira os módulos `i386-windows` do rootfs e
 as DLLs `syswow64` dos pacotes Direct3D, DXVK, D8VK e VKD3D. Os diretórios vazios são preservados para

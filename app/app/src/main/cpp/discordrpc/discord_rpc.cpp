@@ -54,8 +54,9 @@ Java_com_winlator_discord_DiscordSdkBridge_update(JNIEnv* env, jclass, jlong han
         presence->result = 1;
         discordpp::Activity activity;
         activity.SetType(discordpp::ActivityTypes::Playing);
-        activity.SetDetails(name);
-        activity.SetState("Winlator LSFG | Android");
+        activity.SetName(name);
+        activity.SetStatusDisplayType(discordpp::StatusDisplayTypes::Name);
+        activity.SetDetails("Winlator");
         discordpp::ActivityTimestamps timestamps;
         timestamps.SetStart(static_cast<uint64_t>(startSeconds));
         activity.SetTimestamps(timestamps);
