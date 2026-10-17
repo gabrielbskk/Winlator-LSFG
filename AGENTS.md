@@ -5,9 +5,10 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 
 ## Branch de integração em andamento
 
-- **PR #19** (`feat/aurora-consolidation` → `experimental/rpc-android-v4`) já contém tema, detecção Adreno/Mali, seleção manual de Turnip (driver e versão), correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
+- **PR #19** (`feat/aurora-consolidation` → `main`) já contém tema, detecção Adreno/Mali, seleção manual de Turnip (driver e versão), correções Vulkan, RPC e CI. Continue a partir desse trabalho; não replique essas alterações em outro PR.
 - **PRs #20 e #21** já foram mesclados à `main` e incorporados ao PR #19 pelo commit `fffef037` (merge de histórico, sem force-push): script de auditoria, testes e política de Turnip inteiramente manual. Não repetir nem reverter.
-- **PR #7** permanece a referência RPC original e não deve ser mesclado automaticamente.
+- **PR #7** permanece como referência histórica RPC; não mesclá-lo independentemente, pois o PR #19 já reúne RPC e Aurora para revisão na `main`.
+- **RC1:** código-fonte 11.3-aurora-rc.1 (versionCode 39), sem Stable publicada. Ver `docs/RELEASE_CANDIDATE_11_3.md` e gates antes de distribuição.
 - **Correção de estabilidade** `8e43032f`: `KeyValueSet` ignora campos importados malformados; testes JVM verificam leitura, persistência e pares de drivers. Revisar antes de qualquer edição nesse parser.
 
 ## Antes de qualquer mudança
