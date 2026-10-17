@@ -1,0 +1,37 @@
+name: Publish experimental RPC APK
+
+on:
+  push:
+    branches:
+      - experimental/discord-rpc-android
+    paths:
+      - .github/workflows/publish-rpc-apk.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified APK parts
+        uses: actions/checkout@v4
+        with:
+          ref: downloads/rpc-experimental-1
+          persist-credentials: false
+      - name: Reassemble and verify APK
+        run: |
+          set -euo pipefail
+          sha256sum -c PARTS-SHA256SUMS.txt
+          cat Winlator-LSFG-RPC-experimental-1.zip.001 Winlator-LSFG-RPC-experimental-1.zip.002 > release.zip
+          unzip -t release.zip
+          unzip -j release.zip 'Winlator-LSFG-11.2-rpc-experimental.1-arm64.apk' -d .
+          sha256sum -c SHA256SUMS.txt
+      - name: Upload complete APK to experimental release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload rpc-android-experimental-1 \
+            Winlator-LSFG-11.2-rpc-experimental.1-arm64.apk \
+            SHA256SUMS.txt --repo gabrielbskk/Winlator-LSFG --clobber
