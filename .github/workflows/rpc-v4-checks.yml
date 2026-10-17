@@ -2,7 +2,7 @@ name: RPC experimental 5 — Steam artwork checks
 
 on:
   push:
-    branches: [feat/rpc-steam-artwork-preview]
+    branches: [feat/rpc-steam-artwork-preview, experimental/rpc-android-v4]
   pull_request:
     branches:
       - main
