@@ -1,5 +1,17 @@
 # Changelog
 
+## 11.2-rpc-experimental.4 — development candidate (not published)
+
+### Proposed
+- Android Discord Rich Presence includes safer process snapshot handling, reduced callback polling when stable, SDK shutdown handling, and sanitized session titles.
+- Restore full Windows 32/64-bit runtime assets in ARM64 Android APK builds; no 64-bit-only repacking.
+- Preserve Aurora visual identity and credits to Rafaela's Winlator LSFG source fork.
+
+### Validation still required
+- Rebuild with the official, separately supplied Discord Social SDK AAR (1.10+).
+- Run Gradle/JVM tests, native/JNI build, device RPC sign-in/reconnection tests, and verify real Windows 32-bit and 64-bit games.
+- Check APK integrity and release signature before publishing.
+
 ## v1.0-preview.2
 
 Second public preview.
