@@ -1,0 +1,144 @@
+name: Build and publish Experimental 5 Full RPC (MediaFire SDK)
+
+on:
+  push:
+    branches: [experimental/rpc-android-v4]
+    paths: ['.github/workflows/publish-v5-rpc-mediafire.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rpc-v5-mediafire-native
+  cancel-in-progress: false
+
+jobs:
+  build-native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 95
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android 35, native ARM64 toolchain, and Zstd
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -maxdepth 4 -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -n "$SDKMANAGER"
+          "$SDKMANAGER" --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
+          if ! command -v zstd >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq zstd
+          fi
+
+      - name: Download and pin AAR from maintainer-provided MediaFire file
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The public MediaFire file KEY was supplied by the maintainer.
+          # Do not check the proprietary AAR or any download tokens into git.
+          python3 scripts/fetch_discord_sdk_mediafire.py \
+            --quickkey 'ryfql41ytwr2rrs' \
+            --sha256 'b1b2491f1e1848c79fd6f1986d5aa1e0c8019e88a6e62c7be06b89e8e4870933' \
+            --out "$RUNNER_TEMP/discord_partner_sdk.aar"
+          python3 scripts/check_discord_aar.py "$RUNNER_TEMP/discord_partner_sdk.aar"
+          test -s "$RUNNER_TEMP/discord_partner_sdk.aar"
+
+      - name: Build SDK-backed Android ARM64 APK and run unit tests
+        working-directory: app
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+          ./gradlew :app:clean :app:testDebugUnitTest :app:assembleDebug \
+            -PdiscordSdkAar="$RUNNER_TEMP/discord_partner_sdk.aar" \
+            -PandroidNdkVersion=27.2.12479018 \
+            --no-daemon --stacktrace
+
+      - name: Verify RPC native SDK, version, guest Windows 32-bit and APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="app/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          python3 scripts/verify_rpc_v4_apk.py "$APK"
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libdiscord_partner_sdk.so'
+          unzip -Z1 "$APK" | grep -Fx 'lib/arm64-v8a/libwinlator_discord.so'
+          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")"
+          echo "$BADGING" | sed -n '1,3p'
+          echo "$BADGING" | grep -q "versionCode='37'"
+          echo "$BADGING" | grep -q "versionName='11.2-rpc-experimental.5'"
+          mkdir -p dist/rpc-v5-full
+          NAME="Winlator-LSFG-Aurora-11.2-RPC-Experimental.5-ARM64.apk"
+          cp "$APK" "dist/rpc-v5-full/$NAME"
+          (cd dist/rpc-v5-full && sha256sum "$NAME" > SHA256SUMS.txt)
+
+      - name: Upload build artifacts for testing and recovery
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpc-v5-sdk-backed-full
+          path: dist/rpc-v5-full/
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Publish explicitly experimental prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: rpc-android-experimental-5-full-native
+        run: |
+          set -euo pipefail
+          cat > /tmp/release-notes.md <<'NOTES'
+          # Winlator LSFG Aurora 11.2 — RPC Experimental 5 (Native SDK Candidate)
+
+          **BETA / TESTE EXPERIMENTAL — APK com Discord Social SDK integrado,
+          mas sem confirmação de funcionamento do RPC e das capas no aparelho.**
+          Este não é o APK "SDK-free" da Experimental 5.
+
+          - Android ARM64; Wine / Windows guest 32-bit e 64-bit preservados no empacotamento.
+          - Discord Rich Presence (Android): processo do jogo, nome, contador de sessão,
+            reconexão e gerenciamento de ciclo de vida.
+          - Imagem grande por jogo, chave de asset Discord/URL HTTPS ou Steam App ID.
+          - Suporte a URL SteamDB, detecção local de steam_appid.txt, busca manual por nome
+            e prévia visual na configuração do atalho.
+          - Ícone EXE extraído localmente, opção de compartilhar PNG. O Discord não
+            lê ícones locais diretamente: a imagem deve vir de asset público/URL.
+          - Identidade Aurora e créditos à Rafaela (@amyroseee) / Winlator original.
+          - SDK oficial fornecido separadamente para build; AAR não foi commitado.
+          - SHA-256 e arquivos nativos/Windows verificados no CI, testes JVM aprovados.
+          - Não há confirmação de testes no aparelho para esta compilação exata.
+            Testes do maintainer com a Experimental 3 indicaram RPC básico funcional.
+          - APK com assinatura debug; faça backup antes de instalar, pois chaves
+            de versões diferentes podem impedir atualização direta.
+          - Lossless.dll não incluído; fornecido independentemente pelo usuário.
+
+          **Teste esta build com o Discord Android conectado** e reporte jogo,
+          duração, imagem, fechamento/reabertura, Wi-Fi e dados móveis, sem enviar
+          tokens ou dados pessoais.
+          Código experimental: PR #7.
+          NOTES
+          APK=dist/rpc-v5-full/Winlator-LSFG-Aurora-11.2-RPC-Experimental.5-ARM64.apk
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "This tagged prerelease already exists. No replacement was made."
+            exit 0
+          fi
+          for attempt in 1 2 3; do
+            if gh release create "$TAG" "$APK" dist/rpc-v5-full/SHA256SUMS.txt \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --prerelease \
+              --title "Winlator LSFG Aurora 11.2 RPC Experimental 5 — SDK-backed candidate" \
+              --notes-file /tmp/release-notes.md; then
+              exit 0
+            fi
+            echo "Release attempt $attempt failed. Will retry if possible." >&2
+            sleep 5
+          done
+          exit 1
