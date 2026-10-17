@@ -1,7 +1,6 @@
 package com.winlator.core;
 
 import java.io.File;
-import java.util.Locale;
 
 /**
  * Only completed, supported component files should be selectable in the UI.
@@ -21,7 +20,7 @@ public final class InstalledComponentFiles {
             return entry.isDirectory();
         }
         if ("soundfont".equals(componentType)) {
-            return entry.isFile() && name.toLowerCase(Locale.ROOT).endsWith(".sf2")
+            return entry.isFile() && name.endsWith(".sf2")
                     && name.length() > ".sf2".length();
         }
         String prefix = componentType + "-";
