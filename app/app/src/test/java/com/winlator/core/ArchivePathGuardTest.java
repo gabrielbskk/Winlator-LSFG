@@ -38,6 +38,30 @@ public class ArchivePathGuardTest {
         } finally { root.delete(); }
     }
 
+    @Test public void onlyArm64SharedLibrariesAreAccepted() throws Exception {
+        File file = File.createTempFile("aurora-elf", ".so");
+        try {
+            byte[] elf = new byte[20];
+            elf[0] = 0x7f; elf[1] = 'E'; elf[2] = 'L'; elf[3] = 'F';
+            elf[4] = 2; elf[5] = 1; // 64-bit little-endian
+            elf[16] = 3; // shared object (ET_DYN)
+            elf[18] = (byte)183; // AArch64
+            Files.write(file.toPath(), elf);
+            assertTrue(ArchivePathGuard.isArm64SharedLibrary(file));
+            elf[4] = 1; // ELF32
+            Files.write(file.toPath(), elf);
+            assertFalse(ArchivePathGuard.isArm64SharedLibrary(file));
+            elf[4] = 2; elf[18] = 62; // x86-64
+            Files.write(file.toPath(), elf);
+            assertFalse(ArchivePathGuard.isArm64SharedLibrary(file));
+            elf[18] = (byte)183; elf[0] = 0; // wrong format
+            Files.write(file.toPath(), elf);
+            assertFalse(ArchivePathGuard.isArm64SharedLibrary(file));
+        } finally {
+            file.delete();
+        }
+    }
+
     @Test public void rejectsDangerousComponentNames() {
         for (String name : new String[]{"", "..", "../driver", "driver/../x",
                 "driver\\\\evil", ".hidden", "   ", "driver..rollback", "a/b"})
