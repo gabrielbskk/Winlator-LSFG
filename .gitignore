@@ -42,3 +42,6 @@ Thumbs.db
 # Additional Android Studio generated state
 **/.externalNativeBuild/
 **/captures/
+
+# Proprietary Discord Social SDK (provided locally by the builder)
+/app/app/libs/discord_partner_sdk.aar
