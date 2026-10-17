@@ -1,9 +1,12 @@
 name: RPC experimental 4 checks
 
 on:
+  push:
+    branches: [feat/rpc-game-artwork]
   pull_request:
     branches:
       - main
+      - experimental/rpc-android-v4
     paths:
       - 'app/**'
       - 'docs/ANDROID_IMPROVEMENTS.md'
