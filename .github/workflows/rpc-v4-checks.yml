@@ -1,0 +1,60 @@
+name: RPC experimental 4 checks
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'docs/ANDROID_IMPROVEMENTS.md'
+      - '.github/workflows/rpc-v4-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  java-tests:
+    name: JVM regression tests (SDK-free)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+          cache-dependency-path: |
+            app/gradle/wrapper/gradle-wrapper.properties
+            app/**/*.gradle
+      - uses: android-actions/setup-android@v3
+      - name: Install required Android SDK components
+        run: |
+          sdkmanager --install 'platforms;android-35' 'build-tools;35.0.0' 'ndk;24.0.8215888' 'cmake;3.22.1'
+      - name: Validate v4 packaging configuration
+        run: |
+          grep -q 'versionName "11.2-rpc-experimental.4"' app/app/build.gradle
+          grep -q 'versionCode 36' app/app/build.gradle
+          if grep -q 'arm64OnlyGameAssets' app/app/build.gradle; then
+            echo "32-bit runtime stripping must not be present in the v4 build" >&2
+            exit 1
+          fi
+          if test -f app/app/libs/discord_partner_sdk.aar; then
+            echo "Do not commit the proprietary SDK" >&2
+            exit 1
+          fi
+      - name: JVM regression tests without proprietary Discord SDK
+        working-directory: app
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
+      - name: Upload JVM test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rpc-v4-jvm-test-results
+          path: |
+            app/app/build/test-results/testDebugUnitTest/
+            app/app/build/reports/tests/testDebugUnitTest/
+          if-no-files-found: ignore
