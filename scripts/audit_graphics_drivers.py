@@ -23,11 +23,18 @@ def inventory():
         raise ValueError("No packaged graphics drivers found")
     source = SOURCE.read_text(encoding="utf-8")
     names = re.findall(r'public static final String (TURNIP|VORTEK|ZINK|VIRGL|GLADIO) = "([^"]+)";', source)
+    def hash_file(path):
+        digest = hashlib.sha256()
+        with path.open("rb") as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
+        return digest.hexdigest()
+
     def describe(path):
         return {
             "path": path.relative_to(ROOT).as_posix(),
             "size_bytes": path.stat().st_size,
-            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "sha256": hash_file(path),
         }
     return {
         "declared_drivers": dict(names),
