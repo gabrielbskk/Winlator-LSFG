@@ -61,8 +61,8 @@ jobs:
           fi
           unzip -Z1 "$SRC" | grep -Fx 'assets/rootfs.tzst'
           unzip -Z1 "$SRC" | grep -Fx 'assets/wincomponents/direct3d.tzst'
-          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$SRC" | head -5)"
-          echo "$BADGING"
+          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$SRC")"
+          echo "$BADGING" | sed -n '1,5p'
           echo "$BADGING" | grep -q "versionCode='37'"
           echo "$BADGING" | grep -q "versionName='11.2-rpc-experimental.5'"
           mkdir -p dist/rpc-5-review
