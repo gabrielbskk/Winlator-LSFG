@@ -241,7 +241,6 @@ public abstract class GeneralComponents {
     private static void downloadComponentFile(final Type type, final String filename, final Spinner spinner, final String defaultItem) {
         final Activity activity = (Activity)spinner.getContext();
         File destination = new File(getComponentDir(type, activity), filename);
-        if (destination.isFile()) destination.delete();
         HttpUtils.download(activity, String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/"+filename), destination, (success) -> {
             if (success) {
                 loadSpinner(type, spinner, parseDisplayText(type, filename), defaultItem);
@@ -264,7 +263,6 @@ public abstract class GeneralComponents {
             for (String line : list.split("\\n")) if (line.trim().equals(filename)) { advertised = true; break; }
             if (!advertised) { callback.call(false); return; }
             File destination = new File(getComponentDir(type, activity), filename);
-            if (destination.isFile()) destination.delete();
             HttpUtils.download(activity, String.format(INSTALLABLE_COMPONENTS_URL, type.lowerName()+"/"+filename), destination, callback);
         }));
     }

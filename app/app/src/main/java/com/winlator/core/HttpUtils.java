@@ -4,9 +4,7 @@ import android.app.Activity;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -14,60 +12,61 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class HttpUtils {
-    private static void downloadAsync(String url, Callback<String> onDownloadComplete) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                onDownloadComplete.call(null);
-                return;
-            }
+    // Bounded, shared workers avoid leaking one executor per download.
+    private static final java.util.concurrent.ExecutorService DOWNLOAD_WORKERS = Executors.newFixedThreadPool(2);
 
-            byte[] bytes;
-            try (InputStream inStream = connection.getInputStream()) {
-                bytes = StreamUtils.copyToByteArray(inStream);
+    private static void downloadAsync(String url, Callback<String> onDownloadComplete) {
+        HttpURLConnection connection = null;
+        String result = null;
+        try {
+            connection = (HttpURLConnection)(new URL(url)).openConnection();
+            connection.setConnectTimeout(20000);
+            connection.setReadTimeout(45000);
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                try (InputStream inStream = connection.getInputStream()) {
+                    byte[] bytes = StreamUtils.copyToByteArray(inStream);
+                    result = new String(bytes, StandardCharsets.UTF_8);
+                }
             }
-            onDownloadComplete.call(new String(bytes, StandardCharsets.UTF_8));
         }
-        catch (Exception e) {
-            onDownloadComplete.call(null);
+        catch (Exception error) {
+            android.util.Log.w("HttpUtils", "Text download failed", error);
+        }
+        finally {
+            if (connection != null) connection.disconnect();
+            onDownloadComplete.call(result);
         }
     }
 
     public static void download(final String url, final Callback<String> onDownloadComplete) {
-        Executors.newSingleThreadExecutor().execute(() -> downloadAsync(url, onDownloadComplete));
+        DOWNLOAD_WORKERS.execute(() -> downloadAsync(url, onDownloadComplete));
     }
 
-    private static void downloadAsync(String url, File destination, AtomicBoolean interruptRef, Callback<Integer> onPublishProgress, Callback<Boolean> onDownloadComplete) {
+    private static void downloadAsync(String url, File destination, AtomicBoolean interruptRef,
+            Callback<Integer> onPublishProgress, Callback<Boolean> onDownloadComplete) {
+        HttpURLConnection connection = null;
+        boolean success = false;
         try {
-            interruptRef.set(false);
-            HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                onDownloadComplete.call(false);
-                return;
-            }
-
-            int contentLength = connection.getContentLength();
-            try (InputStream inStream = new BufferedInputStream(connection.getInputStream(), StreamUtils.BUFFER_SIZE);
-                 OutputStream outStream = new FileOutputStream(destination)) {
-
-                byte[] buffer = new byte[1024];
-                int totalSize = 0;
-                int bytesRead;
-                while ((bytesRead = inStream.read(buffer)) != -1 && !interruptRef.get()) {
-                    totalSize += bytesRead;
-                    if (onPublishProgress != null) {
-                        int progress = (int)(((float)totalSize / contentLength) * 100);
-                        onPublishProgress.call(progress);
+            if (!interruptRef.get()) {
+                connection = (HttpURLConnection)(new URL(url)).openConnection();
+                connection.setConnectTimeout(20000);
+                connection.setReadTimeout(45000);
+                connection.setRequestProperty("Accept-Encoding", "identity");
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    try (InputStream inStream = new BufferedInputStream(
+                            connection.getInputStream(), StreamUtils.BUFFER_SIZE)) {
+                        success = AtomicDownload.write(inStream, destination,
+                                connection.getContentLengthLong(), interruptRef, onPublishProgress);
                     }
-                    outStream.write(buffer, 0, bytesRead);
                 }
-
             }
-
-            onDownloadComplete.call(!interruptRef.get());
         }
-        catch (Exception e) {
-            onDownloadComplete.call(false);
+        catch (Exception error) {
+            android.util.Log.w("HttpUtils", "Component download failed", error);
+        }
+        finally {
+            if (connection != null) connection.disconnect();
+            onDownloadComplete.call(success);
         }
     }
 
@@ -75,13 +74,12 @@ public abstract class HttpUtils {
         final DownloadProgressDialog dialog = new DownloadProgressDialog(activity);
         final AtomicBoolean interruptRef = new AtomicBoolean();
         dialog.show(() -> interruptRef.set(true));
-        Executors.newSingleThreadExecutor().execute(() -> {
+        DOWNLOAD_WORKERS.execute(() -> {
             downloadAsync(url, destination, interruptRef, (progress) -> {
                 activity.runOnUiThread(() -> {
                     dialog.setProgress(progress);
                 });
             }, (success) -> {
-                if (!success && destination.isFile()) destination.delete();
                 activity.runOnUiThread(() -> {
                     dialog.close();
                     onDownloadComplete.call(success);
