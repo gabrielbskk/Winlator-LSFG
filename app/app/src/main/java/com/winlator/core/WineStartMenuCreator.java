@@ -16,14 +16,15 @@ public abstract class WineStartMenuCreator {
     public static File findDownloadedVesktop(File downloadsDir) {
         if (downloadsDir == null || !downloadsDir.isDirectory()) return null;
         File direct = new File(downloadsDir, "vesktop.exe");
-        if (direct.isFile()) return direct;
+        if (direct.isFile() && direct.length() > 0) return direct;
         File[] directories = downloadsDir.listFiles(file ->
             file.isDirectory() && file.getName().toLowerCase().startsWith("vesktop"));
         if (directories == null) return null;
         File selected = null;
         for (File directory : directories) {
             File executable = new File(directory, "vesktop.exe");
-            if (executable.isFile() && (selected == null || executable.lastModified() > selected.lastModified()))
+            if (executable.isFile() && executable.length() > 0 &&
+                (selected == null || executable.lastModified() > selected.lastModified()))
                 selected = executable;
         }
         return selected;
@@ -34,7 +35,8 @@ public abstract class WineStartMenuCreator {
      * extracted Downloads copy. This never re-downloads or replaces user files.
      */
     static File chooseVesktopExecutable(File auroraInstalled, File downloadsDir) {
-        if (auroraInstalled != null && auroraInstalled.isFile()) return auroraInstalled;
+        if (auroraInstalled != null && auroraInstalled.isFile() && auroraInstalled.length() > 0)
+            return auroraInstalled;
         return findDownloadedVesktop(downloadsDir);
     }
 
@@ -52,8 +54,9 @@ public abstract class WineStartMenuCreator {
         File selected = null;
         for (File directory : candidates) {
             File executable = new File(directory, "endcord-gui.exe");
-            if (!executable.isFile()) executable = new File(directory, "endcord.exe");
-            if (executable.isFile() && (selected == null ||
+            if (!executable.isFile() || executable.length() == 0)
+                executable = new File(directory, "endcord.exe");
+            if (executable.isFile() && executable.length() > 0 && (selected == null ||
                 executable.lastModified() > selected.lastModified())) selected = executable;
         }
         return selected;
@@ -67,7 +70,8 @@ public abstract class WineStartMenuCreator {
         File selected = null;
         for (File directory : directories) {
             File executable = new File(directory, "Legcord.exe");
-            if (!executable.isFile()) executable = new File(directory, "legcord.exe");
+            if (!executable.isFile() || executable.length() == 0)
+                executable = new File(directory, "legcord.exe");
             if (executable.isFile() && (selected == null ||
                 executable.lastModified() > selected.lastModified())) selected = executable;
         }
@@ -76,7 +80,7 @@ public abstract class WineStartMenuCreator {
 
     static File findInstalledBrowser(File containerRoot, String relativePath) {
         File executable = new File(new File(containerRoot, ".wine/drive_c"), relativePath);
-        return executable.isFile() ? executable : null;
+        return executable.isFile() && executable.length() > 0 ? executable : null;
     }
 
     static String toWindowsPath(Container container, File file) {
