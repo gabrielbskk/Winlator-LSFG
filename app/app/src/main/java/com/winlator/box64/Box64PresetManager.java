@@ -109,22 +109,22 @@ public abstract class Box64PresetManager {
             envVars.put("BOX64_UNITY", "1");
         }
         else if (id.equals(Box64Preset.ELECTRON)) {
-            // Chromium/Electron embeds CEF and is sensitive to allocator mismatches
-            // under Box64. Keep this opt-in so game-oriented defaults do not change.
+            // Device testing with Vesktop showed that the former LIBCEF/allocator
+            // override and conservative dynarec settings could produce a black
+            // window. Use the proven Intermediate base and leave CEF overrides
+            // available only through a custom preset for app-specific diagnosis.
             envVars.put("BOX64_DYNAREC_SAFEFLAGS", "2");
-            envVars.put("BOX64_DYNAREC_FASTNAN", "0");
+            envVars.put("BOX64_DYNAREC_FASTNAN", "1");
             envVars.put("BOX64_DYNAREC_FASTROUND", "0");
             envVars.put("BOX64_DYNAREC_X87DOUBLE", "1");
-            envVars.put("BOX64_DYNAREC_BIGBLOCK", "0");
-            envVars.put("BOX64_DYNAREC_STRONGMEM", "1");
+            envVars.put("BOX64_DYNAREC_BIGBLOCK", "2");
+            envVars.put("BOX64_DYNAREC_STRONGMEM", "0");
             envVars.put("BOX64_DYNAREC_FORWARD", "128");
             envVars.put("BOX64_DYNAREC_CALLRET", "0");
-            envVars.put("BOX64_DYNAREC_WAIT", "0");
+            envVars.put("BOX64_DYNAREC_WAIT", "1");
             envVars.put("BOX64_DYNAREC_NATIVEFLAGS", "0");
-            envVars.put("BOX64_DYNAREC_WEAKBARRIER", "0");
+            envVars.put("BOX64_DYNAREC_WEAKBARRIER", "2");
             putNewDefaults(envVars);
-            envVars.put("BOX64_LIBCEF", "1");
-            envVars.put("BOX64_MALLOC_HACK", "2");
         }
         else if (id.startsWith(Box64Preset.CUSTOM)) {
             for (String[] preset : customPresetsIterator(context)) {

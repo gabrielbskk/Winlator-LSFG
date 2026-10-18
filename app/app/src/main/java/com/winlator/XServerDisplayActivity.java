@@ -1,6 +1,7 @@
 package com.winlator;
 
 import com.winlator.core.GPUHelper;
+import com.winlator.core.AndroidFontInstaller;
 
 import android.app.Activity;
 import android.app.PictureInPictureParams;
@@ -168,6 +169,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         if (enableLogs) ProcessHelper.addDebugCallback(debugDialog = new DebugDialog(this));
         Menu menu = navigationView.getMenu();
         menu.findItem(R.id.menu_item_logs).setVisible(enableLogs);
+        menu.findItem(R.id.menu_item_discord_presence).setVisible(BuildConfig.DISCORD_SDK_ENABLED);
         navigationView.setNavigationItemSelectedListener(this);
 
         rootFS = RootFS.find(this);
@@ -176,6 +178,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             ContainerManager containerManager = new ContainerManager(this);
             container = containerManager.getContainerById(getIntent().getIntExtra("container_id", 0));
             containerManager.activateContainer(container);
+            AndroidFontInstaller.installMissingSystemFonts(container.getRootDir());
 
             boolean wineprefixNeedsUpdate = container.getExtra("wineprefixNeedsUpdate").equals("t");
             if (wineprefixNeedsUpdate) {
@@ -581,7 +584,7 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
         environment.startEnvironmentComponents();
 
         winHandler.start();
-        runOnUiThread(() -> {
+        if (BuildConfig.DISCORD_SDK_ENABLED) runOnUiThread(() -> {
             if (isFinishing() || isDestroyed() || isGenerateWineprefix()) return;
             String executable = shortcut != null ? shortcut.path : getIntent().getStringExtra("exec_path");
             discordPresence = new DiscordPresenceManager(this, executable,
@@ -1148,9 +1151,11 @@ public class XServerDisplayActivity extends AppCompatActivity implements Navigat
             Intent intent = getIntent();
             if (intent.hasExtra("exec_path")) {
                 execPath = WineUtils.unixToDOSPath(intent.getStringExtra("exec_path"), container);
+                execArgs = intent.getStringExtra("exec_args");
+                execArgs = execArgs != null && !execArgs.isEmpty() ? " "+execArgs : "";
 
                 if (execPath.endsWith(".lnk")) {
-                    cmdArgs = "\""+execPath+"\"";
+                    cmdArgs = "\""+execPath+"\""+execArgs;
                     execPath = null;
                 }
             }

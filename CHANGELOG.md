@@ -1,5 +1,13 @@
 # Changelog
 
+## 11.3-aurora-rc.3 — device-test candidate
+
+- Reworked the opt-in Electron/Vesktop Box64 preset around the tested Intermediate settings; removed the CEF allocator overrides that produced a black window on the Galaxy S23 test.
+- Detects an extracted Vesktop installation in Android Downloads and creates a Wine Start menu entry with the tested sandbox flags, without bundling Vesktop in the APK.
+- Adds a per-container Vesktop RPC companion: a first-login/configuration button and an opt-in minimized startup shortcut using Vesktop's `--start-minimized` flag.
+- Imports missing Android CJK, emoji and symbol fallback fonts into each Wine prefix.
+- SDK-free builds hide and do not start Discord RPC. Versioned as code 41; this remains an RC, not a Stable release.
+
 ## 11.2-rpc-experimental.5 — source candidate (not released)
 
 ### Proposed

@@ -1,6 +1,15 @@
-# Aurora 11.3 RC2 — candidato técnico (não Stable)
+# Aurora 11.3 RC3 — candidato técnico (não Stable)
 
-O código de `feat/aurora-consolidation` / PR #19 aponta para `main` e usa `versionCode=40` e `versionName=11.3-aurora-rc.2`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
+O código candidato usa `versionCode=41` e `versionName=11.3-aurora-rc.3`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
+
+## Alterações da RC3
+
+- Build SDK-free não inicia nem exibe controles do Discord RPC; o SDK e a biblioteca nativa continuam ausentes.
+- Preset Electron/Vesktop alinhado à base Intermediária que abriu corretamente no Galaxy S23, sem forçar `BOX64_LIBCEF`/`BOX64_MALLOC_HACK` que causaram tela preta nesse teste.
+- Atalho local `Vesktop (Downloads)` é criado quando `vesktop.exe` já está extraído em uma pasta Vesktop dentro de Downloads; o binário não é incluído no APK.
+- Em cada contêiner, um botão abre o Vesktop para o primeiro login/configuração e uma opção separada cria o início minimizado nas execuções seguintes. O usuário ainda precisa ativar Rich Presence via arRPC no próprio Vesktop; a opção fica desligada por padrão por causa do consumo adicional de RAM/CPU.
+- Fontes CJK, emoji e símbolos disponíveis em `/system/fonts` são importadas para o prefixo Wine somente quando faltarem, reduzindo glifos quadrados sem redistribuir fontes.
+- Validação física observada até aqui: interface abriu, desempenho melhorou com GPU ativa e ainda restaram alguns glifos ausentes. Testes de áudio, chamadas, notificações, RAM, reinicialização e outros aparelhos continuam pendentes.
 
 ## Correções incluídas
 
