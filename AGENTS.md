@@ -13,8 +13,10 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 - **Stable:** requer assinatura de distribuição, backups/upgrade/rollback e testes em dispositivos/jogos (Adreno/Mali, Windows x86/x64, LSFG e RPC real). Nunca declarar estabilidade baseada só em CI.
 - **Correção de estabilidade `8e43032f`:** preservar suporte a `KeyValueSet` malformado e testes de regressão.
 
+**Handoff de auditoria atual:** [docs/CODEX_HANDOFF_RC9.md](docs/CODEX_HANDOFF_RC9.md). PRs #36/#37 acrescentaram integridade de executáveis Windows e Firefox; qualquer alteração posterior deve preservar essas proteções. Não ativar workflows legados de publicação para chamar a RC9 de Stable.
+
 ## Antes de qualquer mudança
-1. Leia `README.md`, `ROADMAP.md`, `docs/DEVELOPMENT_WORKFLOW.md`, `docs/GPU_COMPATIBILITY_AURORA.md` e `docs/DRIVER_PLAN.md`.
+1. Leia `docs/CODEX_HANDOFF_RC9.md`, `README.md`, `ROADMAP.md`, `docs/DEVELOPMENT_WORKFLOW.md`, `docs/GPU_COMPATIBILITY_AURORA.md` e `docs/DRIVER_PLAN.md`.
 2. Consulte PRs abertos e a árvore da branch atual; **não duplique trabalho em andamento**.
 3. Registre hipótese, dispositivos afetados, arquivos alterados, plano de teste e critério de reversão.
 4. Crie branch própria e PR pequeno em draft quando depender de hardware ou bibliotecas externas.
@@ -28,7 +30,7 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 4. **UI de drivers**: manter Vulkan/OpenGL, versões instaladas, GPU detectada para diagnóstico, avisos e fallback. **Novo contêiner inicia em Vortek/Gladio, sem seleção automática por GPU. Turnip é opção explicitamente selecionada com versão manual.** Configurações legadas devem permanecer legíveis.
 5. **LSFG-VK/frame generation**: instrumentar frame time, latência, RAM e stutter antes de alterar presets 2x/3x/4x; manter `Lossless.dll` fora do repositório.
 6. **Memória/performance ARM64**: medir uso de heap, caches e inicialização por GPU e jogo; otimizar somente com comparações reproduzíveis.
-7. **Discord RPC e clientes Windows**: revisar o código da RC8 em PR #30, mantendo os downloads opcionais verificados, sem prometer RPC vivo; não confundir APK SDK-free com integração nativa. SDK proprietário somente em CI autorizado, com hash conferido.
+7. **Discord RPC e clientes Windows**: trabalhar sobre a `main` RC9, **não** sobre o PR #30 (substituído pelo #33). Os instaladores Endcord/LegCord/Firefox seguem ocultos; preservar Vesktop existente e não prometer RPC ao vivo. SDK proprietário somente em CI autorizado, com hash conferido.
 
 ## Regras de segurança e compatibilidade
 - Não apagar/consolidar Turnip. Não reintroduzir seleção automática: driver e versão Turnip são manuais por decisão do mantenedor. Preservar o fallback fixo para contêineres antigos com versão vazia/`auto`.
