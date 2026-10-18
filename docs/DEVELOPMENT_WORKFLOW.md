@@ -1,18 +1,20 @@
 # Fluxo de desenvolvimento — Winlator LSFG Aurora
 
+> **Atualização 18/10/2026:** `main` contém código candidato **11.3 RC9** após PRs #33–#37, enquanto a APK pública continua RC8 experimental. Consulte [handoff do Codex](CODEX_HANDOFF_RC9.md) e [gates da Stable](STABLE_RELEASE_GATE.md); os parágrafos sobre 11.2/PR #7 abaixo são **históricos**.
+
 ## Branches e finalidade
 
 | Branch / área | Finalidade | Política |
 |---|---|---|
 | `main` | Código-base, documentação, CI e identidade Aurora | Somente mudanças revisadas com PR |
-| `experimental/rpc-android-v4` | Código consolidado da Experimental 5: JNI/SDK, ícones EXE, capas SteamDB | **PR #7 ainda em draft**, sem merge automático |
+| `experimental/rpc-android-v4` | Histórico Experimental 5: JNI/SDK, ícones EXE, capas SteamDB | **PR #7 já mesclado**; manter branch como referência, não reimportar |
 | `ci/rpc-v5-mediafire-native` | Fonte exata do APK com RPC compilado e validado no CI | Preservar como referência do artefato publicado |
 | Branches de `feat/`, `fix/`, `ci/`, `docs/`, `chore/` | Alterações pequenas, uma finalidade por PR | Squash na branch de destino quando validado |
 | Branches históricas | Código de PRs fechados e/ou mesclados | Não apagar ou forçar push durante a organização |
 
 **PRs #1, #4 e #5**: encerrados **sem merge**, substituídos pelo **PR #7**, que inclui as mudanças e a integração RPC mais atual. Os comentários, branches e commits históricos permanecem disponíveis.
 
-**PRs #10 e #11**: mesclados na branch experimental (não diretamente na `main`). O PR #7 ainda precisa de revisão e convergência com `main`; a release de teste do RPC não implica que esse PR tenha sido mesclado.
+**PRs #10 e #11**: mesclados na branch experimental (não diretamente na `main`). O PR #7 foi posteriormente mesclado; este registro documenta apenas o estado anterior da linha 11.2 e não constitui tarefa pendente para o Codex.
 
 ## Convenções de commits e PRs
 
@@ -37,7 +39,7 @@ Em 2026-10-17, as seis partes `discord_partner_sdk.zip.001` a `.006` foram publi
 
 ## Processo de release
 
-- [Release principal (candidata a estável)](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-rpc) contém SDK RPC nativo e arquivos Windows 32/64 bits validados em CI.
+- A antiga [candidata 11.2](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-rpc) é **draft histórico**, não o canal principal público. A **RC8 experimental** é a APK pública existente; a RC9 é apenas código em `main`.
 - **Ainda falta validação física** da versão exata: inicialização, login Discord, presença, contador, capas, troca de jogos, ausência de rede e desempenho.
 - Não denominar uma versão *estável comprovada* sem esses testes; compilações debug são candidatas de teste.
 - Não sobrescrever uma tag já publicada; novas builds devem receber versão e tag próprias, SHA-256 e release notes atualizadas.
