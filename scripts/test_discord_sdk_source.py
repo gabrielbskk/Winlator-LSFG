@@ -15,6 +15,8 @@ class SdkDownloadSafetyTest(unittest.TestCase):
         self.assertTrue(mediafire.allowed_download_url("https://www.mediafire.com/file/example"))
         self.assertFalse(mediafire.allowed_download_url("http://download2387.mediafire.com/file"))
         self.assertFalse(mediafire.allowed_download_url("https://download2387.mediafire.com:8443/file"))
+        self.assertFalse(mediafire.allowed_download_url("https://download2387.mediafire.com:notaport/file"))
+        self.assertFalse(mediafire.allowed_download_url("https://download2387.mediafire.com:99999/file"))
 
     def test_rejects_external_redirect_and_userinfo(self):
         for url in ("https://download2387.mediafire.com.evil.test/a",
