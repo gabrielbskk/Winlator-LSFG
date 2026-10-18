@@ -61,7 +61,7 @@ public final class OnlineConfigValidator {
         String wrapper = s.optString("dxwrapper", "");
         if (!wrapper.isEmpty() && !(DXWrappers.DXVK.equals(wrapper) || DXWrappers.VKD3D.equals(wrapper) || DXWrappers.WINED3D.equals(wrapper) || DXWrappers.CNC_DDRAW.equals(wrapper) || DXWrappers.D7VK.equals(wrapper))) throw new JSONException("Invalid wrapper");
         String preset = s.optString("box64Preset", "");
-        if (!preset.isEmpty() && !(Box64Preset.STABILITY.equals(preset) || Box64Preset.CONSERVATIVE.equals(preset) || Box64Preset.INTERMEDIATE.equals(preset) || Box64Preset.PERFORMANCE.equals(preset) || Box64Preset.UNITY.equals(preset))) throw new JSONException("Invalid preset");
+        if (!preset.isEmpty() && !(Box64Preset.STABILITY.equals(preset) || Box64Preset.CONSERVATIVE.equals(preset) || Box64Preset.INTERMEDIATE.equals(preset) || Box64Preset.PERFORMANCE.equals(preset) || Box64Preset.UNITY.equals(preset) || Box64Preset.ELECTRON.equals(preset))) throw new JSONException("Invalid preset");
         if (s.has("envVars")) validateEnvVars(s.get("envVars"));
         for (String dangerous : new String[]{"execArgs","command","script","url","dll","exe","zip","base64","path","save","driveC","lsfg"}) if (s.has(dangerous)) throw new JSONException("Forbidden field");
     }

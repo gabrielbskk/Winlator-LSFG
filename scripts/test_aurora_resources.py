@@ -72,6 +72,8 @@ class AuroraResourcesTest(unittest.TestCase):
         self.assertNotIn("BOX64_LIBCEF", intermediate)
         variables = {item["name"] for item in json.loads((base / "assets/box64/env_vars.json").read_text(encoding="utf-8"))}
         self.assertTrue({"BOX64_LIBCEF", "BOX64_MALLOC_HACK"} <= variables)
+        validator = (base / "java/com/winlator/onlineconfig/OnlineConfigValidator.java").read_text(encoding="utf-8")
+        self.assertIn("Box64Preset.ELECTRON.equals(preset)", validator)
         titles = {node.attrib.get(ANDROID + "title") for node in ET.parse(RES / "menu/extra_args_popup_menu.xml").getroot()}
         self.assertIn("--no-sandbox --disable-gpu-sandbox", titles)
 
