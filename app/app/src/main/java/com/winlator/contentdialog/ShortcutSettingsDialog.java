@@ -28,6 +28,7 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 
 import com.winlator.ContainerDetailFragment;
+import com.winlator.BuildConfig;
 import com.winlator.R;
 import com.winlator.ShortcutsFragment;
 import com.winlator.box64.Box64PresetManager;
@@ -81,6 +82,8 @@ public class ShortcutSettingsDialog extends ContentDialog {
         etExecArgs.setText(shortcut.getExtra("execArgs"));
 
         final EditText etDiscordArtwork = findViewById(R.id.ETDiscordArtwork);
+        findViewById(R.id.LLDiscordShortcutSettings).setVisibility(
+            BuildConfig.DISCORD_SDK_ENABLED ? View.VISIBLE : View.GONE);
         etDiscordArtwork.setText(shortcut.getExtra("discord_rpc_image"));
         final EditText etSteamAppId = findViewById(R.id.ETDiscordSteamId);
         etSteamAppId.setText(shortcut.getExtra("discord_rpc_steam_id"));

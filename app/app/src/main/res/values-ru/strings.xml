@@ -151,6 +151,7 @@
     <string name="intermediate">Средний</string>
     <string name="performance">производительность</string>
     <string name="unity_preset">Пресет Unity</string>
+    <string name="electron_preset">Electron / Chromium (experimental)</string>
     <string name="preset">Предустановка</string>
     <string name="you_cannot_remove_this_preset">Вы не можете удалить эту предустановку</string>
     <string name="you_cannot_remove_this_component_version">Вы не можете удалить эту версию компонента</string>

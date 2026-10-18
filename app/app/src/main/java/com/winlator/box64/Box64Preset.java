@@ -8,6 +8,7 @@ public class Box64Preset {
     public static final String INTERMEDIATE = "INTERMEDIATE";
     public static final String PERFORMANCE = "PERFORMANCE";
     public static final String UNITY = "UNITY";
+    public static final String ELECTRON = "ELECTRON";
     public static final String CUSTOM = "CUSTOM";
     public static final String DEFAULT = INTERMEDIATE;
     public final String id;

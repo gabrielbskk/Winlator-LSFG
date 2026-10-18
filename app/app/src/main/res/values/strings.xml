@@ -170,6 +170,10 @@
     <string name="intermediate">Intermediate</string>
     <string name="performance">Performance</string>
     <string name="unity_preset">Unity Preset</string>
+    <string name="electron_preset">Electron / Chromium (experimental)</string>
+    <string name="vesktop_rpc_companion">Start Vesktop minimized for Rich Presence</string>
+    <string name="vesktop_login_configure">Open Vesktop to log in / configure</string>
+    <string name="vesktop_rpc_companion_help">Log in once, enable Rich Presence via arRPC in Vesktop Settings, then enable this option. Vesktop uses additional memory while the container is running.</string>
     <string name="preset">Preset</string>
     <string name="you_cannot_remove_this_preset">You cannot remove this preset</string>
     <string name="you_cannot_remove_this_component_version">You cannot remove this component version</string>
