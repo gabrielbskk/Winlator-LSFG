@@ -76,6 +76,11 @@ class AuroraResourcesTest(unittest.TestCase):
         # Keep support for manually installed or previously downloaded copies.
         creator = (ROOT / "app/app/src/main/java/com/winlator/core/WineStartMenuCreator.java").read_text(encoding="utf-8")
         self.assertIn("findAvailableVesktop(", creator)
+        # Do not re-introduce the broken Firefox installation shortcut or
+        # hash the cached ~90 MB executable on every container startup.
+        menu_creation = creator.split("public static void create(Context context, Container container)", 1)[1]
+        self.assertNotIn("addFirefoxInstaller(data, context, container)", menu_creation)
+        self.assertIn("removeOldMenu(containerStartMenuFile, startMenuDir)", menu_creation)
 
     def test_electron_preset_uses_device_tested_base_and_keeps_cef_customizable(self):
         base = ROOT / "app/app/src/main"
