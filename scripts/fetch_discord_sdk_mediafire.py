@@ -33,12 +33,15 @@ def open_url(url):
 def allowed_download_url(url):
     try:
         u = urllib.parse.urlparse(url)
+        # A malformed port (e.g. :not-a-port) raises ValueError on access.
+        port = u.port
+        hostname = u.hostname or ""
     except ValueError:
         return False
     # MediaFire can redirect between its own HTTPS subdomains; the SDK
     # remains pinned to the expected SHA-256 in download_and_verify.
-    return (u.scheme == "https" and bool(MEDIAFIRE_SUBDOMAIN.fullmatch(u.hostname or ""))
-            and u.username is None and u.password is None and u.port in (None, 443))
+    return (u.scheme == "https" and bool(MEDIAFIRE_SUBDOMAIN.fullmatch(hostname))
+            and u.username is None and u.password is None and port in (None, 443))
 
 
 class ButtonParser(HTMLParser):
