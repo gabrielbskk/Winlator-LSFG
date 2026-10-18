@@ -28,7 +28,7 @@ This is an orientation to the checked-in repository, not a complete dependency o
 - **Frame generation**: trace LSFG settings into container startup, Vulkan layer configuration and frame pacing. Test on-device before claiming improvements.
 - **Graphics**: identify actual Vulkan renderer and driver loading paths for each GPU; Turnip drivers target Qualcomm, not Mali.
 - **Memory**: profile allocations and guest/container RAM separately before changing resource caches.
-- **Discord Rich Presence**: experimental PR #1. No default-branch support until integrated.
+- **Discord Rich Presence**: PRs #7/#19 já integrados; build SDK-free atual **não contém a integração Android nativa**, que depende de SDK autorizado. Vesktop existente funciona segundo relato limitado; RPC real não validado.
 - **ARM64 builds**: distinguish Android host ARM64 ABI from the architecture (32/64-bit) of Windows applications run through Wine/Box64.
 
 Do not broadly move native directories or large runtime archives in a housekeeping PR. See [Repository audit](REPOSITORY_AUDIT.md) and [Testing matrix](TESTING.md).
