@@ -20,6 +20,29 @@ public class WineStartMenuCreatorTest {
         assertEquals(executable, WineStartMenuCreator.findDownloadedVesktop(temporaryFolder.getRoot()));
     }
 
+    @Test public void prefersAlreadyInstalledAuroraVesktopWithoutDownloading() throws Exception {
+        File downloads = temporaryFolder.newFolder("Downloads");
+        File folder = new File(downloads, "Vesktop-1.6.7-win");
+        folder.mkdirs();
+        File downloaded = new File(folder, "vesktop.exe");
+        downloaded.createNewFile();
+        File installed = temporaryFolder.newFile("vesktop-installed.exe");
+
+        assertEquals(installed, WineStartMenuCreator.chooseVesktopExecutable(installed, downloads));
+    }
+
+    @Test public void fallsBackToExistingDownloadsVesktop() throws Exception {
+        File downloads = temporaryFolder.newFolder("Downloads-v2");
+        File folder = new File(downloads, "Vesktop-1.6.7-win");
+        folder.mkdirs();
+        File downloaded = new File(folder, "vesktop.exe");
+        downloaded.createNewFile();
+
+        assertEquals(downloaded, WineStartMenuCreator.chooseVesktopExecutable(null, downloads));
+        assertEquals(downloaded, WineStartMenuCreator.chooseVesktopExecutable(
+            new File(temporaryFolder.getRoot(), "not-installed.exe"), downloads));
+    }
+
     @Test public void ignoresZipWithoutExtractedExecutable() throws Exception {
         temporaryFolder.newFile("Vesktop-1.6.7-win.zip");
 
