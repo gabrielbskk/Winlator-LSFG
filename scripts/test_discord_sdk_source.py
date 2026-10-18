@@ -23,7 +23,7 @@ class SdkDownloadSafetyTest(unittest.TestCase):
                     "https://evil.test/mediafire.com/a",
                     "https://someone:secret@download2387.mediafire.com/a",
                     "https://evil-mediafire.com/a", "file:///tmp/discord.aar"):
-            self.assertFalse(url, mediafire.allowed_download_url(url))
+            self.assertFalse(mediafire.allowed_download_url(url), url)
 
     def test_public_mediafire_page_is_not_treated_as_download_link(self):
         self.assertIsNone(mediafire.extract_link('<a id="downloadButton" href="https://evil.test/a">Download</a>'))
