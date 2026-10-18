@@ -44,6 +44,21 @@ public abstract class WineStartMenuCreator {
         return selected;
     }
 
+    static File findDownloadedLegcord(File downloadsDir) {
+        if (downloadsDir == null || !downloadsDir.isDirectory()) return null;
+        File[] directories = downloadsDir.listFiles(file ->
+            file.isDirectory() && file.getName().toLowerCase().startsWith("legcord"));
+        if (directories == null) return null;
+        File selected = null;
+        for (File directory : directories) {
+            File executable = new File(directory, "Legcord.exe");
+            if (!executable.isFile()) executable = new File(directory, "legcord.exe");
+            if (executable.isFile() && (selected == null ||
+                executable.lastModified() > selected.lastModified())) selected = executable;
+        }
+        return selected;
+    }
+
     static File findInstalledBrowser(File containerRoot, String relativePath) {
         File executable = new File(new File(containerRoot, ".wine/drive_c"), relativePath);
         return executable.isFile() ? executable : null;
@@ -96,6 +111,17 @@ public abstract class WineStartMenuCreator {
         JSONObject entry = new JSONObject();
         entry.put("name", "Endcord (Downloads)");
         entry.put("path", toWindowsPath(container, executable));
+        data.getJSONObject(0).getJSONArray("children").put(entry);
+    }
+
+    private static void addDownloadedLegcord(JSONArray data, Container container) throws JSONException {
+        File executable = findDownloadedLegcord(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        if (executable == null) return;
+        JSONObject entry = new JSONObject();
+        entry.put("name", "LegCord (Downloads)");
+        entry.put("path", toWindowsPath(container, executable));
+        entry.put("cmdArgs", "--no-sandbox --disable-gpu-sandbox");
         data.getJSONObject(0).getJSONArray("children").put(entry);
     }
 
@@ -206,6 +232,7 @@ public abstract class WineStartMenuCreator {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
             addDownloadedVesktop(data, container);
             addDownloadedEndcord(data, container);
+            addDownloadedLegcord(data, container);
             addAndroidDiscordWeb(data);
             addDiscordWebBrowsers(data, container);
             FileUtils.writeString(containerStartMenuFile, data.toString());

@@ -1,6 +1,6 @@
-# Aurora 11.3 RC5 — candidato técnico (não Stable)
+# Aurora 11.3 RC6 — candidato técnico (não Stable)
 
-O código candidato usa `versionCode=43` e `versionName=11.3-aurora-rc.5`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
+O código candidato usa `versionCode=44` e `versionName=11.3-aurora-rc.6`. **A RC6 é uma prévia com assinatura debug; não é Stable.**
 
 ## Alterações da RC3
 

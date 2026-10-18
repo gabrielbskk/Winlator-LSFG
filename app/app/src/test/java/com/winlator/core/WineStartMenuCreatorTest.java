@@ -38,6 +38,18 @@ public class WineStartMenuCreatorTest {
         assertNull(WineStartMenuCreator.findDownloadedEndcord(temporaryFolder.getRoot()));
     }
 
+    @Test public void findsLegcordInExtractedWindowsZip() throws Exception {
+        File folder = temporaryFolder.newFolder("Legcord-1.3.1-win-x64");
+        File executable = new File(folder, "Legcord.exe");
+        executable.createNewFile();
+        assertEquals(executable, WineStartMenuCreator.findDownloadedLegcord(temporaryFolder.getRoot()));
+    }
+
+    @Test public void ignoresLegcordInstallerWithoutExtractedExecutable() throws Exception {
+        temporaryFolder.newFile("Legcord-1.3.1-win-x64.exe");
+        assertNull(WineStartMenuCreator.findDownloadedLegcord(temporaryFolder.getRoot()));
+    }
+
     @Test public void findsBrowserInstalledInContainerPrefix() throws Exception {
         File container = temporaryFolder.newFolder("container");
         File executable = new File(container,

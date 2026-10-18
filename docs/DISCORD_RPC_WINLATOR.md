@@ -1,8 +1,8 @@
 # Discord RPC no contêiner Windows
 
-## Caminho recomendado para esta release
+## Clientes Windows para testar
 
-O caminho já integrado ao Aurora é executar o Vesktop Windows x64 dentro do contêiner Wine/Box64. A interface e a abertura foram observadas em dispositivo; o envio de RPC ao vivo no Winlator ainda precisa ser validado. O Aurora pode abrir o Vesktop manualmente e, se você marcar a opção do companion, iniciá-lo minimizado quando o contêiner iniciar. O companion fica desligado por padrão porque o cliente Electron aumenta o uso de RAM e CPU.
+Uma opção já integrada ao Aurora é executar o Vesktop Windows x64 dentro do contêiner Wine/Box64. A interface e a abertura foram observadas em dispositivo; o envio de RPC ao vivo no Winlator ainda precisa ser validado. O Aurora pode abrir o Vesktop manualmente e, se você marcar a opção do companion, iniciá-lo minimizado quando o contêiner iniciar. O companion fica desligado por padrão porque o cliente Electron aumenta o uso de RAM e CPU.
 
 O executável não é distribuído no APK. Extraia uma versão confiável do Vesktop em uma pasta `Vesktop` dentro de Downloads; o Aurora cria `Vesktop (Downloads)` no menu Iniciar. Configure o preset Electron do Box64 se a abertura padrão falhar. Não há garantia de compatibilidade com todos os jogos ou aparelhos.
 
@@ -23,13 +23,16 @@ Esta integração é experimental. O plugin WebRichPresence é identificado pelo
 
 Há dois projetos não relacionados chamados Endcord. [rootpoii/Endcord](https://github.com/rootpoii/Endcord) é um mod injetado no Discord oficial para Windows; ele não substitui o cliente Electron. [sparklost/endcord](https://github.com/sparklost/endcord) é um cliente de terminal com RPC e detecção de jogos. Ele oferece binários Windows e recomenda a variante `endcord-gui` nessa plataforma; a release 1.5.4 informa que essa versão acrescenta 15 MB frente a terminais Linux comuns, medida que não representa o consumo no Winlator. Continua sendo um cliente completo de terceiros, e não um daemon RPC pequeno. O projeto alerta que clientes de terceiros podem violar os termos do Discord e resultar em banimento.
 
-[Legcord](https://github.com/Legcord/Legcord) é um cliente Discord independente baseado em Electron com arRPC integrado. Ele pode simplificar a configuração, mas ainda executa um cliente completo, então não há evidência de que resolva o consumo de RAM do Vesktop. Na RC5, o Aurora cria o atalho `Endcord (Downloads)` se encontrar `endcord-gui.exe` (ou `endcord.exe`) em uma pasta Endcord já extraída em Downloads. Não baixa nem distribui o executável. Endcord, Legcord e Vesktop ainda não tiveram uso de RAM ou RPC ao vivo medidos comparativamente no Winlator. Considere o aviso de risco do Endcord antes de entrar na conta.
+[Legcord](https://github.com/Legcord/Legcord) é um cliente Discord independente baseado em Electron com arRPC integrado. Ele pode simplificar a configuração, mas ainda executa um cliente completo, então não há evidência de que resolva o consumo de RAM do Vesktop. Na RC6, o Aurora cria `Endcord (Downloads)` ao encontrar `endcord-gui.exe` (ou `endcord.exe`) em uma pasta Endcord extraída em Downloads. Também cria `LegCord (Downloads)` ao encontrar `Legcord.exe` em uma pasta Legcord extraída ali; use o pacote Windows x64 ZIP, não o instalador. Os executáveis não são distribuídos no APK. Endcord, Legcord e Vesktop ainda não tiveram uso de RAM ou RPC ao vivo medidos comparativamente no Winlator. Considere o aviso de risco do Endcord antes de entrar na conta.
+
+O projeto separado [endcord-rpc](https://github.com/sparklost/endcord-rpc) oferece só Rich Presence e detecção de jogos, mas requer o token da conta no arquivo de configuração. Por isso o Aurora não instala nem integra esse processo. Os atalhos acima permitem testar clientes com login normal, sem pedir um token em scripts do Aurora.
 
 ## Escolha
 
-- **Quer usar o caminho já integrado:** Vesktop dentro do contêiner, com companion opcional. A abertura foi testada; o RPC ao vivo ainda está pendente. Espere uso extra de memória.
+- **Quer usar o caminho já integrado:** Vesktop dentro do contêiner, com início minimizado opcional. A abertura foi testada; o RPC ao vivo ainda está pendente. Espere uso extra de memória.
 - **Quer testar o navegador:** Discord Web no navegador Android ou em Chrome/Edge/Firefox do contêiner + Vencord + arRPC; considere o RPC experimental.
 - **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; extraia `endcord-gui.exe` em uma pasta Endcord dentro de Downloads e abra o atalho. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
-- **Discord oficial para Windows:** não oferece uma opção oficial apenas de RPC sem o cliente completo. O Social SDK Android é outro fluxo e não envia a presença do processo Windows do contêiner.
+- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Extraia o ZIP Windows x64 em Downloads; a RAM e o RPC ainda precisam ser medidos no Winlator.
+- **Discord oficial para Windows:** não oferece uma opção oficial apenas de RPC sem o cliente completo. A integração antiga pelo Social SDK Android não faz parte desta prévia pública.
 
 Nunca informe token, senha ou Client Secret em scripts, logs ou arquivos do projeto.
