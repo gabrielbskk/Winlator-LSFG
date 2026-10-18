@@ -20,6 +20,7 @@ MAX_BYTES = 100 * 1024 * 1024
 MIN_BYTES = 1 * 1024 * 1024
 USER_AGENT = "Mozilla/5.0 (compatible; Winlator-LSFG-Aurora-CI/1.0)"
 CDN_HOST = re.compile(r"download[0-9]+\.mediafire\.com", re.I)
+MEDIAFIRE_SUBDOMAIN = re.compile(r"[a-z0-9-]+\.mediafire\.com", re.I)
 
 
 def open_url(url):
@@ -32,10 +33,15 @@ def open_url(url):
 def allowed_download_url(url):
     try:
         u = urllib.parse.urlparse(url)
+        # A malformed port (e.g. :not-a-port) raises ValueError on access.
+        port = u.port
+        hostname = u.hostname or ""
     except ValueError:
         return False
-    return (u.scheme == "https" and bool(CDN_HOST.fullmatch(u.hostname or ""))
-            and u.username is None and u.password is None)
+    # MediaFire can redirect between its own HTTPS subdomains; the SDK
+    # remains pinned to the expected SHA-256 in download_and_verify.
+    return (u.scheme == "https" and bool(MEDIAFIRE_SUBDOMAIN.fullmatch(hostname))
+            and u.username is None and u.password is None and port in (None, 443))
 
 
 class ButtonParser(HTMLParser):
@@ -119,7 +125,10 @@ def download_and_verify(source, path, expected):
     try:
         with open_url(source) as response, path.open("wb") as output:
             if not allowed_download_url(response.geturl()):
-                raise ValueError("MediaFire redirected outside its expected download CDN")
+                raise ValueError("MediaFire redirected outside approved HTTPS MediaFire hosts")
+            mime = response.headers.get("Content-Type", "").lower()
+            if "text/html" in mime or "text/plain" in mime:
+                raise ValueError("MediaFire returned a web page instead of the SDK archive")
             while True:
                 block = response.read(1024 * 1024)
                 if not block:
@@ -144,8 +153,20 @@ def main():
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--out", required=True, type=Path)
     args = parser.parse_args()
-    link = sdk_link(args.quickkey)
-    download_and_verify(link, args.out, args.sha256)
+    # Resolve a fresh link on retry. A failed hash or unexpected download
+    # response always removes the candidate artifact.
+    import time
+    last_error = None
+    for attempt in range(3):
+        try:
+            link = sdk_link(args.quickkey)
+            download_and_verify(link, args.out, args.sha256)
+            return
+        except (OSError, ValueError, RuntimeError) as error:
+            last_error = error
+            if attempt < 2:
+                time.sleep((attempt + 1) * 2)
+    raise RuntimeError("Pinned SDK source unavailable after three attempts: " + str(last_error))
 
 
 if __name__ == "__main__":
