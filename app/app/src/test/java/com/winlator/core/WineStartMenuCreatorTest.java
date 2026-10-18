@@ -1,7 +1,5 @@
 package com.winlator.core;
 
-import com.winlator.container.Container;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -34,10 +32,7 @@ public class WineStartMenuCreatorTest {
         folder.mkdirs();
         File executable = new File(folder, "vesktop.exe");
         executable.createNewFile();
-        Container container = new Container(1);
-        container.setDrives("D:" + downloads.getAbsolutePath());
-
         assertEquals("D:/Vesktop-1.6.7-win/vesktop.exe",
-            WineStartMenuCreator.toWindowsPath(container, executable));
+            WineStartMenuCreator.toWindowsPath("D:" + downloads.getAbsolutePath(), executable));
     }
 }

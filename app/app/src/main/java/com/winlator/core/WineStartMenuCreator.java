@@ -31,10 +31,14 @@ public abstract class WineStartMenuCreator {
     }
 
     static String toWindowsPath(Container container, File file) {
+        return toWindowsPath(container.getDrives(), file);
+    }
+
+    static String toWindowsPath(String drives, File file) {
         String absolutePath = file.getAbsolutePath();
         Drive selectedDrive = null;
         int selectedLength = -1;
-        for (Drive drive : container.drivesIterator()) {
+        for (Drive drive : Container.drivesIterator(drives)) {
             if (drive.path == null || drive.path.isEmpty()) continue;
             String drivePath = new File(drive.path).getAbsolutePath();
             if ((absolutePath.equals(drivePath) || absolutePath.startsWith(drivePath + File.separator)) &&
