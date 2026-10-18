@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -116,6 +117,8 @@ public class SettingsFragment extends Fragment {
         final CheckBox cbDiscord = view.findViewById(R.id.CBDiscordPresence);
         final EditText etDiscordId = view.findViewById(R.id.ETDiscordApplicationId);
         final TextView tvDiscordStatus = view.findViewById(R.id.TVDiscordStatus);
+        view.findViewById(R.id.DiscordSettingsGroup).setVisibility(
+            BuildConfig.DISCORD_SDK_ENABLED ? View.VISIBLE : View.GONE);
         cbDiscord.setChecked(preferences.getBoolean(DiscordPresenceManager.ENABLED, false));
         etDiscordId.setText(preferences.getString(DiscordPresenceManager.APPLICATION_ID, ""));
         tvDiscordStatus.setText(DiscordPresenceManager.configurationStatus(context, cbDiscord.isChecked(), etDiscordId.getText().toString().trim()));
@@ -208,14 +211,15 @@ public class SettingsFragment extends Fragment {
 
         view.findViewById(R.id.BTConfirm).setOnClickListener((v) -> {
             String discordId = etDiscordId.getText().toString().trim();
-            if ((!discordId.isEmpty() || cbDiscord.isChecked()) && GameSession.applicationId(discordId) == 0) {
+            if (BuildConfig.DISCORD_SDK_ENABLED && (!discordId.isEmpty() || cbDiscord.isChecked()) && GameSession.applicationId(discordId) == 0) {
                 etDiscordId.setError(getString(R.string.discord_id_required));
                 etDiscordId.requestFocus();
                 return;
             }
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(DiscordPresenceManager.ENABLED, cbDiscord.isChecked());
-            editor.putString(DiscordPresenceManager.APPLICATION_ID, discordId);
+            editor.putBoolean(DiscordPresenceManager.ENABLED, BuildConfig.DISCORD_SDK_ENABLED && cbDiscord.isChecked());
+            if (BuildConfig.DISCORD_SDK_ENABLED)
+                editor.putString(DiscordPresenceManager.APPLICATION_ID, discordId);
             editor.putString("soundfont", sSoundFont.getSelectedItem().toString());
             editor.putString("box64_version", StringUtils.parseIdentifier(sBox64Version.getSelectedItem()));
             editor.putString("box64_preset", Box64PresetManager.getSpinnerSelectedId(sBox64Preset));

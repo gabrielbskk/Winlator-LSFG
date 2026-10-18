@@ -6,4 +6,6 @@
     <item android:title="-force-d3d9" />
     <item android:title="-force-d3d11" />
     <item android:title="/d3d9" />
+    <item android:title="--no-sandbox --disable-gpu-sandbox" />
+    <item android:title="--no-sandbox --disable-gpu --disable-gpu-compositing" />
 </menu>

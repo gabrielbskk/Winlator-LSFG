@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Static resource regressions; does not replace rendering on Android devices."""
 from pathlib import Path
+import json
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -60,6 +61,48 @@ class AuroraResourcesTest(unittest.TestCase):
         dialog = (base / 'contentdialog/TurnipConfigDialog.java').read_text(encoding='utf-8')
         self.assertNotIn('CBTurnipAutomatic', dialog)
         self.assertIn('newConfig.put("version"', dialog)
+
+    def test_rc8_does_not_offer_unverified_install_buttons(self):
+        # Maintainer reported only an existing Vesktop copy works on device.
+        layout = ET.parse(RES / "layout/settings_fragment.xml").getroot()
+        ids = {node.attrib.get(ANDROID + "id") for node in layout.iter()}
+        self.assertFalse({
+            "@+id/BTInstallEndcord", "@+id/BTInstallLegcord",
+            "@+id/BTInstallVesktop", "@+id/BTDownloadFirefox",
+        } & ids)
+        source = (ROOT / "app/app/src/main/java/com/winlator/SettingsFragment.java").read_text(encoding="utf-8")
+        self.assertNotIn("bindDiscordClientButton(", source)
+        self.assertNotIn("FirefoxInstaller.download(", source)
+        # Keep support for manually installed or previously downloaded copies.
+        creator = (ROOT / "app/app/src/main/java/com/winlator/core/WineStartMenuCreator.java").read_text(encoding="utf-8")
+        self.assertIn("findAvailableVesktop(", creator)
+
+    def test_electron_preset_uses_device_tested_base_and_keeps_cef_customizable(self):
+        base = ROOT / "app/app/src/main"
+        manager = (base / "java/com/winlator/box64/Box64PresetManager.java").read_text(encoding="utf-8")
+        self.assertIn("id.equals(Box64Preset.ELECTRON)", manager)
+        electron = manager[manager.index("id.equals(Box64Preset.ELECTRON)"):manager.index("id.startsWith(Box64Preset.CUSTOM)")]
+        self.assertNotIn('envVars.put("BOX64_LIBCEF"', electron)
+        self.assertNotIn('envVars.put("BOX64_MALLOC_HACK"', electron)
+        self.assertIn('envVars.put("BOX64_DYNAREC_BIGBLOCK", "2")', electron)
+        self.assertIn('envVars.put("BOX64_DYNAREC_STRONGMEM", "0")', electron)
+        intermediate = manager[manager.index("id.equals(Box64Preset.INTERMEDIATE)"):manager.index("id.equals(Box64Preset.PERFORMANCE)")]
+        self.assertNotIn("BOX64_LIBCEF", intermediate)
+        variables = {item["name"] for item in json.loads((base / "assets/box64/env_vars.json").read_text(encoding="utf-8"))}
+        self.assertTrue({"BOX64_LIBCEF", "BOX64_MALLOC_HACK"} <= variables)
+        validator = (base / "java/com/winlator/onlineconfig/OnlineConfigValidator.java").read_text(encoding="utf-8")
+        self.assertIn("Box64Preset.ELECTRON.equals(preset)", validator)
+        titles = {node.attrib.get(ANDROID + "title") for node in ET.parse(RES / "menu/extra_args_popup_menu.xml").getroot()}
+        self.assertIn("--no-sandbox --disable-gpu-sandbox", titles)
+
+    def test_vesktop_companion_is_explicit_and_minimized(self):
+        base = ROOT / "app/app/src/main"
+        creator = (base / "java/com/winlator/core/WineStartMenuCreator.java").read_text(encoding="utf-8")
+        self.assertIn('container.getExtra("vesktopRpcCompanion").equals("t")', creator)
+        self.assertIn("--start-minimized --no-sandbox --disable-gpu-sandbox", creator)
+        layout = ET.parse(RES / "layout/container_detail_fragment.xml").getroot()
+        ids = {node.attrib.get(ANDROID + "id") for node in layout.iter()}
+        self.assertTrue({"@+id/CBVesktopRpcCompanion", "@+id/BTLaunchVesktop"} <= ids)
 
 if __name__ == '__main__':
     unittest.main()

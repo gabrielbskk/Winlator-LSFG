@@ -45,4 +45,19 @@
     <string name="discord_rpc_example_manual">Imagem personalizada do Discord (chave ou URL)</string>
     <string name="discord_rpc_example_disclaimer">Simulação local, não é uma captura do Discord. A imagem real depende do SDK e de uma URL ou asset aceito.</string>
     <string name="mali_driver_diagnostics">%1$s — Vulkan do sistema expõe %2$d extensões. Consulte a seleção abaixo; disponibilidade não garante compatibilidade DXVK.</string>
+    <string name="discord_clients_title">Clientes Discord Windows</string>
+    <string name="discord_clients_help">Baixe um cliente Windows verificado pelo Aurora. Abra pelo menu Iniciar do contêiner. Endcord pode usar menos memória; RPC e RAM no seu aparelho ainda precisam de teste. Clientes de terceiros podem trazer risco à conta.</string>
+    <string name="discord_install_endcord">Instalar Endcord (58 MB)</string>
+    <string name="discord_install_legcord">Instalar LegCord (184 MB)</string>
+    <string name="discord_install_vesktop">Instalar Vesktop (144 MB)</string>
+    <string name="discord_clients_installing">Verificando e instalando cliente Discord…</string>
+    <string name="discord_clients_success">Cliente instalado. Abra um contêiner para ver o atalho.</string>
+    <string name="discord_clients_failure">Falha na instalação. Confira espaço e conexão.</string>
+    <string name="discord_clients_installed">Instalado: %1$s</string>
+    <string name="firefox_installer_title">Firefox para Windows</string>
+    <string name="firefox_installer_help">Baixe o instalador oficial do Firefox ESR para Windows. Abra um contêiner e execute Instalar Firefox ESR pelo menu Iniciar. A compatibilidade no Wine ainda precisa de teste em aparelho.</string>
+    <string name="firefox_installer_download">Baixar Firefox ESR (90 MB)</string>
+    <string name="firefox_installer_success">Instalador Firefox baixado. Abra pelo menu Iniciar do contêiner.</string>
+    <string name="firefox_installer_failure">Falha no download ou na verificação do Firefox.</string>
+    <string name="firefox_installer_ready">Instalador Firefox pronto</string>
 </resources>

@@ -54,6 +54,7 @@ import com.winlator.core.PreloaderDialog;
 import com.winlator.core.StringUtils;
 import com.winlator.core.WineInfo;
 import com.winlator.core.WineInstaller;
+import com.winlator.core.WineStartMenuCreator;
 import com.winlator.core.WineRegistryEditor;
 import com.winlator.core.WineThemeManager;
 import com.winlator.core.WineUtils;
@@ -177,6 +178,20 @@ public class ContainerDetailFragment extends Fragment {
         final Spinner sBox64Preset = view.findViewById(R.id.SBox64Preset);
         Box64PresetManager.loadSpinner(sBox64Preset, isEditMode() ? container.getBox64Preset() : preferences.getString("box64_preset", Box64Preset.DEFAULT));
 
+        final CheckBox cbVesktopRpcCompanion = view.findViewById(R.id.CBVesktopRpcCompanion);
+        cbVesktopRpcCompanion.setChecked(isEditMode() && container.getExtra("vesktopRpcCompanion").equals("t"));
+        final Button btLaunchVesktop = view.findViewById(R.id.BTLaunchVesktop);
+        File vesktopExecutable = WineStartMenuCreator.findAvailableVesktop(context,
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        btLaunchVesktop.setVisibility(isEditMode() && vesktopExecutable != null ? View.VISIBLE : View.GONE);
+        btLaunchVesktop.setOnClickListener(v -> {
+            Intent intent = new Intent(context, XServerDisplayActivity.class);
+            intent.putExtra("container_id", container.id);
+            intent.putExtra("exec_path", vesktopExecutable.getAbsolutePath());
+            intent.putExtra("exec_args", "--no-sandbox --disable-gpu-sandbox");
+            startActivity(intent);
+        });
+
         final CPUListView cpuListView = view.findViewById(R.id.CPUListView);
         final CPUListView cpuListViewWoW64 = view.findViewById(R.id.CPUListViewWoW64);
 
@@ -268,6 +283,8 @@ public class ContainerDetailFragment extends Fragment {
                     container.setBox64Preset(box64Preset);
                     container.setDesktopTheme(desktopTheme);
                     container.setLSFGEnabled(cbEnableLSFGVK.isChecked());
+                    container.putExtra("vesktopRpcCompanion", cbVesktopRpcCompanion.isChecked() ? "t" : null);
+                    WineStartMenuCreator.syncVesktopCompanion(context, container);
                     String current = ConfigurationSnapshots.captureContainer(container);
                     if (!previous.equals(current)) container.putExtra(ConfigurationSnapshots.PREVIOUS, previous);
                     if (saveWorkingRequested[0]) container.putExtra(ConfigurationSnapshots.WORKING, current);
@@ -309,6 +326,7 @@ public class ContainerDetailFragment extends Fragment {
                         if (container != null) {
                             this.container = container;
                             container.setLSFGEnabled(cbEnableLSFGVK.isChecked());
+                            container.putExtra("vesktopRpcCompanion", cbVesktopRpcCompanion.isChecked() ? "t" : null);
                             container.saveData();
                             saveWineRegistryKeys(view);
                         }
