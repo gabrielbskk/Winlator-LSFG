@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.winlator.container.Container;
-import com.winlator.container.Drive;
 import com.winlator.win32.MSLink;
 
 import org.json.JSONArray;
@@ -36,20 +35,25 @@ public abstract class WineStartMenuCreator {
 
     static String toWindowsPath(String drives, File file) {
         String absolutePath = file.getAbsolutePath();
-        Drive selectedDrive = null;
+        String selectedLetter = null;
         int selectedLength = -1;
-        for (Drive drive : Container.drivesIterator(drives)) {
-            if (drive.path == null || drive.path.isEmpty()) continue;
-            String drivePath = new File(drive.path).getAbsolutePath();
+        int separator = drives.indexOf(':');
+        while (separator > 0) {
+            String driveLetter = String.valueOf(drives.charAt(separator - 1));
+            int nextSeparator = drives.indexOf(':', separator + 1);
+            String configuredPath = drives.substring(separator + 1,
+                nextSeparator != -1 ? nextSeparator - 1 : drives.length());
+            String drivePath = new File(configuredPath).getAbsolutePath();
             if ((absolutePath.equals(drivePath) || absolutePath.startsWith(drivePath + File.separator)) &&
                 drivePath.length() > selectedLength) {
-                selectedDrive = drive;
+                selectedLetter = driveLetter;
                 selectedLength = drivePath.length();
             }
+            separator = nextSeparator;
         }
-        if (selectedDrive != null) {
+        if (selectedLetter != null) {
             String relativePath = absolutePath.substring(selectedLength).replace(File.separatorChar, '/');
-            return selectedDrive.letter + ":" + relativePath;
+            return selectedLetter + ":" + relativePath;
         }
         return "Z:" + absolutePath.replace(File.separatorChar, '/');
     }
