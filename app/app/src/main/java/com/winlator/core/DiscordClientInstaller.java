@@ -65,7 +65,8 @@ public final class DiscordClientInstaller {
 
     public static File getInstalledExecutable(Context context, Client client) {
         File executable = new File(new File(installRoot(context), client.directoryName()), client.executable);
-        return executable.isFile() ? executable : null;
+        // A zero-byte placeholder is not an installed Windows application.
+        return executable.isFile() && executable.length() > 0 ? executable : null;
     }
 
     public static void install(Activity activity, Client client, Callback<Boolean> callback) {
