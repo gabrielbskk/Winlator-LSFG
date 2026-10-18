@@ -273,7 +273,10 @@ public abstract class WineStartMenuCreator {
         try {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
             addInstalledDiscordClients(data, context, container);
-            addFirefoxInstaller(data, context, container);
+            // The RC9 Firefox installer is disabled after the maintainer's RC8
+            // device report. Do not hash ~90 MB of cached installer on every
+            // Wine container start or recreate an unusable installation shortcut.
+            // Existing files remain untouched and the helper stays for review.
             addDownloadedVesktop(data, container);
             addDownloadedEndcord(data, container);
             addDownloadedLegcord(data, container);
