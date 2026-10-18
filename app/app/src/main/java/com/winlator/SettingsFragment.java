@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -47,6 +48,7 @@ import com.winlator.core.AppUtils;
 import com.winlator.core.ArrayUtils;
 import com.winlator.core.Callback;
 import com.winlator.core.DefaultVersion;
+import com.winlator.core.DiscordClientInstaller;
 import com.winlator.core.FileUtils;
 import com.winlator.core.GeneralComponents;
 import com.winlator.core.LocaleHelper;
@@ -87,6 +89,21 @@ public class SettingsFragment extends Fragment {
         preloaderDialog = new PreloaderDialog(getActivity());
     }
 
+    private void bindDiscordClientButton(View view, int buttonId, DiscordClientInstaller.Client client) {
+        Button button = view.findViewById(buttonId);
+        if (DiscordClientInstaller.getInstalledExecutable(requireContext(), client) != null)
+            button.setText(getString(R.string.discord_clients_installed, client.name));
+        button.setOnClickListener(clicked -> {
+            button.setEnabled(false);
+            DiscordClientInstaller.install(requireActivity(), client, installed -> {
+                if (!isAdded()) return;
+                button.setEnabled(true);
+                if (installed) button.setText(getString(R.string.discord_clients_installed, client.name));
+                AppUtils.showToast(requireContext(), installed ? R.string.discord_clients_success : R.string.discord_clients_failure);
+            });
+        });
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -123,6 +140,10 @@ public class SettingsFragment extends Fragment {
         tvDiscordStatus.setText(DiscordPresenceManager.configurationStatus(context, cbDiscord.isChecked(), etDiscordId.getText().toString().trim()));
         cbDiscord.setOnCheckedChangeListener((button, checked) -> tvDiscordStatus.setText(
             DiscordPresenceManager.configurationStatus(context, checked, etDiscordId.getText().toString().trim())));
+
+        bindDiscordClientButton(view, R.id.BTInstallEndcord, DiscordClientInstaller.Client.ENDCORD);
+        bindDiscordClientButton(view, R.id.BTInstallLegcord, DiscordClientInstaller.Client.LEGCORD);
+        bindDiscordClientButton(view, R.id.BTInstallVesktop, DiscordClientInstaller.Client.VESKTOP);
 
         final Spinner sSoundFont = view.findViewById(R.id.SSoundFont);
         String soundfont = preferences.getString("soundfont", null);

@@ -1,6 +1,12 @@
-# Aurora 11.3 RC6 — candidato técnico (não Stable)
+# Aurora 11.3 RC7 — candidato técnico (não Stable)
 
-O código candidato usa `versionCode=44` e `versionName=11.3-aurora-rc.6`. **A RC6 é uma prévia com assinatura debug; não é Stable.**
+O código candidato usa `versionCode=45` e `versionName=11.3-aurora-rc.7`. **A RC7 é uma prévia com assinatura debug; não é Stable.**
+
+## Alterações da RC7
+
+- Botões nas Configurações instalam Endcord GUI 1.5.4, LegCord 1.3.1 e Vesktop 1.6.7, com versões oficiais fixadas e verificação de tamanho/SHA-256 antes da extração.
+- Atalhos dos clientes instalados aparecem no menu Iniciar do contêiner; Vesktop instalado também pode usar o início minimizado opcional.
+- O APK não distribui os clientes nem integra o RPC Android antigo na build SDK-free. RPC ao vivo e consumo de RAM ainda requerem teste físico.
 
 ## Alterações da RC3
 

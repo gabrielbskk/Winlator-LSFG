@@ -4,11 +4,11 @@
 
 <h1 align="center">Winlator LSFG Aurora</h1>
 
-<p align="center"><strong>Experiments in Android ARM64 Windows gaming and LSFG-VK integration.</strong></p>
+<p align="center"><strong>A Winlator LSFG fork focused on Discord RPC and Windows compatibility.</strong></p>
 
 > **Attribution:** This community branch is based on [Rafaela's Winlator LSFG fork (@amyroseee)](https://github.com/amyroseee/Winlator-LSFG), itself derived from [Winlator by brunodev85](https://github.com/brunodev85/winlator). Aurora is a distinct, unofficial experimental identity; the original projects and their authors retain full credit.
 
-An experimental derivative of Winlator LSFG with a separate visual identity and a focus on compatibility, frame generation, and clear reporting of changes.
+An experimental derivative of Winlator LSFG with a separate visual identity and a focus on optional Discord RPC, Windows application compatibility and frame generation.
 
 ## Quick start
 
@@ -22,6 +22,10 @@ An experimental derivative of Winlator LSFG with a separate visual identity and 
 4. Start with LSFG disabled to check basic game compatibility, then compare presets using reproducible settings.
 
 More details: [Getting started](docs/GETTING_STARTED.md) · [Discord Rich Presence setup](docs/DISCORD_RPC.md) · [Testing checklist](docs/TESTING.md).
+
+## Discord RPC no Aurora
+
+Em **Configurações → Clientes Discord Windows**, instale Endcord GUI, LegCord ou Vesktop diretamente pelo Aurora. Os pacotes oficiais Windows x64 são baixados sob demanda, têm tamanho e SHA-256 conferidos e recebem atalhos no menu Iniciar do contêiner. Endcord é a primeira opção para testar menor uso de memória; a RAM e o RPC ao vivo ainda dependem de validação em aparelho. O APK experimental não inclui o RPC Android antigo que exigia Application ID. Veja o [guia de clientes Windows](docs/DISCORD_RPC_WINLATOR.md).
 
 ## Features
 
@@ -82,7 +86,7 @@ The integration is experimental. Features listed above are described by this for
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Versão principal — Winlator LSFG Aurora 11.2 (RPC + capas):** [baixar APK ARM64](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/rpc-android-experimental-5-full-rpc). Esta compilação inclui o Discord Social SDK e passou pelo build nativo e pelos testes de integridade do GitHub Actions. **Status: candidata a estável**, não estabilidade comprovada: o RPC e as capas desta compilação ainda precisam ser verificados em dispositivo real. As versões anteriores continuam preservadas como releases em rascunho, acessíveis aos administradores, com tags e histórico do Git intactos. Veja [histórico de versões](docs/RELEASES.md), [configuração de capas](docs/RPC_GAME_ARTWORK.md) e [guia de Discord RPC](docs/DISCORD_RPC.md).
+**Pré-release atual:** [Aurora 11.3 RC7](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc7-discord-clients), APK ARM64 com assinatura debug, instalador opcional de clientes Discord Windows e atalhos de navegador. É uma prévia experimental: RPC ao vivo e compatibilidade em aparelho ainda precisam de testes. Releases anteriores são mantidas como rascunhos, com tags e assets preservados. Veja [histórico de versões](docs/RELEASES.md) e [guia de Discord no Winlator](docs/DISCORD_RPC_WINLATOR.md).
 
 ## Maintainer and contributors
 

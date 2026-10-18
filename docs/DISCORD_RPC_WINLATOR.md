@@ -1,10 +1,16 @@
 # Discord RPC no contêiner Windows
 
-## Clientes Windows para testar
+## Instalação pelo Aurora
 
-Uma opção já integrada ao Aurora é executar o Vesktop Windows x64 dentro do contêiner Wine/Box64. A interface e a abertura foram observadas em dispositivo; o envio de RPC ao vivo no Winlator ainda precisa ser validado. O Aurora pode abrir o Vesktop manualmente e, se você marcar a opção do companion, iniciá-lo minimizado quando o contêiner iniciar. O companion fica desligado por padrão porque o cliente Electron aumenta o uso de RAM e CPU.
+Em **Configurações → Clientes Discord Windows**, toque em **Instalar Endcord**, **Instalar LegCord** ou **Instalar Vesktop**. O Aurora baixa o ZIP Windows x64 da release oficial de cada projeto, confere tamanho e SHA-256, extrai na pasta privada do aplicativo e cria o atalho `<cliente> (Aurora)` no menu Iniciar quando o contêiner é aberto. Os clientes não vêm dentro do APK. Mantenha espaço livre para download e extração.
 
-O executável não é distribuído no APK. Extraia uma versão confiável do Vesktop em uma pasta `Vesktop` dentro de Downloads; o Aurora cria `Vesktop (Downloads)` no menu Iniciar. Configure o preset Electron do Box64 se a abertura padrão falhar. Não há garantia de compatibilidade com todos os jogos ou aparelhos.
+| Cliente | Versão fixada | ZIP | Tamanho do download | SHA-256 |
+| --- | --- | --- | ---: | --- |
+| [Endcord GUI](https://github.com/sparklost/endcord/releases/tag/1.5.4) | 1.5.4 | `endcord-gui-1.5.4-windows.zip` | 58 MB | `7c1ef34c18262ff87072de38afadc54d0c1daedf391d0c2b872cfce52db4d12f` |
+| [LegCord](https://github.com/Legcord/Legcord/releases/tag/v1.3.1) | 1.3.1 | `Legcord-1.3.1-win-x64.zip` | 184 MB | `36937b53c9eb898041d790a48faf0d6058f8dbdee6b34dc844bf67c69cc14c2e` |
+| [Vesktop](https://github.com/Vencord/Vesktop/releases/tag/v1.6.7) | 1.6.7 | `Vesktop-1.6.7-win.zip` | 144 MB | `ff733d40835a603239a43ec79d53131749dcebd8611b72d301f30cfb9b1fbfa3` |
+
+Os atalhos antigos para arquivos extraídos manualmente em Downloads continuam disponíveis. O início minimizado opcional do Vesktop usa a versão instalada pelo Aurora quando disponível. A interface do Vesktop abriu em um Galaxy S23 num teste anterior; **RPC ao vivo, Endcord, LegCord e uso comparativo de RAM ainda não foram validados em aparelho**. Use preset Electron do Box64 se um cliente Electron não abrir. Endcord é a primeira opção para tentar reduzir RAM, sem promessa de resultado.
 
 ## Discord Web pelo navegador
 
@@ -23,7 +29,7 @@ Esta integração é experimental. O plugin WebRichPresence é identificado pelo
 
 Há dois projetos não relacionados chamados Endcord. [rootpoii/Endcord](https://github.com/rootpoii/Endcord) é um mod injetado no Discord oficial para Windows; ele não substitui o cliente Electron. [sparklost/endcord](https://github.com/sparklost/endcord) é um cliente de terminal com RPC e detecção de jogos. Ele oferece binários Windows e recomenda a variante `endcord-gui` nessa plataforma; a release 1.5.4 informa que essa versão acrescenta 15 MB frente a terminais Linux comuns, medida que não representa o consumo no Winlator. Continua sendo um cliente completo de terceiros, e não um daemon RPC pequeno. O projeto alerta que clientes de terceiros podem violar os termos do Discord e resultar em banimento.
 
-[Legcord](https://github.com/Legcord/Legcord) é um cliente Discord independente baseado em Electron com arRPC integrado. Ele pode simplificar a configuração, mas ainda executa um cliente completo, então não há evidência de que resolva o consumo de RAM do Vesktop. Na RC6, o Aurora cria `Endcord (Downloads)` ao encontrar `endcord-gui.exe` (ou `endcord.exe`) em uma pasta Endcord extraída em Downloads. Também cria `LegCord (Downloads)` ao encontrar `Legcord.exe` em uma pasta Legcord extraída ali; use o pacote Windows x64 ZIP, não o instalador. Os executáveis não são distribuídos no APK. Endcord, Legcord e Vesktop ainda não tiveram uso de RAM ou RPC ao vivo medidos comparativamente no Winlator. Considere o aviso de risco do Endcord antes de entrar na conta.
+[Legcord](https://github.com/Legcord/Legcord) é um cliente Discord independente baseado em Electron com arRPC integrado. Ele pode simplificar a configuração, mas ainda executa um cliente completo, então não há evidência de que resolva o consumo de RAM do Vesktop. O Aurora cria `Endcord (Downloads)` ao encontrar `endcord-gui.exe` (ou `endcord.exe`) em uma pasta Endcord extraída em Downloads. Também cria `LegCord (Downloads)` ao encontrar `Legcord.exe` em uma pasta Legcord extraída ali; use o pacote Windows x64 ZIP, não o instalador. Os executáveis não são distribuídos no APK. Endcord, Legcord e Vesktop ainda não tiveram uso de RAM ou RPC ao vivo medidos comparativamente no Winlator. Considere o aviso de risco do Endcord antes de entrar na conta.
 
 O projeto separado [endcord-rpc](https://github.com/sparklost/endcord-rpc) oferece só Rich Presence e detecção de jogos, mas requer o token da conta no arquivo de configuração. Por isso o Aurora não instala nem integra esse processo. Os atalhos acima permitem testar clientes com login normal, sem pedir um token em scripts do Aurora.
 
@@ -31,8 +37,8 @@ O projeto separado [endcord-rpc](https://github.com/sparklost/endcord-rpc) ofere
 
 - **Quer usar o caminho já integrado:** Vesktop dentro do contêiner, com início minimizado opcional. A abertura foi testada; o RPC ao vivo ainda está pendente. Espere uso extra de memória.
 - **Quer testar o navegador:** Discord Web no navegador Android ou em Chrome/Edge/Firefox do contêiner + Vencord + arRPC; considere o RPC experimental.
-- **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; extraia `endcord-gui.exe` em uma pasta Endcord dentro de Downloads e abra o atalho. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
-- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Extraia o ZIP Windows x64 em Downloads; a RAM e o RPC ainda precisam ser medidos no Winlator.
+- **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; use o botão nas Configurações e abra o atalho do Aurora. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
+- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Use o botão nas Configurações; a RAM e o RPC ainda precisam ser medidos no Winlator.
 - **Discord oficial para Windows:** não oferece uma opção oficial apenas de RPC sem o cliente completo. A integração antiga pelo Social SDK Android não faz parte desta prévia pública.
 
 Nunca informe token, senha ou Client Secret em scripts, logs ou arquivos do projeto.

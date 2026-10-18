@@ -45,4 +45,13 @@
     <string name="discord_rpc_example_manual">Custom Discord artwork (asset key or URL)</string>
     <string name="discord_rpc_example_disclaimer">Local mockup, not a Discord screenshot. The actual image requires the SDK and a supported asset or URL.</string>
     <string name="mali_driver_diagnostics">%1$s — system Vulkan exposes %2$d extensions. See the extension selector below; availability does not guarantee DXVK compatibility.</string>
+    <string name="discord_clients_title">Windows Discord clients</string>
+    <string name="discord_clients_help">Download a verified Windows client to Aurora. Launch it from the container Start menu. Endcord may use less memory; RPC and RAM on your device still need testing. Third-party clients can carry account risk.</string>
+    <string name="discord_install_endcord">Install Endcord (58 MB)</string>
+    <string name="discord_install_legcord">Install LegCord (184 MB)</string>
+    <string name="discord_install_vesktop">Install Vesktop (144 MB)</string>
+    <string name="discord_clients_installing">Verifying and installing Discord client…</string>
+    <string name="discord_clients_success">Client installed. Open a container to see its shortcut.</string>
+    <string name="discord_clients_failure">Installation failed. Check storage and connection.</string>
+    <string name="discord_clients_installed">Installed: %1$s</string>
 </resources>

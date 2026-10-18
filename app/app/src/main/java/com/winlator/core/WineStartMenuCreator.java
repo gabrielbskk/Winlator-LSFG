@@ -125,6 +125,20 @@ public abstract class WineStartMenuCreator {
         data.getJSONObject(0).getJSONArray("children").put(entry);
     }
 
+    private static void addInstalledDiscordClients(JSONArray data, Context context, Container container) throws JSONException {
+        JSONArray children = data.getJSONObject(0).getJSONArray("children");
+        for (DiscordClientInstaller.Client client : DiscordClientInstaller.Client.values()) {
+            File executable = DiscordClientInstaller.getInstalledExecutable(context, client);
+            if (executable == null) continue;
+            JSONObject entry = new JSONObject();
+            entry.put("name", client.name + " (Aurora)");
+            entry.put("path", toWindowsPath(container, executable));
+            if (client != DiscordClientInstaller.Client.ENDCORD)
+                entry.put("cmdArgs", "--no-sandbox --disable-gpu-sandbox");
+            children.put(entry);
+        }
+    }
+
     private static void addAndroidDiscordWeb(JSONArray data) throws JSONException {
         JSONObject entry = new JSONObject();
         entry.put("name", "Discord Web (Android Browser)");
@@ -151,11 +165,12 @@ public abstract class WineStartMenuCreator {
         }
     }
 
-    public static void syncVesktopCompanion(Container container) {
+    public static void syncVesktopCompanion(Context context, Container container) {
         File startupDir = new File(container.getRootDir(),
             ".wine/drive_c/users/xuser/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/StartUp");
         File outputFile = new File(startupDir, "Aurora Vesktop RPC Companion.lnk");
-        File executable = findDownloadedVesktop(
+        File executable = DiscordClientInstaller.getInstalledExecutable(context, DiscordClientInstaller.Client.VESKTOP);
+        if (executable == null) executable = findDownloadedVesktop(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         if (!container.getExtra("vesktopRpcCompanion").equals("t") || executable == null) {
             outputFile.delete();
@@ -226,10 +241,11 @@ public abstract class WineStartMenuCreator {
         File startMenuDir = container.getStartMenuDir();
         File containerStartMenuFile = new File(container.getRootDir(), ".startmenu");
         removeOldMenu(containerStartMenuFile, startMenuDir);
-        syncVesktopCompanion(container);
+        syncVesktopCompanion(context, container);
 
         try {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
+            addInstalledDiscordClients(data, context, container);
             addDownloadedVesktop(data, container);
             addDownloadedEndcord(data, container);
             addDownloadedLegcord(data, container);

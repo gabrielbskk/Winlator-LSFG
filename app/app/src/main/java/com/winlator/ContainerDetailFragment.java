@@ -284,7 +284,7 @@ public class ContainerDetailFragment extends Fragment {
                     container.setDesktopTheme(desktopTheme);
                     container.setLSFGEnabled(cbEnableLSFGVK.isChecked());
                     container.putExtra("vesktopRpcCompanion", cbVesktopRpcCompanion.isChecked() ? "t" : null);
-                    WineStartMenuCreator.syncVesktopCompanion(container);
+                    WineStartMenuCreator.syncVesktopCompanion(context, container);
                     String current = ConfigurationSnapshots.captureContainer(container);
                     if (!previous.equals(current)) container.putExtra(ConfigurationSnapshots.PREVIOUS, previous);
                     if (saveWorkingRequested[0]) container.putExtra(ConfigurationSnapshots.WORKING, current);
