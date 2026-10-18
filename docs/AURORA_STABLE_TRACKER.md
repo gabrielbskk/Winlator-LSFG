@@ -42,3 +42,16 @@ Cada teste em hardware deve registrar modelo/SoC, Android/kernel, driver e vers�
 5. Somente depois dos gates, preparar tag inédita, notas da versão, checksum e assinatura apropriada.
 
 **Histórico:** não fazer force-push, apagar tags/releases ou reescrever créditos de Rafaela (@amyroseee), brunodev85 e outros autores.
+
+
+## Situação após RC8 experimental (18/10/2026)
+
+- [x] Consolidação Aurora (PR #19) integrada à `main` e compilação SDK-free CI aprovada em `14e85d7` (17/10).
+- [x] Documentação da RC8 (PR #31) integrada à `main` em `7a7492f`, distinguindo a tag experimental do código-fonte ainda em PR.
+- [x] RC8 experimental publicada na tag `aurora-11.3-rc8-discord-firefox`, commit `389ee866`; build SDK-free, testes JVM, compilação AndroidTest e inventário de drivers passaram no run `39145337062`. **Isso não valida o funcionamento em hardware.**
+- [ ] Integrar com segurança o código da RC8 do PR #30 na `main`, incluindo histórico da RC2 sem mesclar as mesmas alterações duas vezes. Revisar possíveis conflitos com a documentação e a branch atual.
+- [ ] Confirmar os testes automatizados no **commit de integração final** (não reutilizar o status verde de outro SHA).
+- [ ] Testar em aparelho real Endcord, LegCord, Firefox ESR, Vesktop/RPC, LSFG e jogos Windows 32/64 bits. O relato anterior de abertura da interface do Vesktop em um Galaxy S23 não comprova os demais cenários.
+- [ ] Validar assinatura de distribuição, instalação/atualização, backup de contêineres e rollback. A RC8 distribuída é debug, não Stable.
+
+**Decisão de manutenção:** a falta de testes físicos não impede correções de documentação, testes unitários ou hardening de código em branches e PRs. Ela impede apenas afirmar suporte validado, compatibilidade, ganhos de desempenho ou promover a release para **Stable**. Não remover versões Turnip nem reintroduzir seleção automática.

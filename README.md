@@ -14,6 +14,12 @@
 
 A base vem do [Winlator LSFG de Rafaela (@amyroseee)](https://github.com/amyroseee/Winlator-LSFG), derivado do [Winlator de brunodev85](https://github.com/brunodev85/winlator). Aurora é um projeto comunitário independente, mantido por [@gabrielbskk](https://github.com/gabrielbskk).
 
+## Aviso de compatibilidade da RC8 (relato do mantenedor em 18/10/2026)
+
+**Problema conhecido:** nesta compilação experimental, o mantenedor relatou que **somente o Vesktop abriu/funcionou**, e ele já estava disponível no ambiente. Os botões de instalar Endcord, LegCord e Firefox não trouxeram um resultado funcional; o botão de reinstalar Vesktop também se mostrou desnecessário. **Não recomendamos os instaladores da RC8 até uma correção confirmada.** Não há prova de que esses outros clientes ou o navegador funcionem dentro do Wine nesta versão.
+
+A correção está sendo tratada no [PR #30](https://github.com/gabrielbskk/Winlator-LSFG/pull/30). Preserve instalações e saves existentes; não reinstale somente para testar esses botões. Este aviso **não altera o APK já publicado** e a RC8 continua **não Stable**.
+
 ## A atualização RC8
 
 | Você quer… | O Aurora oferece |
