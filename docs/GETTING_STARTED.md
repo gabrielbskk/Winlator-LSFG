@@ -1,31 +1,28 @@
-# Início rápido — Winlator LSFG Aurora
+# Comece pelo Aurora
 
-O Winlator LSFG Aurora é um fork experimental do [Winlator LSFG da Rafaela](https://github.com/amyroseee/Winlator-LSFG), derivado do Winlator original. O objetivo é testar geração de quadros LSFG-VK e compatibilidade Windows no Android.
+## Instalação
 
-## Requisitos gerais
+1. Faça backup dos contêineres e saves existentes.
+2. Baixe o APK na [release RC8](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc8-discord-firefox). Requer Android 8.0+ ARM64; GPU, driver e aplicativo determinam a compatibilidade real.
+3. Instale e crie um contêiner. A RC8 usa assinatura debug; uma APK com assinatura diferente pode não aceitar atualização direta.
+4. Teste primeiro com LSFG desligado. Configure Wine/Box64 e gráficos conforme o aplicativo. Turnip e sua versão são escolhas manuais; novos contêineres usam Vortek/Gladio.
 
-- Dispositivo **Android ARM64 (64 bits)**. A configuração Android declara `minSdkVersion 26` (Android 8.0), mas uma versão de Android compatível não garante suporte a todas as GPUs ou jogos.
-- Espaço livre para criar contêineres e instalar componentes, além de drivers/gráficos compatíveis.
-- Compatibilidade de GPUs **Adreno/Mali varia por modelo, kernel, driver e jogo**. Não assuma que drivers Turnip são adequados às GPUs Mali.
-- Os jogos/aplicativos Windows podem ser de 32 ou 64 bits se os componentes correspondentes estiverem presentes e funcionando. Isso é independente do APK Android ser ARM64.
+## Discord e RPC
 
-## Começando
+Nas Configurações, abra **Clientes Discord Windows** e escolha Endcord, LegCord ou Vesktop. O Aurora baixa e verifica o pacote; abra o cliente pelo menu Iniciar do contêiner. Faça login e configure o RPC no próprio cliente. RPC ao vivo e consumo de RAM ainda precisam ser verificados no aparelho.
 
-1. Consulte a página [Releases](https://github.com/gabrielbskk/Winlator-LSFG/releases) e leia as notas e limitações da versão escolhida. Releases `experimental` são voltadas a testes; podem conter regressões.
-2. Faça backup dos contêineres/saves antes de atualizar. O APK experimental pode ter assinatura diferente e não atualizar diretamente uma instalação anterior.
-3. Instale uma versão apropriada em seu próprio dispositivo e crie um contêiner com as configurações compatíveis com o SoC/GPU.
-4. Para LSFG-VK, obtenha um `Lossless.dll` legítimo e compatível de forma independente; importe-o nas configurações do aplicativo e escolha o preset de LSFG por contêiner. **O fork não inclui `Lossless.dll`.**
-5. Teste primeiro o jogo com frame generation desligado, depois compare presets 2x/3x/4x com as mesmas condições.
-6. Para Discord RPC no build experimental, leia [o guia específico](DISCORD_RPC.md).
+O início minimizado do Vesktop é opcional por contêiner. Endcord é uma alternativa para testar menor consumo; o resultado no Winlator ainda não foi medido. A RC8 não ativa o RPC Android antigo com Application ID.
 
-## Como reportar
+## Firefox e Discord Web
 
-Anote versão/commit, Android, SoC/GPU, driver, jogo, Wine/Box64, resolução e, quando possível, FPS, frame times e RAM; consulte [TESTING.md](TESTING.md). No momento, **GitHub Issues precisa ser habilitado nas configurações do repositório**. Até lá, não inclua dados privados em PRs públicos.
+Nas Configurações, baixe o instalador Firefox ESR. No contêiner, execute **Install Firefox ESR (Aurora)** e conclua a instalação. Os atalhos de Discord Web também podem abrir o navegador Android ou navegadores já instalados no Wine. Isso não é um WebView embutido.
 
-## Capturas existentes
+Detalhes: [Discord e navegadores](DISCORD_RPC_WINLATOR.md).
 
-O [README principal](../README.md#screenshots) já inclui imagens demonstrativas da interface, contador FPS e configurações.
+## Jogos e gráficos
 
-## Código e atribuição
+Leia a [compatibilidade de GPU](GPU_COMPATIBILITY_AURORA.md). PANVK não está validado/integrado. Para LSFG-VK, forneça sua própria `Lossless.dll` compatível e compare os presets somente depois de confirmar que o jogo funciona sem geração de quadros. LSFG não funciona no caminho Vortek atual.
 
-Código-fonte e documentação: [repositório principal](../README.md). Consulte o [arquivo LICENSE](../LICENSE) e as licenças específicas de bibliotecas e componentes antes de redistribuir um build. A presença de LGPL-2.1 na raiz não substitui os avisos próprios de terceiros.
+## Encontrou uma falha?
+
+Registre versão, aparelho, Android, GPU, driver, Wine/Box64, aplicativo e passos para reproduzir. Consulte [como testar](TESTING.md) e [como contribuir](../CONTRIBUTING.md). Não publique tokens nem dados de login.

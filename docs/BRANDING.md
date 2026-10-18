@@ -1,8 +1,17 @@
-# Aurora experimental identity
+# Aurora — identidade visual
 
 **Working name:** Winlator LSFG Aurora
 
 Aurora is a visual identity for [@gabrielbskk](https://github.com/gabrielbskk)'s experimental derivative of the original [Winlator LSFG project maintained by Rafaela (@amyroseee)](https://github.com/amyroseee/Winlator-LSFG). Its technical foundation is [Winlator by brunodev85](https://github.com/brunodev85/winlator) and additional independent upstream software.
+
+## Apresentação do repositório
+
+A página usa português como idioma principal, fundo azul profundo e detalhes ciano/violeta. O nome **Aurora** é o destaque; **Winlator LSFG** identifica a base. A atualização RC8 aparece como experimental, sem afirmações de RAM, RPC ou compatibilidade ainda não medidas.
+
+- Banner: [aurora-banner.svg](../assets/branding/aurora-banner.svg), 1280 × 440, SVG sem dependências externas.
+- Símbolo: A geométrico em gradiente, desenhado para o repositório.
+- O banner é arte de identidade, não uma captura de tela do aplicativo.
+- Esta atualização visual do repositório não altera o ícone nem os identificadores do APK.
 
 ## Image assets
 - SVG project mark: [assets/branding/aurora-symbol.svg](../assets/branding/aurora-symbol.svg)
