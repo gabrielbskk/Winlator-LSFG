@@ -25,4 +25,14 @@ public class WineStartMenuCreatorTest {
 
         assertNull(WineStartMenuCreator.findDownloadedVesktop(temporaryFolder.getRoot()));
     }
+
+    @Test public void usesConfiguredDownloadDriveForVesktopShortcut() throws Exception {
+        File downloads = temporaryFolder.newFolder("Download");
+        File folder = new File(downloads, "Vesktop-1.6.7-win");
+        folder.mkdirs();
+        File executable = new File(folder, "vesktop.exe");
+        executable.createNewFile();
+        assertEquals("D:/Vesktop-1.6.7-win/vesktop.exe",
+            WineStartMenuCreator.toWindowsPath("D:" + downloads.getAbsolutePath(), executable));
+    }
 }
