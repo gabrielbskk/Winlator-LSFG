@@ -5,12 +5,13 @@ Trabalhe **somente no Aurora** (Android ARM64), mantendo compatibilidade de jogo
 
 ## Estado de integração verificado (18/10/2026)
 
-- **`main`** já recebeu o PR #19 (consolidação Aurora) e o PR #7 (histórico RPC), ambos mesclados em 17/10/2026. Não pedir novo merge deles nem duplicar seus commits. O código de `main` ainda usa `11.3-aurora-rc.1` (`versionCode 39`).
-- **PR #31** foi mesclado à `main`: README, identidade e documentação agora anunciam a **RC8 experimental**. Divulgar a release não significa que o código correspondente já esteja em `main`.
-- **PR #26** (`release/aurora-11-3-rc2-validation`) é um draft legado, ainda aberto, com conflitos em relação à antiga base `feat/aurora-consolidation`. A RC2 não deve ser promovida isoladamente nem usada para reverter trabalho posterior.
-- **PR #30** (`feat/electron-vesktop-compat`) é o draft que contém o código da **RC8** e descendente da branch RC2. CI SDK-free passou para `389ee866`; faltam integração revisada com `main` e testes físicos. Não mesclar #26 e #30 de forma duplicada.
-- **Release RC8:** a tag imutável `aurora-11.3-rc8-discord-firefox` aponta a `389ee866`; a APK é experimental, de assinatura debug. Builds **SDK-free não disponibilizam o RPC Android nativo**, mesmo que tenham clientes Discord Windows opcionais. Não mover a tag nem chamar essa release de Stable.
-- **Correção de estabilidade** `8e43032f`: `KeyValueSet` ignora campos importados malformados; testes JVM cobrem leitura, persistência e pares de drivers. Preservar essa proteção.
+- **`main`** inclui os PRs #7/#19 (RPC e consolidação), #31 (identidade e documentação), #32 (aviso da RC8) e **#33 (código RC9)**. Não reabrir ou mesclar novamente esses PRs.
+- **Candidato de código atual:** `11.3-aurora-rc.9` (`versionCode 47`), integrado por `14898844688a33480df6e967ab02787778ec3a47`. Testes JVM, resources, Android debug SDK-free e compilação AndroidTest passaram no SHA da integração; isso não comprova compatibilidade física nem é Stable.
+- **Instaladores RC8:** o mantenedor relatou que só o Vesktop já disponível funcionou. Na RC9, botões Endcord/LegCord/Vesktop/Firefox estão ocultos e a cópia existente do Vesktop é reutilizada; nenhum arquivo antigo foi apagado. **PR #30** foi encerrado como substituído pelo #33.
+- **PR #26 (fechado):** candidato RC2 legado em base antiga; não mesclar nem voltar a `versionCode 40`. Seus ajustes úteis de download do SDK foram transferidos e mesclados à `main` pelo **PR #34** (`d67c62b`), com testes offline de URLs e build CI aprovados.
+- **Release pública RC8:** tag `aurora-11.3-rc8-discord-firefox` mantém APK experimental `389ee866` de assinatura debug; ela **não** foi substituída pela RC9 de código. Builds SDK-free não têm RPC Android nativo.
+- **Stable:** requer assinatura de distribuição, backups/upgrade/rollback e testes em dispositivos/jogos (Adreno/Mali, Windows x86/x64, LSFG e RPC real). Nunca declarar estabilidade baseada só em CI.
+- **Correção de estabilidade `8e43032f`:** preservar suporte a `KeyValueSet` malformado e testes de regressão.
 
 ## Antes de qualquer mudança
 1. Leia `README.md`, `ROADMAP.md`, `docs/DEVELOPMENT_WORKFLOW.md`, `docs/GPU_COMPATIBILITY_AURORA.md` e `docs/DRIVER_PLAN.md`.

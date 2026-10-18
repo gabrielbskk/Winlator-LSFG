@@ -18,7 +18,7 @@ A base vem do [Winlator LSFG de Rafaela (@amyroseee)](https://github.com/amyrose
 
 **Problema conhecido:** nesta compilação experimental, o mantenedor relatou que **somente o Vesktop abriu/funcionou**, e ele já estava disponível no ambiente. Os botões de instalar Endcord, LegCord e Firefox não trouxeram um resultado funcional; o botão de reinstalar Vesktop também se mostrou desnecessário. **Não recomendamos os instaladores da RC8 até uma correção confirmada.** Não há prova de que esses outros clientes ou o navegador funcionem dentro do Wine nesta versão.
 
-A correção está sendo tratada no [PR #30](https://github.com/gabrielbskk/Winlator-LSFG/pull/30). Preserve instalações e saves existentes; não reinstale somente para testar esses botões. Este aviso **não altera o APK já publicado** e a RC8 continua **não Stable**.
+A correção de interface foi integrada ao **código candidato RC9** na `main` pelo [PR #33](https://github.com/gabrielbskk/Winlator-LSFG/pull/33): botões problemáticos ocultos e cópias existentes do Vesktop preservadas. **Ainda não existe APK RC9 publicada**; o download acima continua sendo a RC8 original e mantém esses botões. Preserve instalações e saves; não reinstale apenas para testá-los. A RC8 permanece **não Stable**.
 
 ## A atualização RC8
 

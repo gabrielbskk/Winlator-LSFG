@@ -1,10 +1,10 @@
 # Aurora — controle de preparação da Stable
 
-**Data-base:** 17/10/2026 · **Canal:** desenvolvimento / candidata de testes · **Stable:** NÃO VALIDADA.
+**Data-base:** 18/10/2026 · **Canal:** desenvolvimento / candidata de testes · **Stable:** NÃO VALIDADA.
 
 A publicação oficial depende de execução física, assinatura de distribuição e aprovação do mantenedor. Este documento acompanha progresso real por commit, sem prometer que CI significa GPU ou jogo funcionando.
 
-## Alterações já incorporadas na branch `feat/aurora-consolidation`
+## Histórico de alterações integradas à `main`
 
 - PR #19 mantém tema Aurora, identificação Adreno/Mali, escolha manual de driver/versão Turnip, configurações Vortek/Gladio, proteção Mali, RPC/capas e recursos Windows x86/x64.
 - Merge `fffef037`: incorpora `main` (PRs #20/#21), auditoria de drivers, scripts e documentação; preserva histórico anterior e o PR #7 separado.
@@ -35,7 +35,7 @@ Cada teste em hardware deve registrar modelo/SoC, Android/kernel, driver e vers�
 
 ## Próximas etapas de implementação
 
-1. Manter PR #19 como integração de código até CI do último commit passar; não mesclar o PR #7 isoladamente.
+1. Revisar o código RC9 já integrado em `main` e manter regressões automatizadas; não mesclar novamente os PRs #7, #19 ou #30.
 2. Corrigir regressões confirmadas dos testes de dispositivos; preservar seleção manual de Turnip e todas as versões existentes.
 3. Separar instrumentação de frametime e RAM de mudanças reais de LSFG ou driver; não anunciar melhorias não medidas.
 4. Revisar viabilidade técnica de PANVK como projeto independente sem comprometer o fallback Mali.
@@ -49,8 +49,8 @@ Cada teste em hardware deve registrar modelo/SoC, Android/kernel, driver e vers�
 - [x] Consolidação Aurora (PR #19) integrada à `main` e compilação SDK-free CI aprovada em `14e85d7` (17/10).
 - [x] Documentação da RC8 (PR #31) integrada à `main` em `7a7492f`, distinguindo a tag experimental do código-fonte ainda em PR.
 - [x] RC8 experimental publicada na tag `aurora-11.3-rc8-discord-firefox`, commit `389ee866`; build SDK-free, testes JVM, compilação AndroidTest e inventário de drivers passaram no run `39145337062`. **Isso não valida o funcionamento em hardware.**
-- [ ] Integrar com segurança o código da RC8 do PR #30 na `main`, incluindo histórico da RC2 sem mesclar as mesmas alterações duas vezes. Revisar possíveis conflitos com a documentação e a branch atual.
-- [ ] Confirmar os testes automatizados no **commit de integração final** (não reutilizar o status verde de outro SHA).
+- [x] Código da RC8 corrigido e consolidado na `main` como RC9 pelo PR #33 (`1489884`), sem mesclar a RC2 antiga ou sobrescrever a release pública RC8.
+- [x] Testes SDK-free, JVM, resources e compilação AndroidTest no commit final do PR #33 (`80ae2e4`) passaram; o build da `main` após merge (`1489884`) também passou. **Não comprovam funcionamento de RPC ou jogos em aparelho.**
 - [ ] Testar em aparelho real Endcord, LegCord, Firefox ESR, Vesktop/RPC, LSFG e jogos Windows 32/64 bits. O relato anterior de abertura da interface do Vesktop em um Galaxy S23 não comprova os demais cenários.
 - [ ] Validar assinatura de distribuição, instalação/atualização, backup de contêineres e rollback. A RC8 distribuída é debug, não Stable.
 

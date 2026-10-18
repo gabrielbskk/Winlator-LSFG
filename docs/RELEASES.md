@@ -4,13 +4,17 @@
 
 **[Baixar o APK ARM64](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc8-discord-firefox)** · Experimental · Assinatura debug
 
-A RC8 introduziu botões experimentais para instalar Endcord GUI, LegCord, Vesktop Windows e baixar Firefox ESR. **Aviso posterior (18/10): o mantenedor relatou que só o Vesktop funcionou, e já estava disponível; os demais botões não produziram clientes/navegador utilizáveis. Evite esses instaladores na RC8.** O PR #30 acompanha a correção. O RPC Android antigo com Application ID não está ativo nesta build SDK-free.
+A RC8 introduziu botões experimentais para instalar Endcord GUI, LegCord, Vesktop Windows e baixar Firefox ESR. **Aviso posterior (18/10): o mantenedor relatou que só o Vesktop funcionou, e já estava disponível; os demais botões não produziram clientes/navegador utilizáveis. Evite esses instaladores na RC8.** O código RC9 na `main` ocultou os botões pelo PR #33; o PR #30 foi encerrado. Isso não altera a APK RC8. O RPC Android antigo com Application ID não está ativo nesta build SDK-free.
 
 - Código publicado: `389ee86654133a152d7a759f4354331acaa7fba8`.
 - APK: `app-debug.apk`, 172.017.335 bytes.
 - SHA-256: `36e41e7e8886db48a1db7e5baa11aaefb978c64b66d62b8e1a6d9b534c953099`.
 - [CI da RC8](https://github.com/gabrielbskk/Winlator-LSFG/actions/runs/39145337062): testes JVM, APK debug, compilação AndroidTest e verificações de recursos/ drivers aprovados.
 - RPC ao vivo, Firefox, outros clientes e comparações de RAM ainda precisam de teste físico. Faça backup antes de instalar; assinaturas diferentes podem impedir atualização direta.
+
+## Código-fonte candidato 11.3 RC9 — ainda sem APK pública
+
+A `main` usa `versionCode 47` / `11.3-aurora-rc.9` após o [PR #33](https://github.com/gabrielbskk/Winlator-LSFG/pull/33). Oculta botões de instalação sem funcionamento comprovado, preserva instalações/atalhos já existentes e reutiliza o Vesktop. Testes automatizados SDK-free passaram, mas **não é uma nova release** e permanece sem validação física e assinatura de distribuição.
 
 ## Versões anteriores
 

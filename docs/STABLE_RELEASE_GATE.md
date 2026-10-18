@@ -66,5 +66,5 @@ origem da APK anterior, assinatura, backup e resultados do rollback.
 
 **Acompanhamento:** [AURORA_STABLE_TRACKER.md](AURORA_STABLE_TRACKER.md) registra o que já foi integrado, os resultados de CI por commit e os bloqueios físicos pendentes.
 
-**Repositório:** PR #19 (consolidação) e PR #7 (RPC) continuam sujeitos à revisão.
+**Repositório:** PRs #7 e #19 já foram integrados à `main`; o código RC9 chegou pelo PR #33. Builds SDK-free passaram, mas os gates físicos e assinatura de distribuição continuam pendentes.
 Compilações CI anteriores não substituem novos testes para o commit final.
