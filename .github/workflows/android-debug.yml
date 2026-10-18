@@ -24,6 +24,8 @@ jobs:
         run: python3 scripts/test_aurora_resources.py
       - name: Validate pinned SDK download URLs (offline)
         run: python3 scripts/test_discord_sdk_source.py
+      - name: Offline SDK-free APK preflight regressions
+        run: python3 scripts/test_aurora_sdkfree_apk.py
       - name: Audit packaged GPU drivers (read-only)
         run: |
           python3 scripts/test_driver_inventory.py
@@ -59,6 +61,8 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest --no-daemon --stacktrace
+      - name: Check built SDK-free APK integrity before uploading
+        run: python3 scripts/verify_aurora_sdkfree_apk.py app/app/build/outputs/apk/debug/app-debug.apk
       - name: Upload debug APK for CI inspection
         if: success()
         uses: actions/upload-artifact@v4
