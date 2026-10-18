@@ -29,6 +29,27 @@ public abstract class WineStartMenuCreator {
         return selected;
     }
 
+    static File findDownloadedEndcord(File downloadsDir) {
+        if (downloadsDir == null || !downloadsDir.isDirectory()) return null;
+        File[] candidates = downloadsDir.listFiles(file ->
+            file.isDirectory() && file.getName().toLowerCase().startsWith("endcord"));
+        if (candidates == null) return null;
+        File selected = null;
+        for (File directory : candidates) {
+            File executable = new File(directory, "endcord-gui.exe");
+            if (!executable.isFile()) executable = new File(directory, "endcord.exe");
+            if (executable.isFile() && (selected == null ||
+                executable.lastModified() > selected.lastModified())) selected = executable;
+        }
+        return selected;
+    }
+
+    static File findInstalledBrowser(File containerRoot, String relativePath) {
+        File driveC = new File(containerRoot, ".wine/drive_c");
+        File executable = new File(driveC, relativePath);
+        return executable.isFile() ? executable : null;
+    }
+
     static String toWindowsPath(Container container, File file) {
         return toWindowsPath(container.getDrives(), file);
     }
@@ -67,6 +88,34 @@ public abstract class WineStartMenuCreator {
         entry.put("path", toWindowsPath(container, executable));
         entry.put("cmdArgs", "--no-sandbox --disable-gpu-sandbox");
         data.getJSONObject(0).getJSONArray("children").put(entry);
+    }
+
+    private static void addDownloadedEndcord(JSONArray data, Container container) throws JSONException {
+        File executable = findDownloadedEndcord(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        if (executable == null) return;
+        JSONObject entry = new JSONObject();
+        entry.put("name", "Endcord (Downloads)");
+        entry.put("path", toWindowsPath(container, executable));
+        data.getJSONObject(0).getJSONArray("children").put(entry);
+    }
+
+    private static void addDiscordWebBrowsers(JSONArray data, Container container) throws JSONException {
+        String[][] browsers = {
+            {"Discord Web (Chrome)", "Program Files/Google/Chrome/Application/chrome.exe", "--app=https://discord.com/app"},
+            {"Discord Web (Edge)", "Program Files (x86)/Microsoft/Edge/Application/msedge.exe", "--app=https://discord.com/app"},
+            {"Discord Web (Firefox)", "Program Files/Mozilla Firefox/firefox.exe", "https://discord.com/app"}
+        };
+        JSONArray children = data.getJSONObject(0).getJSONArray("children");
+        for (String[] browser : browsers) {
+            File executable = findInstalledBrowser(container.getRootDir(), browser[1]);
+            if (executable == null) continue;
+            JSONObject entry = new JSONObject();
+            entry.put("name", browser[0]);
+            entry.put("path", toWindowsPath(container, executable));
+            entry.put("cmdArgs", browser[2]);
+            children.put(entry);
+        }
     }
 
     public static void syncVesktopCompanion(Container container) {
@@ -149,6 +198,8 @@ public abstract class WineStartMenuCreator {
         try {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
             addDownloadedVesktop(data, container);
+            addDownloadedEndcord(data, container);
+            addDiscordWebBrowsers(data, container);
             FileUtils.writeString(containerStartMenuFile, data.toString());
             for (int i = 0; i < data.length(); i++) createMenuEntry(data.getJSONObject(i), startMenuDir);
         }
