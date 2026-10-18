@@ -62,6 +62,21 @@ class AuroraResourcesTest(unittest.TestCase):
         self.assertNotIn('CBTurnipAutomatic', dialog)
         self.assertIn('newConfig.put("version"', dialog)
 
+    def test_rc8_does_not_offer_unverified_install_buttons(self):
+        # Maintainer reported only an existing Vesktop copy works on device.
+        layout = ET.parse(RES / "layout/settings_fragment.xml").getroot()
+        ids = {node.attrib.get(ANDROID + "id") for node in layout.iter()}
+        self.assertFalse({
+            "@+id/BTInstallEndcord", "@+id/BTInstallLegcord",
+            "@+id/BTInstallVesktop", "@+id/BTDownloadFirefox",
+        } & ids)
+        source = (ROOT / "app/app/src/main/java/com/winlator/SettingsFragment.java").read_text(encoding="utf-8")
+        self.assertNotIn("bindDiscordClientButton(", source)
+        self.assertNotIn("FirefoxInstaller.download(", source)
+        # Keep support for manually installed or previously downloaded copies.
+        creator = (ROOT / "app/app/src/main/java/com/winlator/core/WineStartMenuCreator.java").read_text(encoding="utf-8")
+        self.assertIn("findAvailableVesktop(", creator)
+
     def test_electron_preset_uses_device_tested_base_and_keeps_cef_customizable(self):
         base = ROOT / "app/app/src/main"
         manager = (base / "java/com/winlator/box64/Box64PresetManager.java").read_text(encoding="utf-8")
