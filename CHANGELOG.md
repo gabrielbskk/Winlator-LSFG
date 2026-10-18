@@ -1,5 +1,16 @@
 # Changelog
 
+## 11.3-aurora-rc.9 — código candidato (NÃO publicado)
+
+- Integra o código de compatibilidade Windows da RC8 na base atual de `main`, sem modificar tags ou APKs existentes.
+- Mantém Vesktop previamente instalado (armazenamento do Aurora ou Downloads) e seus atalhos; editor de contêiner passa a detectar ambos para iniciar ou ativar o companheiro opcional.
+- Oculta nas Configurações os botões de instalação de Endcord, LegCord, Vesktop e Firefox, devido ao relato do mantenedor de que não funcionaram/utilizaram recursos desnecessariamente na RC8. Pacotes existentes **não são apagados**; o código do instalador permanece inativo para depuração futura.
+- Adiciona testes JVM para prioridade da instalação existente e testes estáticos que impedem retorno acidental dos botões.
+- O Vesktop foi o único cliente relatado funcional; isso não comprova RPC ao vivo, games x86/x64, FPS, RAM nem compatibilidade ampla.
+- `versionCode=47`, `versionName=11.3-aurora-rc.9`; o número identifica código novo, não uma release Stable.
+- **Antes de qualquer distribuição:** verificar testes Gradle, conteúdo APK, assinatura e instalação/atualização; gates físicos de `docs/STABLE_RELEASE_GATE.md` continuam pendentes.
+
+
 ## 11.2-rpc-experimental.5 — source candidate (not released)
 
 ### Proposed
