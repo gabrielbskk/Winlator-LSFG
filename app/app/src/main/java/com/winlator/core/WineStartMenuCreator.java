@@ -29,6 +29,21 @@ public abstract class WineStartMenuCreator {
         return selected;
     }
 
+    /**
+     * Prefer the copy already managed by Aurora, then fall back to the existing
+     * extracted Downloads copy. This never re-downloads or replaces user files.
+     */
+    static File chooseVesktopExecutable(File auroraInstalled, File downloadsDir) {
+        if (auroraInstalled != null && auroraInstalled.isFile()) return auroraInstalled;
+        return findDownloadedVesktop(downloadsDir);
+    }
+
+    public static File findAvailableVesktop(Context context, File downloadsDir) {
+        return chooseVesktopExecutable(
+            DiscordClientInstaller.getInstalledExecutable(context, DiscordClientInstaller.Client.VESKTOP),
+            downloadsDir);
+    }
+
     static File findDownloadedEndcord(File downloadsDir) {
         if (downloadsDir == null || !downloadsDir.isDirectory()) return null;
         File[] candidates = downloadsDir.listFiles(file ->
@@ -178,8 +193,7 @@ public abstract class WineStartMenuCreator {
         File startupDir = new File(container.getRootDir(),
             ".wine/drive_c/users/xuser/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/StartUp");
         File outputFile = new File(startupDir, "Aurora Vesktop RPC Companion.lnk");
-        File executable = DiscordClientInstaller.getInstalledExecutable(context, DiscordClientInstaller.Client.VESKTOP);
-        if (executable == null) executable = findDownloadedVesktop(
+        File executable = findAvailableVesktop(context,
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         if (!container.getExtra("vesktopRpcCompanion").equals("t") || executable == null) {
             outputFile.delete();
