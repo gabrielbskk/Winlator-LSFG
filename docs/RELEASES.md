@@ -4,7 +4,7 @@
 
 **[Baixar o APK ARM64](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc8-discord-firefox)** · Experimental · Assinatura debug
 
-A RC8 adiciona instalação opcional de Endcord GUI, LegCord e Vesktop Windows, download do instalador Firefox ESR e atalhos de navegador. O RPC Android antigo com Application ID não está ativo nesta build SDK-free.
+A RC8 introduziu botões experimentais para instalar Endcord GUI, LegCord, Vesktop Windows e baixar Firefox ESR. **Aviso posterior (18/10): o mantenedor relatou que só o Vesktop funcionou, e já estava disponível; os demais botões não produziram clientes/navegador utilizáveis. Evite esses instaladores na RC8.** O PR #30 acompanha a correção. O RPC Android antigo com Application ID não está ativo nesta build SDK-free.
 
 - Código publicado: `389ee86654133a152d7a759f4354331acaa7fba8`.
 - APK: `app-debug.apk`, 172.017.335 bytes.
