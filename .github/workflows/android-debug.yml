@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main, experimental/rpc-android-v4, feat/aurora-consolidation]
+    branches: [main, experimental/rpc-android-v4, feat/aurora-consolidation, release/aurora-11-3-rc2-validation]
   workflow_dispatch:
 
 permissions:
