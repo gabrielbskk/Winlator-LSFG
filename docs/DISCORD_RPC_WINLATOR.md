@@ -2,7 +2,9 @@
 
 ## Instalação pelo Aurora
 
-Em **Configurações → Clientes Discord Windows**, toque em **Instalar Endcord**, **Instalar LegCord** ou **Instalar Vesktop**. O Aurora baixa o ZIP Windows x64 da release oficial de cada projeto, confere tamanho e SHA-256, extrai na pasta privada do aplicativo e cria o atalho `<cliente> (Aurora)` no menu Iniciar quando o contêiner é aberto. Os clientes não vêm dentro do APK. Mantenha espaço livre para download e extração.
+**Estado atual (código candidato RC9): os botões de instalação estão ocultos.** O mantenedor relatou que somente o Vesktop existente funcionou na RC8, enquanto os botões de Endcord, LegCord, Vesktop e Firefox não tiveram resultado útil. O código mantém os executáveis já instalados e os atalhos no menu Iniciar; o botão de abrir Vesktop detecta a cópia gerenciada pelo Aurora ou uma cópia previamente extraída em Downloads. **Não há reinstalação nem exclusão automática.** A APK pública RC8, já lançada, permanece inalterada.
+
+**Histórico para desenvolvimento:** os ZIPs listados a seguir eram downloads opcionais com tamanho e SHA-256 fixados. Permanecem documentados para uma futura correção, e **não devem ser oferecidos como funcionais** até validação.
 
 | Cliente | Versão fixada | ZIP | Tamanho do download | SHA-256 |
 | --- | --- | --- | ---: | --- |
@@ -14,7 +16,7 @@ Os atalhos antigos para arquivos extraídos manualmente em Downloads continuam d
 
 ## Discord Web pelo navegador
 
-O Aurora também oferece em Configurações o download verificado do instalador oficial Firefox ESR 153.0 para Windows x64. Depois do download, execute `Install Firefox ESR (Aurora)` no menu Iniciar do contêiner e siga o instalador. A abertura do navegador dentro do Wine ainda requer validação em aparelho.
+O painel para baixar Firefox ESR 153.0 para Windows x64 está **oculto na candidata RC9** por falta de funcionamento comprovado. Um instalador já existente permanece preservado, mas a abertura do navegador dentro do Wine ainda exige validação.
 
 O menu Iniciar oferece `Discord Web (Android Browser)`, que usa a integração existente do Winlator para abrir o link no navegador Android, além de atalhos separados para Chrome, Edge ou Firefox quando instalados no prefixo Wine. Isso é encaminhamento para o navegador Android, não um WebView embutido dentro da janela Windows. O navegador, o login e a extensão são responsabilidade do usuário; nenhum navegador é incluído no APK.
 
@@ -39,8 +41,8 @@ O projeto separado [endcord-rpc](https://github.com/sparklost/endcord-rpc) ofere
 
 - **Quer usar o caminho já integrado:** Vesktop dentro do contêiner, com início minimizado opcional. A abertura foi testada; o RPC ao vivo ainda está pendente. Espere uso extra de memória.
 - **Quer testar o navegador:** Discord Web no navegador Android ou em Chrome/Edge/Firefox do contêiner + Vencord + arRPC; considere o RPC experimental.
-- **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; use o botão nas Configurações e abra o atalho do Aurora. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
-- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Use o botão nas Configurações; a RAM e o RPC ainda precisam ser medidos no Winlator.
+- **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; os botões foram ocultados; se o cliente já estiver instalado, ainda pode aparecer no menu Iniciar. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
+- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Os botões foram ocultados; a RAM e o RPC ainda precisam ser medidos no Winlator.
 - **Discord oficial para Windows:** não oferece uma opção oficial apenas de RPC sem o cliente completo. A integração antiga pelo Social SDK Android não faz parte desta prévia pública.
 
 Nunca informe token, senha ou Client Secret em scripts, logs ou arquivos do projeto.
