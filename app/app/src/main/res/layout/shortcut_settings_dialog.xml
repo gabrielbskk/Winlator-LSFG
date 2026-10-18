@@ -392,6 +392,12 @@
                             android:src="@drawable/icon_menu" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/LLDiscordShortcutSettings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
                     <!-- The icon preview is extracted locally. Only a user-approved
                          Discord asset key / public HTTPS URL reaches Discord. -->
                     <TextView
@@ -520,6 +526,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/discord_rpc_example_disclaimer" />
+
+                    </LinearLayout>
 
                     <CheckBox
                         android:id="@+id/CBForceFullscreen"

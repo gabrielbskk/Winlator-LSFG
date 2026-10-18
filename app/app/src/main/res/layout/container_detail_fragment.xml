@@ -527,6 +527,24 @@
                             style="@style/ComboBox"
                             android:id="@+id/SBox64Preset"
                             android:layout_width="match_parent" />
+
+                        <CheckBox
+                            android:id="@+id/CBVesktopRpcCompanion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/vesktop_rpc_companion" />
+
+                        <Button
+                            style="@style/ButtonNeutral"
+                            android:id="@+id/BTLaunchVesktop"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/vesktop_login_configure" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/vesktop_rpc_companion_help" />
                     </LinearLayout>
 
                     <TextView

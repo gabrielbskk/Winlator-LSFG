@@ -52,7 +52,10 @@ O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa 
 ### F. Aplicativos Electron/Vesktop (experimental)
 - Hipótese: falhas antes da primeira janela podem vir da integração CEF/alocador do Box64, independentemente do driver Vulkan.
 - Dispositivo inicial: Galaxy S23, Snapdragon 8 Gen 2/Adreno 740, Android 16; Mali G52 permanece sem validação física.
-- Implementação: preset opt-in com `BOX64_LIBCEF=1`, `BOX64_MALLOC_HACK=2` e dynarec conservador; argumentos de sandbox/GPU são fallbacks manuais.
+- Resultado no Galaxy S23: o preset com `BOX64_LIBCEF=1`, `BOX64_MALLOC_HACK=2` e dynarec conservador abriu uma janela preta. O preset Intermediário, com GPU ativa e `--no-sandbox --disable-gpu-sandbox`, abriu e apresentou desempenho melhor; ainda requer medições reproduzíveis.
+- Implementação RC3: o preset Electron usa a base Intermediária testada e não força os overrides CEF/alocador. Uma instalação extraída do Vesktop em Downloads é detectada para criar um atalho local no menu Iniciar, sem redistribuir o aplicativo no APK.
+- Companion RPC opt-in por contêiner: botão para primeiro login/configuração e atalho de inicialização com `--start-minimized`; requer habilitar o arRPC no Vesktop e não garante detecção de jogos que não publicam RPC.
+- Fontes: fontes Unicode/CJK/símbolos existentes no Android são copiadas, somente quando ausentes, para o prefixo Wine. O APK não redistribui esses arquivos.
 - Teste: comparar preset Intermediário e Electron com Vesktop Windows x64, registrar primeira janela, login, renderização, áudio, reabertura, RAM e logs.
 - Reversão: selecionar outro preset e remover os argumentos do atalho; nenhum contêiner existente é migrado.
 - Limite: flags `--no-sandbox` reduzem o isolamento dentro do contêiner e não comprovam compatibilidade sem execução física.
