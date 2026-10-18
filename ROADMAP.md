@@ -2,14 +2,14 @@
 
 O Aurora concentra o trabalho em RPC opcional e compatibilidade de aplicativos Windows no Android ARM64. Esta lista expressa prioridades; não promete suporte já disponível nem prazo de entrega.
 
-## Disponível na RC8
+## Introduzido na RC8 (experimental, não validado)
 
-- Instalação opcional de Endcord GUI, LegCord e Vesktop Windows, com tamanho e SHA-256 verificados.
-- Download do instalador oficial Firefox ESR e atalhos de navegador.
+- Botões experimentais para Endcord GUI, LegCord e Vesktop Windows; **mantenedor relatou falhas e redundância**, por isso ocultados na RC9 de código.
+- Download experimental do Firefox ESR, **sem funcionamento comprovado e suspenso na RC9**; atalhos de navegador já presente seguem independentes.
 - Início minimizado opcional do Vesktop e preset Electron.
 - Seleção manual de drivers e configurações de LSFG-VK por contêiner.
 
-Veja [versões](docs/RELEASES.md) para o código publicado e o alcance da validação.
+Veja [versões](docs/RELEASES.md) e [handoff do Codex](docs/CODEX_HANDOFF_RC9.md) para distinguir código RC9 da APK RC8 e as restrições de validação.
 
 ## 1. Validar RPC e reduzir o custo de uso
 
