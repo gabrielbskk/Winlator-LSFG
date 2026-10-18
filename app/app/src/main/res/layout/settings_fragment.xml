@@ -49,34 +49,6 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <LinearLayout style="@style/FieldSet">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="@string/discord_clients_help" />
-                    <Button android:id="@+id/BTInstallEndcord" android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:text="@string/discord_install_endcord" />
-                    <Button android:id="@+id/BTInstallLegcord" android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:text="@string/discord_install_legcord" />
-                    <Button android:id="@+id/BTInstallVesktop" android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:text="@string/discord_install_vesktop" />
-                </LinearLayout>
-                <TextView style="@style/FieldSetLabel" android:text="@string/discord_clients_title" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout style="@style/FieldSet">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="@string/firefox_installer_help" />
-                    <Button android:id="@+id/BTDownloadFirefox" android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:text="@string/firefox_installer_download" />
-                </LinearLayout>
-                <TextView style="@style/FieldSetLabel" android:text="@string/firefox_installer_title" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <LinearLayout style="@style/FieldSet">
                     <TextView
