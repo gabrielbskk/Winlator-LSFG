@@ -1,4 +1,7 @@
-name: Organize Aurora releases
+# Archived operation: intentionally disabled. It would re-promote the obsolete
+# unsigned/debug 11.2 candidate as the public latest release, contrary to the
+# Aurora RC8/RC9 release gates. Preserve this history but do not execute it.
+name: ARCHIVED - Organize Aurora releases (disabled)
 
 on:
   workflow_dispatch:
@@ -18,7 +21,8 @@ concurrency:
 
 jobs:
   organize:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.confirm_publication }}
+    # Prevent every legacy dispatch from changing public release visibility.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
