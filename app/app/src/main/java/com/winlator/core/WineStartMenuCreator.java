@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.winlator.container.Container;
+import com.winlator.container.Drive;
 import com.winlator.win32.MSLink;
 
 import org.json.JSONArray;
@@ -29,13 +30,33 @@ public abstract class WineStartMenuCreator {
         return selected;
     }
 
-    private static void addDownloadedVesktop(JSONArray data) throws JSONException {
+    static String toWindowsPath(Container container, File file) {
+        String absolutePath = file.getAbsolutePath();
+        Drive selectedDrive = null;
+        int selectedLength = -1;
+        for (Drive drive : container.drivesIterator()) {
+            if (drive.path == null || drive.path.isEmpty()) continue;
+            String drivePath = new File(drive.path).getAbsolutePath();
+            if ((absolutePath.equals(drivePath) || absolutePath.startsWith(drivePath + File.separator)) &&
+                drivePath.length() > selectedLength) {
+                selectedDrive = drive;
+                selectedLength = drivePath.length();
+            }
+        }
+        if (selectedDrive != null) {
+            String relativePath = absolutePath.substring(selectedLength).replace(File.separatorChar, '/');
+            return selectedDrive.letter + ":" + relativePath;
+        }
+        return "Z:" + absolutePath.replace(File.separatorChar, '/');
+    }
+
+    private static void addDownloadedVesktop(JSONArray data, Container container) throws JSONException {
         File executable = findDownloadedVesktop(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         if (executable == null) return;
         JSONObject entry = new JSONObject();
         entry.put("name", "Vesktop (Downloads)");
-        entry.put("path", "Z:" + executable.getAbsolutePath().replace(File.separatorChar, '/'));
+        entry.put("path", toWindowsPath(container, executable));
         entry.put("cmdArgs", "--no-sandbox --disable-gpu-sandbox");
         data.getJSONObject(0).getJSONArray("children").put(entry);
     }
@@ -52,7 +73,7 @@ public abstract class WineStartMenuCreator {
         }
         startupDir.mkdirs();
         MSLink.LinkInfo linkInfo = new MSLink.LinkInfo();
-        linkInfo.targetPath = "Z:" + executable.getAbsolutePath().replace(File.separatorChar, '/');
+        linkInfo.targetPath = toWindowsPath(container, executable);
         linkInfo.arguments = "--start-minimized --no-sandbox --disable-gpu-sandbox";
         linkInfo.iconLocation = linkInfo.targetPath;
         MSLink.createFile(linkInfo, outputFile);
@@ -119,7 +140,7 @@ public abstract class WineStartMenuCreator {
 
         try {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
-            addDownloadedVesktop(data);
+            addDownloadedVesktop(data, container);
             FileUtils.writeString(containerStartMenuFile, data.toString());
             for (int i = 0; i < data.length(); i++) createMenuEntry(data.getJSONObject(i), startMenuDir);
         }

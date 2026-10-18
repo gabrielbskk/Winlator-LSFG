@@ -1,5 +1,7 @@
 package com.winlator.core;
 
+import com.winlator.container.Container;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -24,5 +26,18 @@ public class WineStartMenuCreatorTest {
         temporaryFolder.newFile("Vesktop-1.6.7-win.zip");
 
         assertNull(WineStartMenuCreator.findDownloadedVesktop(temporaryFolder.getRoot()));
+    }
+
+    @Test public void usesConfiguredDownloadDriveForVesktopShortcut() throws Exception {
+        File downloads = temporaryFolder.newFolder("Download");
+        File folder = new File(downloads, "Vesktop-1.6.7-win");
+        folder.mkdirs();
+        File executable = new File(folder, "vesktop.exe");
+        executable.createNewFile();
+        Container container = new Container(1);
+        container.setDrives("D:" + downloads.getAbsolutePath());
+
+        assertEquals("D:/Vesktop-1.6.7-win/vesktop.exe",
+            WineStartMenuCreator.toWindowsPath(container, executable));
     }
 }
