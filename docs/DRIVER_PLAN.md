@@ -49,6 +49,14 @@ O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa 
 - Otimizar apenas gargalos identificados; comparar mesmo jogo, resolução, preset e temperatura.
 - **Aceite:** evidências reproduzíveis e ausência de regressões.
 
+### F. Aplicativos Electron/Vesktop (experimental)
+- Hipótese: falhas antes da primeira janela podem vir da integração CEF/alocador do Box64, independentemente do driver Vulkan.
+- Dispositivo inicial: Galaxy S23, Snapdragon 8 Gen 2/Adreno 740, Android 16; Mali G52 permanece sem validação física.
+- Implementação: preset opt-in com `BOX64_LIBCEF=1`, `BOX64_MALLOC_HACK=2` e dynarec conservador; argumentos de sandbox/GPU são fallbacks manuais.
+- Teste: comparar preset Intermediário e Electron com Vesktop Windows x64, registrar primeira janela, login, renderização, áudio, reabertura, RAM e logs.
+- Reversão: selecionar outro preset e remover os argumentos do atalho; nenhum contêiner existente é migrado.
+- Limite: flags `--no-sandbox` reduzem o isolamento dentro do contêiner e não comprovam compatibilidade sem execução física.
+
 ## Relação com outros trabalhos
 - [PR #7 — Discord RPC Experimental 5](https://github.com/gabrielbskk/Winlator-LSFG/pull/7): draft; não mesclar automaticamente.
 - [PR #18 — tema Aurora, Adreno 619/642 e Mali G52](https://github.com/gabrielbskk/Winlator-LSFG/pull/18): já integrado; preservar suas correções.

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Static resource regressions; does not replace rendering on Android devices."""
 from pathlib import Path
+import json
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -60,6 +61,19 @@ class AuroraResourcesTest(unittest.TestCase):
         dialog = (base / 'contentdialog/TurnipConfigDialog.java').read_text(encoding='utf-8')
         self.assertNotIn('CBTurnipAutomatic', dialog)
         self.assertIn('newConfig.put("version"', dialog)
+
+    def test_electron_preset_is_opt_in_and_exposes_cef_controls(self):
+        base = ROOT / "app/app/src/main"
+        manager = (base / "java/com/winlator/box64/Box64PresetManager.java").read_text(encoding="utf-8")
+        self.assertIn("id.equals(Box64Preset.ELECTRON)", manager)
+        self.assertIn("envVars.put(\"BOX64_LIBCEF\", \"1\")", manager)
+        self.assertIn("envVars.put(\"BOX64_MALLOC_HACK\", \"2\")", manager)
+        intermediate = manager[manager.index("id.equals(Box64Preset.INTERMEDIATE)"):manager.index("id.equals(Box64Preset.PERFORMANCE)")]
+        self.assertNotIn("BOX64_LIBCEF", intermediate)
+        variables = {item["name"] for item in json.loads((base / "assets/box64/env_vars.json").read_text(encoding="utf-8"))}
+        self.assertTrue({"BOX64_LIBCEF", "BOX64_MALLOC_HACK"} <= variables)
+        titles = {node.attrib.get(ANDROID + "title") for node in ET.parse(RES / "menu/extra_args_popup_menu.xml").getroot()}
+        self.assertIn("--no-sandbox --disable-gpu-sandbox", titles)
 
 if __name__ == '__main__':
     unittest.main()
