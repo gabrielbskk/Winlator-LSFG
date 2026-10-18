@@ -72,7 +72,7 @@ public abstract class WineStartMenuCreator {
             File executable = new File(directory, "Legcord.exe");
             if (!executable.isFile() || executable.length() == 0)
                 executable = new File(directory, "legcord.exe");
-            if (executable.isFile() && (selected == null ||
+            if (executable.isFile() && executable.length() > 0 && (selected == null ||
                 executable.lastModified() > selected.lastModified())) selected = executable;
         }
         return selected;
