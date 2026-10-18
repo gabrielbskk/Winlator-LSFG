@@ -14,6 +14,8 @@ Os atalhos antigos para arquivos extraídos manualmente em Downloads continuam d
 
 ## Discord Web pelo navegador
 
+O Aurora também oferece em Configurações o download verificado do instalador oficial Firefox ESR 153.0 para Windows x64. Depois do download, execute `Install Firefox ESR (Aurora)` no menu Iniciar do contêiner e siga o instalador. A abertura do navegador dentro do Wine ainda requer validação em aparelho.
+
 O menu Iniciar oferece `Discord Web (Android Browser)`, que usa a integração existente do Winlator para abrir o link no navegador Android, além de atalhos separados para Chrome, Edge ou Firefox quando instalados no prefixo Wine. Isso é encaminhamento para o navegador Android, não um WebView embutido dentro da janela Windows. O navegador, o login e a extensão são responsabilidade do usuário; nenhum navegador é incluído no APK.
 
 Para tentar Rich Presence no Discord Web:

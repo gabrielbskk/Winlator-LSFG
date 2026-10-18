@@ -54,4 +54,10 @@
     <string name="discord_clients_success">Client installed. Open a container to see its shortcut.</string>
     <string name="discord_clients_failure">Installation failed. Check storage and connection.</string>
     <string name="discord_clients_installed">Installed: %1$s</string>
+    <string name="firefox_installer_title">Firefox for Windows</string>
+    <string name="firefox_installer_help">Download the official Firefox ESR Windows installer. Open a container, then launch Install Firefox ESR from the Start menu. Browser compatibility inside Wine still needs device testing.</string>
+    <string name="firefox_installer_download">Download Firefox ESR (90 MB)</string>
+    <string name="firefox_installer_success">Firefox installer downloaded. Open it from the container Start menu.</string>
+    <string name="firefox_installer_failure">Firefox download or verification failed.</string>
+    <string name="firefox_installer_ready">Firefox installer ready</string>
 </resources>

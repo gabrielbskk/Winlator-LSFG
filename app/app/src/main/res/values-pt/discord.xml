@@ -54,4 +54,10 @@
     <string name="discord_clients_success">Cliente instalado. Abra um contêiner para ver o atalho.</string>
     <string name="discord_clients_failure">Falha na instalação. Confira espaço e conexão.</string>
     <string name="discord_clients_installed">Instalado: %1$s</string>
+    <string name="firefox_installer_title">Firefox para Windows</string>
+    <string name="firefox_installer_help">Baixe o instalador oficial do Firefox ESR para Windows. Abra um contêiner e execute Instalar Firefox ESR pelo menu Iniciar. A compatibilidade no Wine ainda precisa de teste em aparelho.</string>
+    <string name="firefox_installer_download">Baixar Firefox ESR (90 MB)</string>
+    <string name="firefox_installer_success">Instalador Firefox baixado. Abra pelo menu Iniciar do contêiner.</string>
+    <string name="firefox_installer_failure">Falha no download ou na verificação do Firefox.</string>
+    <string name="firefox_installer_ready">Instalador Firefox pronto</string>
 </resources>

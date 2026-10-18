@@ -27,6 +27,8 @@ More details: [Getting started](docs/GETTING_STARTED.md) · [Discord Rich Presen
 
 Em **Configurações → Clientes Discord Windows**, instale Endcord GUI, LegCord ou Vesktop diretamente pelo Aurora. Os pacotes oficiais Windows x64 são baixados sob demanda, têm tamanho e SHA-256 conferidos e recebem atalhos no menu Iniciar do contêiner. Endcord é a primeira opção para testar menor uso de memória; a RAM e o RPC ao vivo ainda dependem de validação em aparelho. O APK experimental não inclui o RPC Android antigo que exigia Application ID. Veja o [guia de clientes Windows](docs/DISCORD_RPC_WINLATOR.md).
 
+O Aurora também baixa o instalador oficial do Firefox ESR Windows, verifica o SHA-256 e adiciona um atalho para executá-lo no contêiner. A instalação e o uso do navegador no Wine ainda precisam de teste físico.
+
 ## Features
 
 - **LSFG-VK integration**
@@ -86,7 +88,7 @@ The integration is experimental. Features listed above are described by this for
 - [Changelog](CHANGELOG.md)
 - [Pull requests](../../pulls) — experimental work and community proposals (GitHub Issues are currently disabled; see repository Settings → General → Features to enable them)
 
-**Pré-release atual:** [Aurora 11.3 RC7](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc7-discord-clients), APK ARM64 com assinatura debug, instalador opcional de clientes Discord Windows e atalhos de navegador. É uma prévia experimental: RPC ao vivo e compatibilidade em aparelho ainda precisam de testes. Releases anteriores são mantidas como rascunhos, com tags e assets preservados. Veja [histórico de versões](docs/RELEASES.md) e [guia de Discord no Winlator](docs/DISCORD_RPC_WINLATOR.md).
+**Pré-release atual:** [Aurora 11.3 RC8](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc8-discord-firefox), APK ARM64 com assinatura debug, instalador opcional de clientes Discord Windows, download do Firefox ESR e atalhos de navegador. É uma prévia experimental: RPC ao vivo e compatibilidade em aparelho ainda precisam de testes. Releases anteriores são mantidas como rascunhos, com tags e assets preservados. Veja [histórico de versões](docs/RELEASES.md) e [guia de Discord no Winlator](docs/DISCORD_RPC_WINLATOR.md).
 
 ## Maintainer and contributors
 

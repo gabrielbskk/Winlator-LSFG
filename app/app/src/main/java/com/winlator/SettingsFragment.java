@@ -50,6 +50,7 @@ import com.winlator.core.Callback;
 import com.winlator.core.DefaultVersion;
 import com.winlator.core.DiscordClientInstaller;
 import com.winlator.core.FileUtils;
+import com.winlator.core.FirefoxInstaller;
 import com.winlator.core.GeneralComponents;
 import com.winlator.core.LocaleHelper;
 import com.winlator.core.PreloaderDialog;
@@ -144,6 +145,19 @@ public class SettingsFragment extends Fragment {
         bindDiscordClientButton(view, R.id.BTInstallEndcord, DiscordClientInstaller.Client.ENDCORD);
         bindDiscordClientButton(view, R.id.BTInstallLegcord, DiscordClientInstaller.Client.LEGCORD);
         bindDiscordClientButton(view, R.id.BTInstallVesktop, DiscordClientInstaller.Client.VESKTOP);
+
+        Button firefoxButton = view.findViewById(R.id.BTDownloadFirefox);
+        if (FirefoxInstaller.getInstaller(context) != null)
+            firefoxButton.setText(R.string.firefox_installer_ready);
+        firefoxButton.setOnClickListener(clicked -> {
+            firefoxButton.setEnabled(false);
+            FirefoxInstaller.download(requireActivity(), installed -> {
+                if (!isAdded()) return;
+                firefoxButton.setEnabled(true);
+                if (installed) firefoxButton.setText(R.string.firefox_installer_ready);
+                AppUtils.showToast(requireContext(), installed ? R.string.firefox_installer_success : R.string.firefox_installer_failure);
+            });
+        });
 
         final Spinner sSoundFont = view.findViewById(R.id.SSoundFont);
         String soundfont = preferences.getString("soundfont", null);

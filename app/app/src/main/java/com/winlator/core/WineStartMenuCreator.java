@@ -139,6 +139,15 @@ public abstract class WineStartMenuCreator {
         }
     }
 
+    private static void addFirefoxInstaller(JSONArray data, Context context, Container container) throws JSONException {
+        File installer = FirefoxInstaller.getInstaller(context);
+        if (installer == null) return;
+        JSONObject entry = new JSONObject();
+        entry.put("name", "Install Firefox ESR (Aurora)");
+        entry.put("path", toWindowsPath(container, installer));
+        data.getJSONObject(0).getJSONArray("children").put(entry);
+    }
+
     private static void addAndroidDiscordWeb(JSONArray data) throws JSONException {
         JSONObject entry = new JSONObject();
         entry.put("name", "Discord Web (Android Browser)");
@@ -246,6 +255,7 @@ public abstract class WineStartMenuCreator {
         try {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
             addInstalledDiscordClients(data, context, container);
+            addFirefoxInstaller(data, context, container);
             addDownloadedVesktop(data, container);
             addDownloadedEndcord(data, container);
             addDownloadedLegcord(data, container);

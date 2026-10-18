@@ -65,6 +65,18 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <LinearLayout style="@style/FieldSet">
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:text="@string/firefox_installer_help" />
+                    <Button android:id="@+id/BTDownloadFirefox" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:text="@string/firefox_installer_download" />
+                </LinearLayout>
+                <TextView style="@style/FieldSetLabel" android:text="@string/firefox_installer_title" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <LinearLayout style="@style/FieldSet">
                     <TextView

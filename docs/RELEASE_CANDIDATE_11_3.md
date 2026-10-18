@@ -1,8 +1,11 @@
-# Aurora 11.3 RC7 — candidato técnico (não Stable)
+# Aurora 11.3 RC8 — candidato técnico (não Stable)
 
-O código candidato usa `versionCode=45` e `versionName=11.3-aurora-rc.7`. **A RC7 é uma prévia com assinatura debug; não é Stable.**
+O código candidato usa `versionCode=46` e `versionName=11.3-aurora-rc.8`. **A RC8 é uma prévia com assinatura debug; não é Stable.**
 
-## Alterações da RC7
+## Alterações da RC8
+
+- Botão de download do instalador oficial Firefox ESR 153.0 para Windows x64, verificado por tamanho e SHA-256, com atalho de execução no contêiner. A instalação do navegador em Wine continua experimental.
+
 
 - Botões nas Configurações instalam Endcord GUI 1.5.4, LegCord 1.3.1 e Vesktop 1.6.7, com versões oficiais fixadas e verificação de tamanho/SHA-256 antes da extração.
 - Atalhos dos clientes instalados aparecem no menu Iniciar do contêiner; Vesktop instalado também pode usar o início minimizado opcional.
