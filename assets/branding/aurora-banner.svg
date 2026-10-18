@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-labelledby="title desc">
+<title id="title">Aurora — Discord RPC e compatibilidade Windows</title><desc id="desc">Identidade Aurora em azul, ciano e violeta sobre fundo escuro, com um símbolo A geométrico e arcos de luz.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#080d1c"/><stop offset="1" stop-color="#192444"/></linearGradient><linearGradient id="light" x2="1" y2="0"><stop stop-color="#20cffa"/><stop offset=".55" stop-color="#82a1ff"/><stop offset="1" stop-color="#ae7aff"/></linearGradient></defs>
+<rect width="1280" height="440" rx="24" fill="url(#bg)"/>
+<g fill="none" stroke="url(#light)"><path d="M760 490 Q900 40 1320 90" stroke-width="95" opacity=".06"/><path d="M810 490 Q940 70 1320 120" stroke-width="2" opacity=".35"/><path d="M890 490 Q990 140 1320 185" stroke-width="2" opacity=".18"/></g>
+<path d="M985 300 L1060 120 L1135 300 M1010 245 L1110 245" fill="none" stroke="url(#light)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+<g font-family="Arial, Helvetica, sans-serif"><text x="70" y="82" font-size="16" letter-spacing="4" fill="#82a1ff">WINLATOR LSFG · COMMUNITY FORK</text><text x="64" y="204" font-size="108" font-weight="700" letter-spacing="6" fill="#f5f7ff">AURORA</text><text x="70" y="264" font-size="27" fill="#d0dcf5">Discord RPC e compatibilidade Windows.</text><text x="70" y="306" font-size="21" fill="#9caccb">Jogos, clientes Discord e navegadores no Android ARM64.</text><rect x="70" y="350" width="217" height="34" rx="17" fill="#20cffa" fill-opacity=".12"/><text x="88" y="373" font-size="14" letter-spacing="2" fill="#6ce0ff">11.3 RC8 · EXPERIMENTAL</text></g>
+</svg>

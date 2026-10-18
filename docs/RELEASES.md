@@ -1,3 +1,33 @@
+# Aurora — versões e downloads
+
+## Pré-release atual: 11.3 RC8
+
+**[Baixar o APK ARM64](https://github.com/gabrielbskk/Winlator-LSFG/releases/tag/aurora-11.3-rc8-discord-firefox)** · Experimental · Assinatura debug
+
+A RC8 adiciona instalação opcional de Endcord GUI, LegCord e Vesktop Windows, download do instalador Firefox ESR e atalhos de navegador. O RPC Android antigo com Application ID não está ativo nesta build SDK-free.
+
+- Código publicado: `389ee86654133a152d7a759f4354331acaa7fba8`.
+- APK: `app-debug.apk`, 172.017.335 bytes.
+- SHA-256: `36e41e7e8886db48a1db7e5baa11aaefb978c64b66d62b8e1a6d9b534c953099`.
+- [CI da RC8](https://github.com/gabrielbskk/Winlator-LSFG/actions/runs/39145337062): testes JVM, APK debug, compilação AndroidTest e verificações de recursos/ drivers aprovados.
+- RPC ao vivo, Firefox, outros clientes e comparações de RAM ainda precisam de teste físico. Faça backup antes de instalar; assinaturas diferentes podem impedir atualização direta.
+
+## Versões anteriores
+
+As releases anteriores estão em rascunho, preservando tags, histórico e assets. Os downloads em rascunho só aparecem para administradores autorizados. A RC8 é a pré-release pública atual.
+
+| Família | Referência histórica |
+| --- | --- |
+| 11.3 Experimental 7 / RC1 | `aurora-11.3-experimental-7-rc1` |
+| 11.2 Experimental 6 | `aurora-experimental-6` |
+| 11.2 RPC + capas | `rpc-android-experimental-5-full-rpc` |
+| Experimental 1–5 | Builds anteriores do RPC Android e versões SDK-free |
+
+O rótulo histórico “candidata a estável” não representa comprovação de estabilidade. O canal Stable depende dos [critérios de validação](STABLE_RELEASE_GATE.md).
+
+<details>
+<summary>Registro anterior da linha 11.2 (histórico)</summary>
+
 # Winlator LSFG Aurora — canal principal e arquivo
 
 ## Canal principal
@@ -31,3 +61,5 @@ Para recuperar uma release antiga, o mantenedor pode abrir [Releases](https://gi
 O nome exibido pelo GitHub para a release principal pode mudar sem alterar o APK. O pacote Android dentro do arquivo continua com a versão `11.2-rpc-experimental.5` e a assinatura de debug original. Uma versão realmente estável exige validar RPC, imagens, compatibilidade 32/64-bit e assinatura de distribuição antes de lançar um APK novo.
 
 Créditos: Winlator original de brunodev85, fork Winlator LSFG da Rafaela (@amyroseee) e seus respectivos projetos e dependências.
+
+</details>
