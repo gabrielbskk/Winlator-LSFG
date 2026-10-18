@@ -9,13 +9,13 @@
 
 ## Discord e RPC
 
-Nas Configurações, abra **Clientes Discord Windows** e escolha Endcord, LegCord ou Vesktop. O Aurora baixa e verifica o pacote; abra o cliente pelo menu Iniciar do contêiner. Faça login e configure o RPC no próprio cliente. RPC ao vivo e consumo de RAM ainda precisam ser verificados no aparelho.
+**Aviso para quem baixou a RC8:** o mantenedor relatou que somente o Vesktop já instalado funcionou; os botões Endcord, LegCord e reinstalação Vesktop não tiveram resultado útil. **Não recomendamos esses botões na RC8.** Na RC9 de código (ainda sem APK pública), eles estão ocultos e o Vesktop existente é preservado. RPC ao vivo e consumo de RAM continuam sem validação.
 
 O início minimizado do Vesktop é opcional por contêiner. Endcord é uma alternativa para testar menor consumo; o resultado no Winlator ainda não foi medido. A RC8 não ativa o RPC Android antigo com Application ID.
 
 ## Firefox e Discord Web
 
-Nas Configurações, baixe o instalador Firefox ESR. No contêiner, execute **Install Firefox ESR (Aurora)** e conclua a instalação. Os atalhos de Discord Web também podem abrir o navegador Android ou navegadores já instalados no Wine. Isso não é um WebView embutido.
+**O download/instalador Firefox da RC8 não teve funcionamento confirmado e não deve ser recomendado.** Na RC9 em desenvolvimento, a interface e o atalho gerado do instalador foram suspensos; arquivos que já existem não são apagados. Os atalhos de Discord Web para navegador Android e navegadores já instalados no Wine são rotas distintas, sem WebView embutido.
 
 Detalhes: [Discord e navegadores](DISCORD_RPC_WINLATOR.md).
 

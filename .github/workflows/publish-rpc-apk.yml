@@ -90,4 +90,4 @@ jobs:
         run: |
           gh release upload "$RELEASE_TAG" \
             "$APK_NAME" \
-            SHA256SUMS.txt --repo gabrielbskk/Winlator-LSFG --clobber
+            SHA256SUMS.txt --repo gabrielbskk/Winlator-LSFG
