@@ -2,7 +2,11 @@
 
 ## Instalação pelo Aurora
 
-Em **Configurações → Clientes Discord Windows**, toque em **Instalar Endcord**, **Instalar LegCord** ou **Instalar Vesktop**. O Aurora baixa o ZIP Windows x64 da release oficial de cada projeto, confere tamanho e SHA-256, extrai na pasta privada do aplicativo e cria o atalho `<cliente> (Aurora)` no menu Iniciar quando o contêiner é aberto. Os clientes não vêm dentro do APK. Mantenha espaço livre para download e extração.
+**Aviso RC8 (18/10/2026):** o mantenedor relatou que apenas o Vesktop existente funciona; os botões de download/instalação de Endcord, LegCord, Vesktop e Firefox não produziram resultado útil. **Os painéis desses instaladores foram ocultados no código após a tag RC8.** A APK pública original continua inalterada. Não reinstale Vesktop se ele já está disponível. Mantenha backups dos contêineres.
+
+**Instalações existentes:** o Aurora mantém atalhos para executáveis já extraídos na pasta Downloads e para clientes que já estejam no armazenamento do aplicativo. O botão de abrir Vesktop no editor do contêiner passa a procurar primeiro a cópia gerenciada pelo Aurora e depois a versão existente em Downloads. Isso evita novos downloads, mas não comprova RPC ao vivo.
+
+**Referência histórica (instaladores temporariamente desativados):** os ZIPs Windows x64 abaixo eram baixados dos projetos de origem com tamanho e SHA-256 fixados, e não eram incluídos no APK. Eles ficam documentados somente para futura depuração; a interface de download permanece oculta até que haja uma implementação confiável.
 
 | Cliente | Versão fixada | ZIP | Tamanho do download | SHA-256 |
 | --- | --- | --- | ---: | --- |
@@ -14,7 +18,7 @@ Os atalhos antigos para arquivos extraídos manualmente em Downloads continuam d
 
 ## Discord Web pelo navegador
 
-O Aurora também oferece em Configurações o download verificado do instalador oficial Firefox ESR 153.0 para Windows x64. Depois do download, execute `Install Firefox ESR (Aurora)` no menu Iniciar do contêiner e siga o instalador. A abertura do navegador dentro do Wine ainda requer validação em aparelho.
+A opção de baixar Firefox ESR 153.0 para Windows x64 foi **ocultada** após o relato de falha na RC8. Arquivos que já tenham sido baixados continuam preservados, mas sua instalação e execução no Wine não estão validadas.
 
 O menu Iniciar oferece `Discord Web (Android Browser)`, que usa a integração existente do Winlator para abrir o link no navegador Android, além de atalhos separados para Chrome, Edge ou Firefox quando instalados no prefixo Wine. Isso é encaminhamento para o navegador Android, não um WebView embutido dentro da janela Windows. O navegador, o login e a extensão são responsabilidade do usuário; nenhum navegador é incluído no APK.
 
@@ -39,8 +43,8 @@ O projeto separado [endcord-rpc](https://github.com/sparklost/endcord-rpc) ofere
 
 - **Quer usar o caminho já integrado:** Vesktop dentro do contêiner, com início minimizado opcional. A abertura foi testada; o RPC ao vivo ainda está pendente. Espere uso extra de memória.
 - **Quer testar o navegador:** Discord Web no navegador Android ou em Chrome/Edge/Firefox do contêiner + Vencord + arRPC; considere o RPC experimental.
-- **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; use o botão nas Configurações e abra o atalho do Aurora. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
-- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Use o botão nas Configurações; a RAM e o RPC ainda precisam ser medidos no Winlator.
+- **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; os botões das Configurações estão temporariamente ocultos; se já estiver instalado, use o atalho existente. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
+- **Quer testar outro cliente Windows com RPC integrado:** LegCord traz arRPC, mas continua baseado em Electron. Os botões das Configurações estão ocultos após a RC8; a RAM e o RPC ainda precisam ser medidos no Winlator.
 - **Discord oficial para Windows:** não oferece uma opção oficial apenas de RPC sem o cliente completo. A integração antiga pelo Social SDK Android não faz parte desta prévia pública.
 
 Nunca informe token, senha ou Client Secret em scripts, logs ou arquivos do projeto.
