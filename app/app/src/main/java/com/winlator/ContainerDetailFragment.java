@@ -181,7 +181,7 @@ public class ContainerDetailFragment extends Fragment {
         final CheckBox cbVesktopRpcCompanion = view.findViewById(R.id.CBVesktopRpcCompanion);
         cbVesktopRpcCompanion.setChecked(isEditMode() && container.getExtra("vesktopRpcCompanion").equals("t"));
         final Button btLaunchVesktop = view.findViewById(R.id.BTLaunchVesktop);
-        File vesktopExecutable = WineStartMenuCreator.findDownloadedVesktop(
+        File vesktopExecutable = WineStartMenuCreator.findAvailableVesktop(context,
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
         btLaunchVesktop.setVisibility(isEditMode() && vesktopExecutable != null ? View.VISIBLE : View.GONE);
         btLaunchVesktop.setOnClickListener(v -> {
