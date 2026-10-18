@@ -1,15 +1,13 @@
 # Aurora 11.3 RC5 — candidato técnico (não Stable)
 
-O código candidato usa `versionCode=43` e `versionName=11.3-aurora-rc.5`. A release é experimental/prerelease e o APK de revisão usa assinatura debug.
+O código candidato usa `versionCode=43` e `versionName=11.3-aurora-rc.5`. **Ainda não foi publicada uma release 11.3; o build de desenvolvimento usa assinatura debug.**
 
 ## Alterações da RC3
 
 - Build SDK-free não inicia nem exibe controles do Discord RPC; o SDK e a biblioteca nativa continuam ausentes.
 - Preset Electron/Vesktop alinhado à base Intermediária que abriu corretamente no Galaxy S23, sem forçar `BOX64_LIBCEF`/`BOX64_MALLOC_HACK` que causaram tela preta nesse teste.
 - Atalho local `Vesktop (Downloads)` é criado quando `vesktop.exe` já está extraído em uma pasta Vesktop dentro de Downloads; o binário não é incluído no APK.
-- Em cada contêiner, um botão abre o Vesktop para o primeiro login/configuração e uma opção separada cria o início minimizado nas execuções seguintes. O usuário ainda precisa ativar Rich Presence via arRPC no próprio Vesktop; o envio de RPC ao vivo não foi validado no Winlator; a opção fica desligada por padrão por causa do consumo adicional de RAM/CPU.
-- Cria um atalho opcional para Endcord quando `endcord-gui.exe` (ou `endcord.exe`) já está extraído em Downloads; binário não incluído no APK. Endcord oferece RPC integrado, mas é um cliente de terceiros; há risco de violação dos termos/banimento e não foi testado no Winlator.
-- Cria atalhos para Discord Web no menu Iniciar quando Chrome, Edge ou Firefox está instalado no prefixo Wine. A extensão Vencord e o servidor arRPC são manuais; essa combinação não foi validada no Winlator e permanece experimental. Consulte [Discord RPC no contêiner Windows](DISCORD_RPC_WINLATOR.md).
+- Em cada contêiner, um botão abre o Vesktop para o primeiro login/configuração e uma opção separada cria o início minimizado nas execuções seguintes. O usuário ainda precisa ativar Rich Presence via arRPC no próprio Vesktop; o RPC ao vivo não foi validado no Winlator; a opção fica desligada por padrão por causa do consumo adicional de RAM/CPU.
 - Fontes CJK, emoji e símbolos disponíveis em `/system/fonts` são importadas para o prefixo Wine somente quando faltarem, reduzindo glifos quadrados sem redistribuir fontes.
 - Validação física observada até aqui: interface abriu, desempenho melhorou com GPU ativa e ainda restaram alguns glifos ausentes. Testes de áudio, chamadas, notificações, RAM, reinicialização e outros aparelhos continuam pendentes.
 

@@ -42,9 +42,7 @@ public class WineStartMenuCreatorTest {
         File container = temporaryFolder.newFolder("container");
         File executable = new File(container,
             ".wine/drive_c/Program Files/Google/Chrome/Application/chrome.exe");
-        executable.getParentFile().mkdirs();
-        executable.createNewFile();
-
+        executable.getParentFile().mkdirs(); executable.createNewFile();
         assertEquals(executable, WineStartMenuCreator.findInstalledBrowser(container,
             "Program Files/Google/Chrome/Application/chrome.exe"));
         assertNull(WineStartMenuCreator.findInstalledBrowser(container,

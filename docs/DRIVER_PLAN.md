@@ -55,8 +55,8 @@ O [PR #19](https://github.com/gabrielbskk/Winlator-LSFG/pull/19) já implementa 
 - Resultado no Galaxy S23: o preset com `BOX64_LIBCEF=1`, `BOX64_MALLOC_HACK=2` e dynarec conservador abriu uma janela preta. O preset Intermediário, com GPU ativa e `--no-sandbox --disable-gpu-sandbox`, abriu e apresentou desempenho melhor; ainda requer medições reproduzíveis.
 - Implementação RC3: o preset Electron usa a base Intermediária testada e não força os overrides CEF/alocador. Uma instalação extraída do Vesktop em Downloads é detectada para criar um atalho local no menu Iniciar, sem redistribuir o aplicativo no APK.
 - Companion RPC opt-in por contêiner: botão para primeiro login/configuração e atalho de inicialização com `--start-minimized`; requer habilitar o arRPC no Vesktop e não garante detecção de jogos que não publicam RPC.
-- RC5: cria atalho opcional para Endcord Windows já extraído em Downloads; RPC integrado, compatibilidade e RAM pendentes no Winlator.
-- RC4: cria atalhos para Discord Web em Chrome/Edge/Firefox já instalados no prefixo. Vencord Web + arRPC depende de instalação manual e está sem validação no Winlator; consulte `docs/DISCORD_RPC_WINLATOR.md`.
+- RC5: inclui atalho opcional para Endcord Windows já extraído em Downloads; RPC integrado, compatibilidade e RAM pendentes no Winlator.
+- RC4: Discord Web via navegador Android do Winlator e atalhos Chrome/Edge/Firefox instalados no prefixo; Vencord Web + arRPC ainda sem validação.
 - Fontes: fontes Unicode/CJK/símbolos existentes no Android são copiadas, somente quando ausentes, para o prefixo Wine. O APK não redistribui esses arquivos.
 - Teste: comparar preset Intermediário e Electron com Vesktop Windows x64, registrar primeira janela, login, renderização, áudio, reabertura, RAM e logs.
 - Reversão: selecionar outro preset e remover os argumentos do atalho; nenhum contêiner existente é migrado.

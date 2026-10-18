@@ -8,7 +8,7 @@ O executável não é distribuído no APK. Extraia uma versão confiável do Ves
 
 ## Discord Web pelo navegador
 
-A partir da RC4, se Chrome, Edge ou Firefox estiver instalado no prefixo Wine, o menu Iniciar ganha um atalho `Discord Web (...)` que abre `https://discord.com/app`. O navegador, o login e a extensão são responsabilidade do usuário; nenhum navegador é incluído no APK.
+O menu Iniciar oferece `Discord Web (Android Browser)`, que usa a integração existente do Winlator para abrir o link no navegador Android, além de atalhos separados para Chrome, Edge ou Firefox quando instalados no prefixo Wine. Isso é encaminhamento para o navegador Android, não um WebView embutido dentro da janela Windows. O navegador, o login e a extensão são responsabilidade do usuário; nenhum navegador é incluído no APK.
 
 Para tentar Rich Presence no Discord Web:
 
@@ -17,7 +17,7 @@ Para tentar Rich Presence no Discord Web:
 3. No Discord Web, habilite o plugin `WebRichPresence (arRPC)` do Vencord. Ele deve conseguir abrir `ws://127.0.0.1:1337` no mesmo ambiente de rede.
 4. Teste com um jogo que publica RPC e confirme a atividade em outro cliente Discord.
 
-Esta integração é experimental. O plugin WebRichPresence é identificado pelo Vencord como experimental, e o arRPC tem um relato aberto de vazamento de memória ao escanear processos no Windows. Portanto, não consideramos essa combinação uma alternativa leve validada no Winlator. O launcher do Aurora só abre o navegador; não instala Vencord/Node, não inicia arRPC e não garante que o servidor consiga detectar processos Wine.
+Esta integração é experimental. O plugin WebRichPresence é identificado pelo Vencord como experimental, e o arRPC tem um relato aberto de vazamento de memória ao escanear processos no Windows. Portanto, não consideramos essa combinação uma alternativa leve validada no Winlator. Os atalhos do Aurora só abrem o navegador; não instala Vencord/Node, não inicia arRPC e não garante que o servidor consiga detectar processos Wine.
 
 ## Endcord e Legcord
 
@@ -28,7 +28,7 @@ Há dois projetos não relacionados chamados Endcord. [rootpoii/Endcord](https:/
 ## Escolha
 
 - **Quer usar o caminho já integrado:** Vesktop dentro do contêiner, com companion opcional. A abertura foi testada; o RPC ao vivo ainda está pendente. Espere uso extra de memória.
-- **Quer testar o navegador:** Discord Web + Vencord + arRPC; use a RC4 apenas como atalho de abertura e considere o RPC experimental.
+- **Quer testar o navegador:** Discord Web no navegador Android ou em Chrome/Edge/Firefox do contêiner + Vencord + arRPC; considere o RPC experimental.
 - **Quer testar um cliente com RPC integrado e mais leve segundo o projeto:** Endcord é a primeira opção para experimentar; extraia `endcord-gui.exe` em uma pasta Endcord dentro de Downloads e abra o atalho. A compatibilidade e a RAM no Winlator ainda estão pendentes, e há risco de conta por ser cliente de terceiros.
 - **Discord oficial para Windows:** não oferece uma opção oficial apenas de RPC sem o cliente completo. O Social SDK Android é outro fluxo e não envia a presença do processo Windows do contêiner.
 

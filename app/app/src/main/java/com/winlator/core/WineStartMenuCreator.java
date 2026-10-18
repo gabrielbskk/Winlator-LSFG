@@ -45,8 +45,7 @@ public abstract class WineStartMenuCreator {
     }
 
     static File findInstalledBrowser(File containerRoot, String relativePath) {
-        File driveC = new File(containerRoot, ".wine/drive_c");
-        File executable = new File(driveC, relativePath);
+        File executable = new File(new File(containerRoot, ".wine/drive_c"), relativePath);
         return executable.isFile() ? executable : null;
     }
 
@@ -97,6 +96,14 @@ public abstract class WineStartMenuCreator {
         JSONObject entry = new JSONObject();
         entry.put("name", "Endcord (Downloads)");
         entry.put("path", toWindowsPath(container, executable));
+        data.getJSONObject(0).getJSONArray("children").put(entry);
+    }
+
+    private static void addAndroidDiscordWeb(JSONArray data) throws JSONException {
+        JSONObject entry = new JSONObject();
+        entry.put("name", "Discord Web (Android Browser)");
+        entry.put("path", "C:\\windows\\winhandler.exe");
+        entry.put("cmdArgs", "/url https://discord.com/app");
         data.getJSONObject(0).getJSONArray("children").put(entry);
     }
 
@@ -199,6 +206,7 @@ public abstract class WineStartMenuCreator {
             JSONArray data = new JSONArray(FileUtils.readString(context, "wine_startmenu.json"));
             addDownloadedVesktop(data, container);
             addDownloadedEndcord(data, container);
+            addAndroidDiscordWeb(data);
             addDiscordWebBrowsers(data, container);
             FileUtils.writeString(containerStartMenuFile, data.toString());
             for (int i = 0; i < data.length(); i++) createMenuEntry(data.getJSONObject(i), startMenuDir);
